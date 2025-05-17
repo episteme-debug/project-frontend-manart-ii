@@ -1,2 +1,2 @@
 # project-frontend-manart-ii
-Proyecto fronend correspondiente a ManArt artesanías de Colombia.
+Proyecto frontend correspondiente a ManArt artesanías de Colombia.
