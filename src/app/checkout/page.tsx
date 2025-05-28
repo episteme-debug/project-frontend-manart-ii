@@ -1,10 +1,34 @@
-import { redirect } from "next/navigation";
+"use client"
+
+import { useEffect, useState } from "react";
+import { generarPago } from "@/api/pedido";
+import FormularioPago from "@/components/FormularioPago";
 
 export default function Home() {
-  return (
-    <div>
-      <h1>Bienvenido a nuestra tienda</h1>
-      <p>Explora nuestros productos y disfruta de una experiencia de compra única.</p>
-    </div>
-  );
+    const [datosPayU, setDatosPayU] = useState(null);
+
+    useEffect(() => {
+        const obtenerDatos = async () => {
+            try {
+                const datos = await generarPago();
+                setDatosPayU(datos);
+            } catch (error) {
+                console.error("Error al generar pago:", error);
+            }
+        };
+
+        obtenerDatos();
+    }, []);
+
+    if (!datosPayU) {
+        return <p>Cargando formulario de pago...</p>;
+    }
+
+    return (
+        <div>
+            <h2>Pago con PayU</h2>
+            <p>{JSON.stringify(datosPayU)}</p>
+            <FormularioPago datos={datosPayU} />
+        </div>
+    );
 }
