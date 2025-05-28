@@ -10,7 +10,7 @@ export function useLogin() {
         evento.preventDefault();
 
         try {
-            const respuesta = await axios.post('/api/autenticacion/public/login', {
+            const respuesta = await axios.post('http://localhost:8080/api/autenticacion/public/login', {
                 alias: usuario,
                 contraseña: contrasena,
             }, {
