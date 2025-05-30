@@ -1,7 +1,6 @@
 
 import axios from 'axios';
 interface Post {
-  id: number;
   idProducto: number;
   nombreProducto: string;
   descripcionProducto: string;

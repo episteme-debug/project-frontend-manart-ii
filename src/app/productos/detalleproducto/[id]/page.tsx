@@ -1,6 +1,8 @@
 import CardCarusel from '../../../../components/cardCarusel';
 import { getPrimerosCinco } from '../../../../services/apis/getPrimerosCinco';
+import ActivarBoton from '../../../../components/agregarCarrito'
 import axios from "axios";
+import Link from "next/link";
 
 import {
   Carousel,
@@ -22,7 +24,6 @@ import Image from "next/image"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 
 interface Post {
-  id: number;
   idProducto: number;
   nombreProducto: string;
   descripcionProducto: string;
@@ -35,9 +36,7 @@ interface Props {
 }
 const stars = Array(5).fill(0)
 
-
 export default async function Page({ params }: Props) {
-
   const posts: Post[] = await getPrimerosCinco();
   const { id } = params;
 
@@ -136,9 +135,7 @@ export default async function Page({ params }: Props) {
               <Button variant="outline" className="mr-5 ml-5">
                 Comprar Ahora
               </Button>
-              <Button variant="outline" className="mr-5 ml-5 ">
-                Agregar al Carrito
-              </Button>
+              <ActivarBoton idProducto={producto.idProducto} />
             </Card>
           </div>
           <div className=" rounded-lg m-5 ">

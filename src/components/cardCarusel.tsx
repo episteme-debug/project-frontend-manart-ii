@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/card"
 
 interface Post {
-  id: number;
   idProducto: number;
   nombreProducto: string;
   descripcionProducto: string;

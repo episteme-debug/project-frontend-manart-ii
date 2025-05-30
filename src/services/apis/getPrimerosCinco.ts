@@ -1,6 +1,5 @@
 import axios from "axios";
 interface Productos {
-  id: number;
   idProducto: number;
   nombreProducto: string;
   descripcionProducto: string;

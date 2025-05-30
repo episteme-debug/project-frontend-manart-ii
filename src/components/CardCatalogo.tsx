@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/card"
 
 interface Post {
-  id: number;
   idProducto: number;
   nombreProducto: string;
   descripcionProducto: string;
@@ -21,34 +20,21 @@ interface Post {
 }
 const stars = Array(5).fill(0)
 export default function CardCatalogo({ posts }: { posts: Post[] }) {
-  const [favorito, setFavorito]= useState(false);
-
-  const activacionFavoritos  = () =>{
-  setFavorito(!favorito);
-};
   return (
     <section className=''>
-
-      <div className="grid grid-cols-3 gap-3 col-span-4  w-[400%]">
+      <div className="grid grid-cols-3 gap-3 col-span-4  w-[350%] ">
         {posts.map((post) => (
           <div key={post.idProducto} className=" rounded-lg m-0 shadow-xl"  >
             <Card className="w-full h-full m-0 p-0  ">
+              <Link href={`/productos/detalleproducto/${post.idProducto}`}>
               <div className="group static flex justify-end ">
-                <div className='hidden group-hover:flex space-x-1  w-auto m-0 p-0  absolute '>
-                  <button className='' onClick={activacionFavoritos}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill={favorito ? "red" : "none"} viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-9">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                    </svg>
-                  </button>
-                </div>
+               
                 <div className=''>
                   <img src="logo.png" alt="Logo" className='h-70 w-100' />
                 </div>
               </div>
               <div className=' p-5 h-full'>
-                <Link href={`/productos/detalleproducto/${post.idProducto}`}
-                  className='text-2xl underline hover:text-blue-600 dark:hover:text-blue-400'>
-                  {post.nombreProducto}</Link>
+                <h1 className='text-2xl'>{post.nombreProducto}</h1>
                 <p>${post.precioProducto} COP <span className='line-through'>Precio anterior</span></p>
                 <div className="flex">
                   {stars.map((_, i) => (
@@ -71,6 +57,7 @@ export default function CardCatalogo({ posts }: { posts: Post[] }) {
                 </div>
 
               </div>
+              </Link>
             </Card>
           </div>
         ))}

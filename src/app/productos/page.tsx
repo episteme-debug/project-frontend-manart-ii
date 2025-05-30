@@ -22,23 +22,34 @@ import { Button } from "@/components/ui/button"
 
 
 interface Post {
-  id: number;
   idProducto: number;
   nombreProducto: string;
   descripcionProducto: string;
   precioProducto: number;
   stockProducto: number;
 }
+interface Props {
+  searchParams?: {
+    page?: string;
+  };
+}
 const stars = Array(5).fill(0)
 import Link from "next/link";
-export default async function CatalogoProducto() {
-  const posts: Post[] = await obtenerPosts();
+export default async function CatalogoProducto({ searchParams }: Props) {
+  const page = parseInt(searchParams?.page || '1', 10);
+  const limit = 20;
+
+  const posts = await obtenerPosts();
+
+  const totalPages = Math.ceil(posts.length / limit);
+  const startIndex = (page - 1) * limit;
+  const currentPosts = posts.slice(startIndex, startIndex + limit);
 
   return (
     <main>
       <section className="grid grid-cols-5 w-full min-h-screen ">
 
-        <div className=" col-span-1 row-span-2 mt-3 pt-1 shadow-2xl h-auto">
+        <div className=" col-span-1 row-span-2 mt-3 pt-1 shadow-2xl h-auto mr-5">
           <h2 className='text-2xl'>Categorias</h2>
           <div className='grid  p-1'>
             <Link href="#">Categoria 1</Link>
@@ -115,24 +126,28 @@ export default async function CatalogoProducto() {
             <br />
           </div>
         </div>
-        <div className='w-full '><CardCatalogo posts={posts} />
+        <div className='w-full '><CardCatalogo posts={currentPosts} />
         </div>
         <div className=" col-span-4 flex justify-center center m-5"  >
           <Pagination>
             <PaginationContent>
               <PaginationItem>
-                <PaginationPrevious href="#" />
+                <PaginationPrevious href={`?page=${Math.max(1, page - 1)}`} />
               </PaginationItem>
+
+              {[...Array(totalPages)].map((_, i) => (
+                <PaginationItem key={i}>
+                  <PaginationLink
+                    href={`?page=${i + 1}`}
+                    aria-current={page === i + 1 ? "page" : undefined}
+                  >
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+
               <PaginationItem>
-                <PaginationLink href="#">1</PaginationLink>
-                <PaginationLink href="#">2</PaginationLink>
-                <PaginationLink href="#">3</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext href="#" />
+                <PaginationNext href={`?page=${Math.min(totalPages, page + 1)}`} />
               </PaginationItem>
             </PaginationContent>
           </Pagination>
