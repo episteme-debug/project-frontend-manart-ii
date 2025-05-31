@@ -28,11 +28,6 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Link href="/carrito">carrito</Link>
-        <br />
-        <Link href="/productos">productos</Link>
-        <br />
-        <Link href="/productos/detalleproducto">detalleproducto</Link>
         {children}
       </body>
     </html>
