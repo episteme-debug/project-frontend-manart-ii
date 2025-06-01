@@ -7,6 +7,7 @@ import { listarproductos } from '../services/apis/listarProductosCarrito';
 import { Button } from "@/components/ui/button";
 import { eliminarproducto } from "../services/apis/eliminarProducto";
 import { traerSubtotal } from "../services/apis/gatSubtotaldeCarrito";
+import { actualizarCantidad } from "../services/apis/actualizarCatidades"
 
 interface Productos {
   idCarrito: number;
@@ -18,17 +19,18 @@ interface Productos {
   subtotal: number;
 }
 
+
 function ListarProductoCarritos() {
+  //Listar producto de carrito
   const [productos, setProductos] = useState<Productos[]>([]);
+
   const [loading, setLoading] = useState(true);
   const [subtotal, setSubtotal] = useState<number | null>(null);
 
-  // Obtener productos al cargar
   useEffect(() => {
     listarproductos().then((data) => setProductos(data)).finally(() => setLoading(false));
   }, []);
 
-  // Calcular subtotal cuando cambian los productos
   useEffect(() => {
     if (productos.length > 0) {
       const idCarrito = productos[0].idCarrito;
@@ -36,6 +38,7 @@ function ListarProductoCarritos() {
     }
   }, [productos]);
 
+  //Eliminar producto de carrito
   const handleEliminar = async (idItem: number) => {
     await eliminarproducto(idItem);
     const productosActualizados = await listarproductos();
@@ -52,7 +55,7 @@ function ListarProductoCarritos() {
         <div className="w-full flex">
           <div className="w-[75%] bg-white shadow-xl p-5">
             {productos.map((producto) => (
-              <div key={producto.idItem} className="flex w-full shadow-xs mb-5">
+              <div key={producto.idItem} className="flex w-full shadow-xs mb-5" id='cardProductoscarrito'>
                 <div className="w-50">
                   <AspectRatio ratio={14 / 9}>
                     <Image
@@ -70,9 +73,40 @@ function ListarProductoCarritos() {
                   </div>
                   <div className="col-span-2 justify-items-center w-auto">
                     <div className="flex justify-self-center">
-                      <button className="bg-gray-300 w-10">-</button>
-                      <input type="text" className="text-center w-10 border-2 border-gray-950" value={producto.cantidad ?? ""} readOnly />
-                      <button className="bg-gray-300 w-10">+</button>
+                      <button
+                        className="bg-gray-300 w-10"
+                        onClick={async () => {
+                          const nuevaCantidad = producto.cantidad - 1;
+                          if (nuevaCantidad >= 1) {
+                            await actualizarCantidad(producto.idItem, nuevaCantidad);
+                            const productosActualizados = await listarproductos();
+                            setProductos(productosActualizados);
+                          }
+                        }}
+                      >
+                        -
+                      </button>
+
+                      <input
+                        type="text"
+                        className="text-center w-10 border-2 border-gray-950"
+                        value={producto.cantidad}
+                        readOnly
+                        max={7}
+                      />
+
+
+                      <button
+                        className="bg-gray-300 w-10"
+                        onClick={async () => {
+                          const nuevaCantidad = producto.cantidad + 1;
+                          await actualizarCantidad(producto.idItem, nuevaCantidad);
+                          const productosActualizados = await listarproductos();
+                          setProductos(productosActualizados);
+                        }}
+                      >
+                        +
+                      </button>
                     </div>
                   </div>
                   <div className="col-span-2 content-center justify-items-center">
@@ -110,7 +144,10 @@ function ListarProductoCarritos() {
               <hr className="my-4" />
               <p className="text-xl">Cupones:</p>
               <hr className="my-4" />
-              <p className="text-xl">Total de compra:</p>
+              <p className="text-xl">Total de compra:{" "}
+                <span className="font-semibold text-green-600">
+                  {subtotal !== null ? `$${subtotal}` : "Cargando..."}
+                </span></p>
               <hr className="my-4" />
               <Button variant="outline" className="bg-amber-300 mb-4">
                 Continuar con la compra

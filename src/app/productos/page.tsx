@@ -1,5 +1,6 @@
 import CardCatalogo from '../../components/CardCatalogo';
 import { obtenerPosts } from '../../services/apis/GetTodosLosProductos';
+import TraertodasLascategorias from '../../components/traertodasLasCategorias'
 
 import {
   InputOTP,
@@ -52,9 +53,7 @@ export default async function CatalogoProducto({ searchParams }: Props) {
         <div className=" col-span-1 row-span-2 mt-3 pt-1 shadow-2xl h-auto mr-5">
           <h2 className='text-2xl'>Categorias</h2>
           <div className='grid  p-1'>
-            <Link href="#">Categoria 1</Link>
-            <Link href="#">Categoria 2</Link>
-            <Link href="#">Categoria 3</Link>
+            <TraertodasLascategorias />
           </div>
           <br />
 

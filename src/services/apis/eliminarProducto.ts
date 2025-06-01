@@ -1,5 +1,4 @@
 import axios  from "axios";
-import {listarproductos} from "./listarProductosCarrito"
 
 export async function  eliminarproducto(idItem : number ){
     try{
