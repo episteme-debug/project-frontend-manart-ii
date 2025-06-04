@@ -34,7 +34,7 @@ export default function cardCarusel({ posts }: { posts: Post[] }) {
         {posts.map((post) => (
           <div key={post.idProducto} className="mb-1 m-0 "  >
             <Card className="w-full bg-white h-130 m-0 p-0 ">
-              <Link href={`productos/detalleproducto/${post.idProducto}`}>
+              <Link href={`${post.idProducto}`}>
               <div className="group static flex justify-end ">
                 <div className='hidden group-hover:flex space-x-1 justify-end w-[24%] m-0 p-0  absolute '>
                   
