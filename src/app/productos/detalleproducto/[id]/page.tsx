@@ -53,7 +53,7 @@ export default async function Page({ params }: Props) {
 
   return (
     <section className="grid w-full h-screen p-2 justify-items-center">
-      <section className="grid grid-cols-10 bg-gray-450 shadow-2xl max-w-[95%] rounded-md ">
+      <section className="grid grid-cols-10 bg-gray-450 shadow-2xl max-w-[80%] rounded-md ">
         <div className="flex flex-col  p-3 pt-5 col-span-4  rounded-tl-lg  h-150">
           <div className="">
             <AspectRatio ratio={14 / 9}>
@@ -149,13 +149,13 @@ export default async function Page({ params }: Props) {
                   vero, officia tempora quas eaque beatae voluptates.
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <Image src="/logo.png" alt="Logo" width={200} height={100} />
+              <CardContent className=''>
+                <Image src="/Metodo_de_pago.png" alt="Metodo_de_pago" width={900} height={600} />
               </CardContent>
             </Card>
           </div>
         </div>
-        <div className='col-start-1 col-end-8 h-full mt-[-20%] '>
+        <div className='col-start-1 col-end-8 h-full  '>
           <hr />
           <div className='flex-auto m-2 shadow-2x1 p-2'  >
             <h1 className='text-2xl'>Descripcion del producto</h1>

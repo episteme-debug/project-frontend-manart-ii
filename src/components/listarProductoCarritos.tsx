@@ -31,11 +31,19 @@ function ListarProductoCarritos() {
     listarproductos().then((data) => setProductos(data)).finally(() => setLoading(false));
   }, []);
 
+  const [visible, setvisible] = useState(true);
+    function inhabilitar(estado: boolean) {
+      setvisible(estado)
+    }
   useEffect(() => {
     if (productos.length > 0) {
       const idCarrito = productos[0].idCarrito;
       traerSubtotal(idCarrito).then((total) => setSubtotal(total));
-    }
+      inhabilitar(false);
+    } else {
+    setSubtotal(0.0);
+    inhabilitar(true);
+  }
   }, [productos]);
 
   //Eliminar producto de carrito
@@ -51,7 +59,7 @@ function ListarProductoCarritos() {
 
   return (
     <section>
-      <div className="mb-6">
+      <div className={`mb-6 ${visible ? 'hidden' : 'block' }`}>
         <div className="w-full flex">
           <div className="w-[75%] bg-white shadow-xl p-5">
             {productos.map((producto) => (
@@ -116,7 +124,8 @@ function ListarProductoCarritos() {
                     <Button
                       variant="outline"
                       className="shadow-none underline border-none"
-                      onClick={() => handleEliminar(producto.idItem)}
+                      onClick={() => handleEliminar(producto.idItem)
+                      }
                     >
                       Eliminar
                     </Button>
