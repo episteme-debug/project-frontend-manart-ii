@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { listarproductos } from '../services/apis/listarProductosCarrito';
 import { Button } from "@/components/ui/button";
 import { eliminarproducto } from "../services/apis/eliminarProducto";
-import { traerSubtotal } from "../services/apis/gatSubtotaldeCarrito";
+import { traerSubtotal } from "../services/apis/traerSubtotaldeCarrito";
 import { actualizarCantidad } from "../services/apis/actualizarCatidades"
 
 interface Productos {

@@ -1,5 +1,5 @@
 import CardCatalogo from '../../components/CardCatalogo';
-import { obtenerPosts } from '../../services/apis/GetTodosLosProductos';
+import { obtenerPosts } from '../../services/apis/traerTodosLosProductos';
 
 import {
   InputOTP,

@@ -1,5 +1,5 @@
 import CardCarusel from '../../../../components/cardCarusel';
-import { getPrimerosCinco } from '../../../../services/apis/getPrimerosCinco';
+import { getPrimerosCinco } from '../../../../services/apis/traerPrimerosCinco';
 import ActivarBoton from '../../../../components/agregarCarrito'
 import axios from "axios";
 import Link from "next/link";
