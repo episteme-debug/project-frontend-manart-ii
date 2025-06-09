@@ -53,7 +53,7 @@ export default async function Page({ params }: Props) {
 
   return (
     <section className="grid w-full h-screen p-2 justify-items-center">
-      <section className="grid grid-cols-10 bg-gray-450 shadow-2xl max-w-[80%] rounded-md ">
+      <section className="grid grid-cols-10 bg-gray-450 shadow-2xl max-w-[85%] rounded-md ">
         <div className="flex flex-col  p-3 pt-5 col-span-4  rounded-tl-lg  h-150">
           <div className="">
             <AspectRatio ratio={14 / 9}>
@@ -98,7 +98,7 @@ export default async function Page({ params }: Props) {
             <button >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                fill="red"
+                fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
@@ -124,14 +124,9 @@ export default async function Page({ params }: Props) {
           <div className="  rounded-lg   m-5">
             <Card className="h-[100%]">
               <CardHeader>
-                <CardTitle>Cantidad disponibles:{producto.stockProducto}</CardTitle>
-                <CardDescription>Costo de Envio</CardDescription>
+                <CardTitle>Cantidad disponibles: {producto.stockProducto}</CardTitle>
+                <CardDescription>Costo de Envio: $$$$</CardDescription>
               </CardHeader>
-              <CardContent>
-                <p>
-                  Cantidad: <span>1</span>
-                </p>
-              </CardContent>
               <Button variant="outline" className="mr-5 ml-5">
                 Comprar Ahora
               </Button>
@@ -169,10 +164,10 @@ export default async function Page({ params }: Props) {
           <div>
           </div>
         </div>
-        <div className='col-start-1 col-end-9 mt-5 grid grid-cols-6 p-2 w-[114%]  h-[350px] '>
+        <div className='col-start-1 col-end-11 mt-5 grid grid-cols-6 p-2 w-full  h-[350px] '>
           <div className='col-span-2 w-76 ml-2 '>
             <h1>Opiniones del producto</h1>
-            <img src="/logo.png" alt="" />
+            <img src="/Estrellas.png" alt="" />
           </div>
           <div className='col-span-4'>
             <h1>Las más recientes</h1>
@@ -223,7 +218,7 @@ export default async function Page({ params }: Props) {
             </div>
           </div>
         </div>
-        <div className="col-start-1 col-end-10 p-3 max-w-[100%]">
+        <div className="col-start-1 col-end-11 p-3 max-w-[100%]">
           <hr />
           <h1>Esto también te podría interesar</h1>
           <br />
@@ -234,7 +229,7 @@ export default async function Page({ params }: Props) {
                 className="absolute top-1/2 left-0 -translate-y-1/2 z-10 bg-white shadow-md"
               />
 
-              <CarouselContent className="w-auto">
+              <CarouselContent className="w-[100%]">
                 {posts.map((post, index) => (
                   <CarouselItem key={index} className="basis-1/4 shadow-lg">
                     <CardCarusel posts={[post]} />

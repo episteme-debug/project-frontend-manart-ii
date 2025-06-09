@@ -5,7 +5,8 @@ import { useState, useEffect } from 'react'
 import { traersCategorias } from "../services/apis/traersCategorias";
 import { traerPromociones } from "../services/apis/traerPromociones"
 import { Button } from "@/components/ui/button";
-import { RagodePreciso } from '../services/apis/traerRangodePrecio';
+import  PrecioRangoFiltro  from "../components/PrecioRangoFiltro"
+
 import {
   Card,
   CardContent,
@@ -59,9 +60,9 @@ interface Promociones {
   porcentajeDescuentoPromocion: number;
   estadoPromocion: true;
 }
-interface Rango{
-    PrecioMinimo:number;
-    PrecionMaximo:number
+interface Rango {
+  PrecioMinimo: number;
+  PrecionMaximo: number
 }
 const stars = Array(5).fill(0)
 export default function CardCatalogo({
@@ -78,7 +79,7 @@ export default function CardCatalogo({
 
   const [promociones, setpromociones] = useState<Promociones[]>([]);
   //Trer los rangos
-  const [rangos,setrangos] = useState<Rango[]>([])
+  const [rangos, setrangos] = useState<Rango[]>([])
   //Todas las cards sin flitos para ocultarlas
   const [visible, setvisible] = useState(true);
   function inhabilitar(estado: boolean) {
@@ -149,10 +150,7 @@ export default function CardCatalogo({
     traerPromociones()
       .then((data) => setpromociones(data))
   }, []);
-  useEffect(()=>{
-    RagodePreciso()
-    .then((data)=>setrangos(data))
-  },[]);
+
   return (
     <section className=' min-h-screen justify-items-center'>
       <section className='grid grid-cols-5 max-w-[95%] shadow-2xl pt-5'>
@@ -225,21 +223,13 @@ export default function CardCatalogo({
           <br />
 
           <div className=' '>
-            <label className='m-2 text-2xl' >Precio</label>
-            <div className=' ml-2 flex'>
-              <input  type="number" name="cantidadMinima" id="minimo" className='border-2  w-[45%] m ' placeholder="Minimo" onChange={(e) => setvalormini(Number(e.target.value))} />
-              <InputOTPSeparator />
-              <input type="number" name="cantidadMaxima" id="maximo" className='border-2  w-[45%]' placeholder="Lo maximo es:" onChange={(e) => setvalormax(Number(e.target.value))} />
-            </div>
-            <div>
-              <Button variant="outline" className='ml-2 mt-1' onClick={() => {
-                setprecioMin(valormini);
-                setprecioMax(valormax);
-                inhabilitar(false)
-                habilitar(false)
-                Ocultra(false)
-              }}>Filtrar</Button>
-            </div>
+            <PrecioRangoFiltro
+              setprecioMin={setprecioMin}
+              setprecioMax={setprecioMax}
+              inhabilitar={inhabilitar}
+              habilitar={habilitar}
+              Ocultra={Ocultra}
+            />
           </div>
           <br />
           <div className=''>

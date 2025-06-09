@@ -20,7 +20,7 @@ interface Post {
 }
 
 const stars = Array(5).fill(0)
-export default function cardCarusel({ posts }: { posts: Post[] }) {
+export default function cardCaruselCarrito({ posts }: { posts: Post[] }) {
   const [favorito, setFavorito] = useState(false);
 
 
@@ -34,7 +34,7 @@ export default function cardCarusel({ posts }: { posts: Post[] }) {
         {posts.map((producto) => (
           <div key={producto.idProducto} className="  rounded-lg shadow-xl  "  >
 
-            <Link className=' m-0 p-0 f' href={`${producto.idProducto}`}>
+            <Link className=' m-0 p-0 f' href={`productos/detalleproducto/${producto.idProducto}`}>
               <Card className="">
                 <div className="group  static flex justify-center-safe m-0 p-0 ">
                   <div className=''>
