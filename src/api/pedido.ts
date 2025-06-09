@@ -1,7 +1,7 @@
 import axios, {AxiosError} from 'axios';
 
 export async function generarPago() {
-    const url = 'http://localhost:8080/api/pedido/private/comprar/NEQUI';
+    const url = 'http://localhost:8080/api/pedido/private/comprar';
     try {
         // Se retornan los datos de PayU
         const response = await axios.post(url,
