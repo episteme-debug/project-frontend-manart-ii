@@ -35,6 +35,7 @@ function ListarProductoCarritos() {
     function inhabilitar(estado: boolean) {
       setvisible(estado)
     }
+  
   useEffect(() => {
     if (productos.length > 0) {
       const idCarrito = productos[0].idCarrito;
@@ -59,7 +60,10 @@ function ListarProductoCarritos() {
 
   return (
     <section>
-      <div className={`mb-6 ${visible ? 'hidden' : 'block' }`}>
+  <div className={`bg-white shadow-xl w-[100%] h-[200] mb-4 flex items-stretch justify-center ${visible ? 'block'  :  'hidden' }`}>
+    <div className='self-center  '><h1 className='text-2xl'>Tu carrito esta vacio mira nuestro productos y empieza a agregar</h1> </div>
+  </div>
+      <div className={`mb-6 ${visible ? 'hidden' : 'block' } `}>
         <div className="w-full flex">
           <div className="w-[75%] bg-white shadow-xl p-5">
             {productos.map((producto) => (
@@ -118,7 +122,7 @@ function ListarProductoCarritos() {
                     </div>
                   </div>
                   <div className="col-span-2 content-center justify-items-center">
-                    <p><span>$</span>{producto.subtotal}</p><span>COP</span>
+                    <p><span>$</span>{producto.subtotal} <span>COP</span></p>
                   </div>
                   <div className="col-start-1 col-end-8 pl-3">
                     <Button
@@ -129,9 +133,6 @@ function ListarProductoCarritos() {
                     >
                       Eliminar
                     </Button>
-                    <Link href="#" className="underline hover:text-blue-600 dark:hover:text-blue-400 ml-5">
-                      Compra ahora
-                    </Link>
                   </div>
                 </div>
               </div>

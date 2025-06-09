@@ -1,6 +1,7 @@
-import CardCarusel from '../../../../components/cardCarusel';
-import { getPrimerosCinco } from '../../../../services/apis/traerPrimerosCinco';
-import ActivarBoton from '../../../../components/agregarCarrito'
+import CardCarusel from "../../../../components/cardCarusel";
+import { getPrimerosCinco } from "../../../../services/apis/traerPrimerosCinco";
+import ActivarBoton from "../../../../components/agregarCarrito";
+import ComparaAhora from "../../../../components/comparAhora"
 import axios from "axios";
 import Link from "next/link";
 
@@ -20,8 +21,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import Image from "next/image"
-import { AspectRatio } from "@/components/ui/aspect-ratio"
+import Image from "next/image";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+
+type id = {
+  idProducto: number;
+};
 
 interface Post {
   idProducto: number;
@@ -34,7 +39,7 @@ interface Post {
 interface Props {
   params: { id: string };
 }
-const stars = Array(5).fill(0)
+const stars = Array(5).fill(0);
 
 export default async function Page({ params }: Props) {
   const posts: Post[] = await getPrimerosCinco();
@@ -43,7 +48,9 @@ export default async function Page({ params }: Props) {
   let producto: Post | null = null;
 
   try {
-    const res = await axios.get<Post>(`http://localhost:8080/api/producto/public/obtenerporid/${id}`);
+    const res = await axios.get<Post>(
+      `http://localhost:8080/api/producto/public/obtenerporid/${id}`
+    );
     producto = res.data;
   } catch (error) {
     console.error("Error cargando producto:", error);
@@ -52,50 +59,49 @@ export default async function Page({ params }: Props) {
   if (!producto) return <p>Producto no encontrado</p>;
 
   return (
-    <section className="grid w-full h-screen p-2 justify-items-center">
-      <section className="grid grid-cols-10 bg-gray-450 shadow-2xl max-w-[85%] rounded-md ">
-        <div className="flex flex-col  p-3 pt-5 col-span-4  rounded-tl-lg  h-150">
-          <div className="">
-            <AspectRatio ratio={14 / 9}>
-              <Image
-                src="/logo.png"
-                alt="Image"
-                className="rounded-md  object-cover w-full h-full"
-                width={600}
-                height={0}
-              />
-            </AspectRatio>
-          </div>
-          <div className="mt-5 relative">
-            <Carousel className="shadow-xl m-0 relative" >
-              <CarouselPrevious className='obsolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md' />
-              <CarouselContent>
-                <CarouselItem className="md:basis-1/2 lg:basis-1/3 w-full">
-                  <Image src="/logo.png" alt="Logo" width={200} height={100} />
-                </CarouselItem>
-                <CarouselItem className="md:basis-1/2 lg:basis-1/3">
-                  <Image src="/logo.png" alt="Logo" width={200} height={100} />
-                </CarouselItem>
-                <CarouselItem className="md:basis-1/2 lg:basis-1/3">
-                  <Image src="/logo.png" alt="Logo" width={200} height={100} />
-                </CarouselItem>
-                <CarouselItem className="md:basis-1/2 lg:basis-1/3 ">
-                  <Image src="/logo.png" alt="Logo" width={200} height={100} />
-                </CarouselItem>
-                <CarouselItem className="md:basis-1/2 lg:basis-1/3">
-                  <Image src="/logo.png" alt="Logo" width={200} height={100} />
-                </CarouselItem>
-                <CarouselItem className="md:basis-1/2 lg:basis-1/3">
-                  <Image src="/logo.png" alt="Logo" width={200} height={100} />
-                </CarouselItem>
+    <section className="grid w-full h-screen p-2 justify-items-center ">
+      <section className="grid grid-cols-10 bg-gray-450 shadow-2xl max-w-[85%] rounded-md p-5">
+        <div className="flex mr-1  pt-5 col-span-4 rounded-tl-lg h-[465px]">
+
+          <div className="relative  h-full overflow-hidden">
+            <Carousel orientation="vertical" className="w-full h-full relative">
+              <CarouselContent className="flex flex-col h-full">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <CarouselItem
+                    key={i}
+                    className="relative flex justify-center items-center h-[70px] mb-1"
+                  >
+                    <div className="relative w-[60px] h-[60px]">
+                      <Image
+                        src="/logo.png"
+                        alt={`Logo ${i}`}
+                        fill
+                        className="object-contain rounded"
+                      />
+                    </div>
+                  </CarouselItem>
+                ))}
               </CarouselContent>
-              <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md" />
             </Carousel>
           </div>
+
+
+          <div className="ml-6 flex-1 h-full">
+            <div className="relative w-full h-full">
+              <Image
+                src="/logo.png"
+                alt="Main Image"
+                fill
+                className="rounded-lg object-cover  border-1 border-gray"
+              />
+            </div>
+          </div>
         </div>
+
+
         <div className="col-span-3  pt-5  p-3 h-150">
           <div className="flex justify-end pr-5 ">
-            <button >
+            <button>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -112,29 +118,56 @@ export default async function Page({ params }: Props) {
               </svg>
             </button>
           </div>
-          <h1 className="text-2xl">{producto.nombreProducto}</h1>
-          <h3>Precio: ${producto.precioProducto} COP</h3>
-          <p>Nombre del artesano</p>
-          <p>
-            {producto.descripcionProducto}
-          </p>
+          <h1 className="text-4xl text-amber-500 pb-4">
+            {producto.nombreProducto}
+          </h1>
+          <h3 className="text-2xl pb-3">
+            Precio: ${producto.precioProducto} COP
+            <span className="text-xl text-gray-500 line-through">
+              {" "}
+              Precio anterior
+            </span>
+          </h3>
+          <div className="col-start-1 col-end-5 flex pb-3">
+            {stars.map((_, i) => (
+              <svg
+                key={i}
+                xmlns="http://www.w3.org/2000/svg"
+                fill={i < 1 ? "yellow" : "none"}
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
+                />
+              </svg>
+            ))}
+          </div>
+          <p className="text-xl pb-3">Nombre del artesano</p>
+          <p className="text-xl pb-3">{producto.descripcionProducto}</p>
         </div>
 
         <div className=" col-span-3   ">
-          <div className="  rounded-lg   m-5">
-            <Card className="h-[100%]">
+          <div className="  rounded-lg   m-5 ">
+            <Card className="h-[100%] min-h-50">
               <CardHeader>
-                <CardTitle>Cantidad disponibles: {producto.stockProducto}</CardTitle>
+                <CardTitle>
+                  Cantidad disponibles: {producto.stockProducto}
+                </CardTitle>
                 <CardDescription>Costo de Envio: $$$$</CardDescription>
               </CardHeader>
-              <Button variant="outline" className="mr-5 ml-5">
-                Comprar Ahora
-              </Button>
+
+              <ComparaAhora idProducto={producto.idProducto} />
+
               <ActivarBoton idProducto={producto.idProducto} />
             </Card>
           </div>
           <div className=" rounded-lg m-5 ">
-            <Card className="h-[100%]">
+            <Card className="h-[100%] min-h-50">
               <CardHeader>
                 <CardTitle>Metodos de pago</CardTitle>
                 <CardDescription>
@@ -144,52 +177,69 @@ export default async function Page({ params }: Props) {
                   vero, officia tempora quas eaque beatae voluptates.
                 </CardDescription>
               </CardHeader>
-              <CardContent className=''>
-                <Image src="/Metodo_de_pago.png" alt="Metodo_de_pago" width={900} height={600} />
+              <CardContent className="">
+                <Image
+                  src="/Metodo_de_pago.png"
+                  alt="Metodo_de_pago"
+                  width={900}
+                  height={600}
+                />
               </CardContent>
             </Card>
           </div>
         </div>
-        <div className='col-start-1 col-end-8 h-full  '>
+        <div className="col-start-1 col-end-8 h-full  ">
           <hr />
-          <div className='flex-auto m-2 shadow-2x1 p-2'  >
-            <h1 className='text-2xl'>Descripcion del producto</h1>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Distinctio voluptatibus earum qui? Unde natus porro quis dolorum enim accusamus commodi laboriosam fugit nihil voluptatibus adipisci eum reiciendis praesentium, architecto voluptatum.</p>
+          <div className="flex-auto m-2 shadow-2x1 p-2">
+            <h1 className="text-2xl">Descripcion del producto</h1>
+            <p>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+              Distinctio voluptatibus earum qui? Unde natus porro quis dolorum
+              enim accusamus commodi laboriosam fugit nihil voluptatibus
+              adipisci eum reiciendis praesentium, architecto voluptatum.
+            </p>
           </div>
-          <div className='border-1 border-gray-200'></div>
-          <div className='flex-auto m-2 shadow-2x1  '>
-            <h1 className='text-2xl'>Espesificaciones del producto</h1>
-            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maxime magnam nulla iste voluptatem id minus totam veniam laborum eveniet omnis? Animi eius dignissimos incidunt magnam eligendi perferendis possimus quasi esse!</p>
+          <div className="border-1 border-gray-200"></div>
+          <div className="flex-auto m-2 shadow-2x1  ">
+            <h1 className="text-2xl">detalle del producto</h1>
+            <p>
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maxime
+              magnam nulla iste voluptatem id minus totam veniam laborum eveniet
+              omnis? Animi eius dignissimos incidunt magnam eligendi perferendis
+              possimus quasi esse!
+            </p>
           </div>
-          <div>
-          </div>
+          <div></div>
         </div>
-        <div className='col-start-1 col-end-11 mt-5 grid grid-cols-6 p-2 w-full  h-[350px] '>
-          <div className='col-span-2 w-76 ml-2 '>
+        <div className="col-start-1 col-end-11 mt-5 grid grid-cols-6 w-full  h-[350px] ">
+          <div className="col-span-2 ml-2 w-80">
             <h1>Opiniones del producto</h1>
             <img src="/Estrellas.png" alt="" />
           </div>
-          <div className='col-span-4'>
+          <div className="col-span-4">
             <h1>Las más recientes</h1>
 
             <div className="relative h-[300px]">
               <Carousel orientation="vertical" className="relative h-full">
+                <CarouselPrevious className="absolute top-0 left-1/2 -translate-x-1/2 z-10 bg-white shadow-md" />
 
-
-                <CarouselPrevious
-                  className="absolute top-0 left-1/2 -translate-x-1/2 z-10 bg-white shadow-md"
-                />
-
-                <CarouselContent className=' h-80'>
-                  <CarouselItem className="basis-1/2 shadow-md">
-                    <div className='grid grid-cols-5  h-auto p-2 '>
-                      <div className='col-span-4'>
-                        <p > OPINION Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ad et dolorum dolor nulla suscipit aliquam? Iusto quia tempora dignissimos exercitationem autem id esse rem illum! Cumque officiis facere ipsam rerum.</p>
+                <CarouselContent className=" h-80">
+                  <CarouselItem className="basis-1/2 border-2 border-gray-200">
+                    <div className="grid grid-cols-5  h-auto p-2 ">
+                      <div className="col-span-4">
+                        <p>
+                          {" "}
+                          OPINION Lorem ipsum dolor sit amet consectetur,
+                          adipisicing elit. Ad et dolorum dolor nulla suscipit
+                          aliquam? Iusto quia tempora dignissimos exercitationem
+                          autem id esse rem illum! Cumque officiis facere ipsam
+                          rerum.
+                        </p>
                       </div>
-                      <div className='col-span-1 ml-14 '>
+                      <div className="col-span-1 ml-14 ">
                         <span>02/11/2025</span>
                       </div>
-                      <div className='col-start-1 col-end-5 flex'>
+                      <div className="col-start-1 col-end-5 flex">
                         {stars.map((_, i) => (
                           <svg
                             key={i}
@@ -211,44 +261,34 @@ export default async function Page({ params }: Props) {
                     </div>
                   </CarouselItem>
                 </CarouselContent>
-                <CarouselNext
-                  className="absolute bottom-0 left-1/2 -translate-x-1/2 z-10 bg-white shadow-md"
-                />
+                <CarouselNext className="absolute bottom-0 left-1/2 -translate-x-1/2 z-10 bg-white shadow-md" />
               </Carousel>
             </div>
           </div>
         </div>
-        <div className="col-start-1 col-end-11 p-3 max-w-[100%]">
-          <hr />
-          <h1>Esto también te podría interesar</h1>
-          <br />
-          <div className="relative">
-            <Carousel className="relative">
+        <div className="w-full col-start-1 col-end-11  grid  justify-items-center">
+          <div className=" p-3 max-w-[95%]">
+            <hr />
+            <h1>Esto también te podría interesar</h1>
+            <br />
+            <div className="">
+              <Carousel className="">
+                <CarouselPrevious className=" z-50 bg-white shadow-md" />
 
-              <CarouselPrevious
-                className="absolute top-1/2 left-0 -translate-y-1/2 z-10 bg-white shadow-md"
-              />
+                <CarouselContent className="w-[100%] ">
+                  {posts.map((post, index) => (
+                    <CarouselItem key={index} className="basis-1/4">
+                      <CardCarusel posts={[post]} />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
 
-              <CarouselContent className="w-[100%]">
-                {posts.map((post, index) => (
-                  <CarouselItem key={index} className="basis-1/4 shadow-lg">
-                    <CardCarusel posts={[post]} />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-
-              <CarouselNext
-                className="absolute top-1/2 right-0 -translate-y-1/2 z-10 bg-white shadow-md"
-              />
-
-            </Carousel>
+                <CarouselNext className=" z-50 bg-white shadow-md" />
+              </Carousel>
+            </div>
           </div>
         </div>
-
       </section>
     </section>
-  )
+  );
 }
-
-
-

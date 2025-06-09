@@ -32,9 +32,8 @@ export default function cardCaruselCarrito({ posts }: { posts: Post[] }) {
 
       <div className="">
         {posts.map((producto) => (
-          <div key={producto.idProducto} className="  rounded-lg shadow-xl  "  >
+          <div key={producto.idProducto} className="  rounded-lg  "  >
 
-            <Link className=' m-0 p-0 f' href={`productos/detalleproducto/${producto.idProducto}`}>
               <Card className="">
                 <div className="group  static flex justify-center-safe m-0 p-0 ">
                   <div className=''>
@@ -42,8 +41,9 @@ export default function cardCaruselCarrito({ posts }: { posts: Post[] }) {
                   </div>
                 </div>
                 <div className=' p-5 h-full'>
-                  <h1 className='text-2xl'>{producto.nombreProducto}</h1>
-                  <p>${producto.precioProducto} COP <span className='line-through'>Precio anterior</span></p>
+                 <Link className=' m-0 p-0  ' href={`productos/detalleproducto/${producto.idProducto}`}>
+                  <p className='text-2xl underline hover:text-amber-300 transition-colors duration-300'>{producto.nombreProducto}</p>
+                  </Link><p>${producto.precioProducto} COP <span className='line-through'>Precio anterior</span></p>
                   <div className="flex">
                     {stars.map((_, i) => (
                       <svg
@@ -66,7 +66,6 @@ export default function cardCaruselCarrito({ posts }: { posts: Post[] }) {
 
                 </div>
               </Card>
-            </Link>
 
           </div>
         ))}

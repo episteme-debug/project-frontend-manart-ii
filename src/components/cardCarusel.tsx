@@ -23,26 +23,24 @@ const stars = Array(5).fill(0)
 export default function cardCarusel({ posts }: { posts: Post[] }) {
   const [favorito, setFavorito] = useState(false);
 
-
-
-
-
   return (
     <section className='w-full'>
 
       <div className="">
         {posts.map((producto) => (
-          <div key={producto.idProducto} className="  rounded-lg shadow-xl  "  >
+          <div key={producto.idProducto} className="  rounded-lg  "  >
 
-            <Link className=' m-0 p-0 f' href={`${producto.idProducto}`}>
-              <Card className="">
+            
+              <Card className=" rounded-lg  ">
                 <div className="group  static flex justify-center-safe m-0 p-0 ">
                   <div className=''>
                     <img src="/logo.png" alt="Logo" className='h-70 w-100' />
                   </div>
                 </div>
                 <div className=' p-5 h-full'>
-                  <h1 className='text-2xl'>{producto.nombreProducto}</h1>
+                  <Link className=' m-0 p-0  ' href={`${producto.idProducto}`}>
+                  <p className='text-2xl underline hover:text-amber-300 transition-colors duration-300'>{producto.nombreProducto}</p>
+                  </Link>
                   <p>${producto.precioProducto} COP <span className='line-through'>Precio anterior</span></p>
                   <div className="flex">
                     {stars.map((_, i) => (
@@ -66,7 +64,7 @@ export default function cardCarusel({ posts }: { posts: Post[] }) {
 
                 </div>
               </Card>
-            </Link>
+            
 
           </div>
         ))}
