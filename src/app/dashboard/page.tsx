@@ -1,10 +1,20 @@
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
+import { obtenerCookie } from "@/lib/ObtencionCookie";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const user = await obtenerCookie();
+
+  if (!user) return <p>No autenticado</p>;
+
   return (
     <SidebarInset>
+      <div>
+        <h1>HOLAAA</h1>
+        <h1>Hola {user.nombreUsuario}</h1>
+        <p>Rol: {user.rolUsuario}</p>
+      </div>
       <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
         <div className="flex items-center gap-2 px-4">
           <SidebarTrigger className="-ml-1" />

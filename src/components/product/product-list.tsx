@@ -32,11 +32,11 @@ const sampleProducts = Array.from({ length: 20 }).map((_, i) => ({
   id: i + 1,
   name: `Producto ${i + 1}`,
   image: `/placeholder.svg?height=200&width=200&text=Producto+${i + 1}`,
-  price: Math.floor(Math.random() * 10000) / 100,
-  stock: Math.floor(Math.random() * 100),
-  category: ["Electrónica", "Hogar", "Ropa", "Alimentos"][Math.floor(Math.random() * 4)],
-  createdAt: new Date(Date.now() - Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000).toISOString(),
-}))
+  price: Math.floor((i * 123) % 10000) / 100, // determinístico
+  stock: (i * 7) % 100, // determinístico
+  category: ["Electrónica", "Hogar", "Ropa", "Alimentos"][i % 4],
+  createdAt: new Date(Date.now() - i * 86400000).toISOString(), // determinístico
+}));
 
 export function ProductList() {
   const searchParams = useSearchParams()
@@ -152,7 +152,6 @@ export function ProductList() {
                       e.preventDefault()
                       setCurrentPage((p) => Math.max(1, p - 1))
                     }}
-                    isDisabled={currentPage === 1}
                   />
                 </PaginationItem>
                 {Array.from({ length: totalPages }).map((_, i) => (
@@ -176,7 +175,6 @@ export function ProductList() {
                       e.preventDefault()
                       setCurrentPage((p) => Math.min(totalPages, p + 1))
                     }}
-                    isDisabled={currentPage === totalPages}
                   />
                 </PaginationItem>
               </PaginationContent>

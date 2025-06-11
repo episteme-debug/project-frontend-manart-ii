@@ -72,25 +72,6 @@ const data = {
       ],
     },
     {
-      title: "Gestión de Productos",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "/dashboard/comprador",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
       title: "Documentation",
       url: "#",
       icon: BookOpen,
