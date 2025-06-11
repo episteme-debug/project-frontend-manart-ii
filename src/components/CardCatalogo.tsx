@@ -80,20 +80,22 @@ export default function CardCatalogo({
   //Trer los rangos
   const [rangos, setrangos] = useState<Rango[]>([]);
   //Todas las cards sin flitos para ocultarlas
-  const [visible, setvisible] = useState(true);
-  function inhabilitar(estado: boolean) {
-    setvisible(estado);
-  }
+  const [mostrarTodos, setMostrarTodos] = useState(true);
+function cambiarMostrarTodos(valor: boolean) {
+  setMostrarTodos(valor);
+}
   //Fitros aplicados
-  const [Visibles, setVisibles] = useState(false);
-  function habilitar(activar: boolean) {
-    setVisibles(activar);
-  }
+  const [filtrosOcultos, setFiltrosOcultos] = useState(false);
+function cambiarOcultamientoFiltros(valor: boolean) {
+  setFiltrosOcultos(valor);
+}
+
   //ocultar al da x
-  const [pato, setpato] = useState(true);
-  function Ocultra(ocultar: boolean) {
-    setpato(ocultar);
-  }
+  const [mostrarSeccionFiltros, setMostrarSeccionFiltros] = useState(true);
+function cambiarVisibilidadSeccion(valor: boolean) {
+  setMostrarSeccionFiltros(valor);
+}
+
 
   //
   const [valormini, setvalormini] = useState<number>(0);
@@ -114,7 +116,7 @@ export default function CardCatalogo({
       precioMax != null &&
       precioMin != null
     ) {
-      inhabilitar(false);
+      cambiarMostrarTodos(false);
     }
     if (
       nombreCategoria == null &&
@@ -122,8 +124,8 @@ export default function CardCatalogo({
       precioMax == null &&
       precioMin == null
     ) {
-      Ocultra(true);
-      inhabilitar(true);
+      cambiarVisibilidadSeccion(true);
+      cambiarMostrarTodos(true);
     }
     filtrarPorCategoria();
   }, [nombreCategoria, porcentajeDescuento, precioMin, precioMax]);
@@ -161,7 +163,7 @@ export default function CardCatalogo({
               porcentajeDescuento != null ||
               precioMax != null ||
               precioMin != null) && (
-              <div className={` pb-1  ${Visibles ? "hidden" : "block"}`}>
+              <div className={` pb-1  ${filtrosOcultos ? "hidden" : "block"}`}>
                 <h2 className="text-2xl mt-2 ml-2 ">Filtros Aplicados</h2>
                 {nombreCategoria != null && (
                   <div>
@@ -221,9 +223,9 @@ export default function CardCatalogo({
                     <Button
                       onClick={() => {
                         setnombreCategoria(categoria.nombreCategoria);
-                        inhabilitar(false);
-                        habilitar(false);
-                        Ocultra(false);
+                        cambiarMostrarTodos(false);
+                        cambiarOcultamientoFiltros(false);
+                        cambiarVisibilidadSeccion(false);
                       }}
                       className={` rounded hover:bg-amber-500
             ${
@@ -245,9 +247,9 @@ export default function CardCatalogo({
             <PrecioRangoFiltro
               setprecioMin={setprecioMin}
               setprecioMax={setprecioMax}
-              inhabilitar={inhabilitar}
-              habilitar={habilitar}
-              Ocultra={Ocultra}
+              inhabilitar={cambiarMostrarTodos}
+              habilitar={cambiarOcultamientoFiltros}
+              Ocultra={cambiarVisibilidadSeccion}
             />
           </div>
           <br />
@@ -268,9 +270,9 @@ export default function CardCatalogo({
                       setporcentajeDescuento(
                         promocion.porcentajeDescuentoPromocion
                       );
-                      inhabilitar(false);
-                      habilitar(false);
-                      Ocultra(false);
+                      cambiarMostrarTodos(false);
+                      cambiarOcultamientoFiltros(false);
+                      cambiarVisibilidadSeccion(false);
                     }}
                     id=""
                   />
@@ -338,7 +340,7 @@ export default function CardCatalogo({
           <div className=" w-[90%]  ">
             <div
               className={`grid grid-cols-3 gap-5  place-content-stretch mr-5 ml-5 ${
-                pato ? "hidden" : "block"
+                mostrarSeccionFiltros ? "hidden" : "block"
               }`}
             >
               {productos.map((producto) => (
@@ -393,7 +395,7 @@ export default function CardCatalogo({
             <div
               id="Productos"
               className={`grid grid-cols-3 gap-5  place-content-stretch mr-5 ml-5 ${
-                visible ? "block" : "hidden"
+                mostrarTodos ? "block" : "hidden"
               }`}
             >
               {posts.map((post) => (
