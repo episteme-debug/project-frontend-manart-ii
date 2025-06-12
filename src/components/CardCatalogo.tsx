@@ -81,20 +81,20 @@ export default function CardCatalogo({
   const [rangos, setrangos] = useState<Rango[]>([]);
   //Todas las cards sin flitos para ocultarlas
   const [mostrarTodos, setMostrarTodos] = useState(true);
-function cambiarMostrarTodos(valor: boolean) {
-  setMostrarTodos(valor);
-}
+  function cambiarMostrarTodos(valor: boolean) {
+    setMostrarTodos(valor);
+  }
   //Fitros aplicados
   const [filtrosOcultos, setFiltrosOcultos] = useState(false);
-function cambiarOcultamientoFiltros(valor: boolean) {
-  setFiltrosOcultos(valor);
-}
+  function cambiarOcultamientoFiltros(valor: boolean) {
+    setFiltrosOcultos(valor);
+  }
 
   //ocultar al da x
   const [mostrarSeccionFiltros, setMostrarSeccionFiltros] = useState(true);
-function cambiarVisibilidadSeccion(valor: boolean) {
-  setMostrarSeccionFiltros(valor);
-}
+  function cambiarVisibilidadSeccion(valor: boolean) {
+    setMostrarSeccionFiltros(valor);
+  }
 
 
   //
@@ -163,56 +163,56 @@ function cambiarVisibilidadSeccion(valor: boolean) {
               porcentajeDescuento != null ||
               precioMax != null ||
               precioMin != null) && (
-              <div className={` pb-1  ${filtrosOcultos ? "hidden" : "block"}`}>
-                <h2 className="text-2xl mt-2 ml-2 ">Filtros Aplicados</h2>
-                {nombreCategoria != null && (
-                  <div>
-                    <div className="flex items-center  justify-center bg-amber-300 m-1 mb-2  max-w-65 w-50 rounded-lg">
-                      <p className="ml-1">{nombreCategoria}</p>
+                <div className={` pb-1  ${filtrosOcultos ? "hidden" : "block"}`}>
+                  <h2 className="text-2xl mt-2 ml-2 ">Filtros Aplicados</h2>
+                  {nombreCategoria != null && (
+                    <div>
+                      <div className="flex items-center  justify-center bg-amber-300 m-1 mb-2  max-w-65 w-50 rounded-lg">
+                        <p className="ml-1">{nombreCategoria}</p>
+                        <Button
+                          className="bg-transparent hover:bg-transparent border-none shadow-none text-black"
+                          onClick={() => {
+                            setnombreCategoria(null);
+                          }}
+                        >
+                          X
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                  {porcentajeDescuento != null && (
+                    <div className=" flex items-center  justify-center bg-amber-300 m-1  max-w-65 w-50 rounded-lg">
+                      <p className="ml-2 bg-amber-300">
+                        {porcentajeDescuento}% de Descuentos
+                      </p>
                       <Button
                         className="bg-transparent hover:bg-transparent border-none shadow-none text-black"
                         onClick={() => {
-                          setnombreCategoria(null);
+                          setporcentajeDescuento(null);
                         }}
                       >
                         X
                       </Button>
                     </div>
-                  </div>
-                )}
-                {porcentajeDescuento != null && (
-                  <div className=" flex items-center  justify-center bg-amber-300 m-1  max-w-65 w-50 rounded-lg">
-                    <p className="ml-2 bg-amber-300">
-                      {porcentajeDescuento}% de Descuentos
-                    </p>
-                    <Button
-                      className="bg-transparent hover:bg-transparent border-none shadow-none text-black"
-                      onClick={() => {
-                        setporcentajeDescuento(null);
-                      }}
-                    >
-                      X
-                    </Button>
-                  </div>
-                )}
-                {precioMin != null && precioMin != null && (
-                  <div className=" flex items-center  justify-center bg-amber-300 m-1  max-w-65 w-55 rounded-lg">
-                    <p className="ml-2 bg-amber-300">
-                      Precios {precioMin} a {precioMax}
-                    </p>
-                    <Button
-                      className="bg-transparent hover:bg-transparent border-none shadow-none text-black"
-                      onClick={() => {
-                        setprecioMin(null);
-                        setprecioMax(null);
-                      }}
-                    >
-                      X
-                    </Button>
-                  </div>
-                )}
-              </div>
-            )}
+                  )}
+                  {precioMin != null && precioMin != null && (
+                    <div className=" flex items-center  justify-center bg-amber-300 m-1  max-w-65 w-55 rounded-lg">
+                      <p className="ml-2 bg-amber-300">
+                        Precios {precioMin} a {precioMax}
+                      </p>
+                      <Button
+                        className="bg-transparent hover:bg-transparent border-none shadow-none text-black"
+                        onClick={() => {
+                          setprecioMin(null);
+                          setprecioMax(null);
+                        }}
+                      >
+                        X
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
           </div>
           <h2 className="text-2xl ml-2">Categorias</h2>
           <div className="grid  p-1">
@@ -228,11 +228,10 @@ function cambiarVisibilidadSeccion(valor: boolean) {
                         cambiarVisibilidadSeccion(false);
                       }}
                       className={` rounded hover:bg-amber-500
-            ${
-              nombreCategoria === categoria.nombreCategoria
-                ? "bg-amber-400 text-white"
-                : "bg-gray-300 text-black"
-            }`}
+            ${nombreCategoria === categoria.nombreCategoria
+                          ? "bg-amber-400 text-white"
+                          : "bg-gray-300 text-black"
+                        }`}
                     >
                       {categoria.nombreCategoria}
                     </Button>
@@ -339,9 +338,8 @@ function cambiarVisibilidadSeccion(valor: boolean) {
         <div className="col-start-2 col-end-6  flex justify-center">
           <div className=" w-[90%]  ">
             <div
-              className={`grid grid-cols-3 gap-5  place-content-stretch mr-5 ml-5 ${
-                mostrarSeccionFiltros ? "hidden" : "block"
-              }`}
+              className={`grid grid-cols-3 gap-5  place-content-stretch mr-5 ml-5 ${mostrarSeccionFiltros ? "hidden" : "block"
+                }`}
             >
               {productos.map((producto) => (
                 <div
@@ -394,9 +392,8 @@ function cambiarVisibilidadSeccion(valor: boolean) {
 
             <div
               id="Productos"
-              className={`grid grid-cols-3 gap-5  place-content-stretch mr-5 ml-5 ${
-                mostrarTodos ? "block" : "hidden"
-              }`}
+              className={`grid grid-cols-3 gap-5  place-content-stretch mr-5 ml-5 ${mostrarTodos ? "block" : "hidden"
+                }`}
             >
               {posts.map((post) => (
                 <div
