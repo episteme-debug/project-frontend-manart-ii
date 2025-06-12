@@ -2,10 +2,10 @@
 import React from "react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { traersCategorias } from "../services/apis/traersCategorias";
-import { traerPromociones } from "../services/apis/traerPromociones";
+import { traersCategorias } from "../../services/apis/detalleProducto/traersCategorias";
+import { traerPromociones } from "../../services/apis/detalleProducto/traerPromociones";
 import { Button } from "@/components/ui/button";
-import PrecioRangoFiltro from "../components/PrecioRangoFiltro";
+import PrecioRangoFiltro from "./PrecioRangoFiltro";
 
 import {
   Card,

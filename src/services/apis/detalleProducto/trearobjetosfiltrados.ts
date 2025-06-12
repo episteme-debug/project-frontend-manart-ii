@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import CardCatalogo from "../../components/CardCatalogo";
+import CardCatalogo from "../../../components/detalleProductos/CardCatalogo";
 interface Post {
   idProducto: number;
   nombreProducto: string;

@@ -1,7 +1,7 @@
 import CardCarusel from "../../../../components/cardCarusel";
 import { getPrimerosCinco } from "../../../../services/apis/traerPrimerosCinco";
-import ActivarBoton from "../../../../components/agregarCarrito";
-import ComparaAhora from "../../../../components/comparAhora"
+import ActivarBoton from "../../../../components/carrito/agregarCarrito";
+import ComparaAhora from "../../../../components/carrito/comparAhora"
 import axios from "axios";
 import Link from "next/link";
 

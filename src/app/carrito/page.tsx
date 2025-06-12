@@ -1,6 +1,6 @@
-import ListarProductoCarritos from "../../components/listarProductoCarritos";
+import ListarProductoCarritos from "../../components/carrito/listarProductoCarritos";
 import { getPrimerosCinco } from "../../services/apis/traerPrimerosCinco";
-import CardCarusel from "../../components/cardCaruselCarrito";
+import CardCarusel from "../../components/carrito/cardCaruselCarrito";
 
 import {
   Carousel,
