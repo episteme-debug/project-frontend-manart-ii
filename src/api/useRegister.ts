@@ -1,4 +1,3 @@
-'use client';
 import { useState } from 'react'
 import axios from 'axios'
 
@@ -10,11 +9,10 @@ export default function useRegister() {
   const [nombreUsuario, setNombreUsuario] = useState('');
   const [apellidoUsuario, setApellidoUsuario] = useState('');
   const [emailUsuario, setEmailUsuario] = useState('');
-  const [contrasenaUsuario, setContrasenaUsuario] = useState('');
   const [telefonoUsuario, setTelefonoUsuario] = useState('');
-  //  El campo imagenPerfilUsuario tiene un valor por defecto:
-  const [imagenPerfilUsuario, setImagenPerfilUsuario] = useState('avatarGenerico.jpg');
-  // 3. Un estado para mostrar mensajes de error o éxito:
+  const [hashContrasenaUsuario, setHashContrasenaUsuario] = useState('');
+  const [rolUsuario, setRolUsuario] = useState('');
+  // Un estado para mostrar mensajes de error o éxito:
   const [mensaje, setMensaje] = useState('');
 
   const manejarEnvio = async (e: React.FormEvent) => {
@@ -22,15 +20,16 @@ export default function useRegister() {
 
     setMensaje('')
     try {
-      const respuesta = await axios.post('api/registro', {
+      const respuesta = await axios.post('http://localhost:8080/api/autenticacion/public/registro', {
         alias,
         nombreUsuario,
         apellidoUsuario,
         emailUsuario,
-        contrasenaUsuario,
         telefonoUsuario,
-        imagenPerfilUsuario
+        hashContrasenaUsuario,
+        rolUsuario,
       }, {
+        withCredentials: true,
         headers: {
           'Content-Type': 'application/json'
         },
@@ -45,8 +44,13 @@ export default function useRegister() {
       }
     }
     catch (error: any) {
-      // 10. Captura cualquier error de red o validación y lo muestra
-      setMensaje(error.response?.data?.message || 'Error en el registro');
+      console.error('📡 Error registrando usuario:', error);
+
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error(responseData);
+
+      setMensaje(responseData?.message || 'Error en el registro');
     }
   }
   return {
@@ -58,15 +62,15 @@ export default function useRegister() {
     setApellidoUsuario,
     emailUsuario,
     setEmailUsuario,
-    contrasenaUsuario,
-    setContrasenaUsuario,
     telefonoUsuario,
     setTelefonoUsuario,
-    imagenPerfilUsuario,
-    setImagenPerfilUsuario,
+    hashContrasenaUsuario,
+    setHashContrasenaUsuario,
+    rolUsuario,
+    setRolUsuario,
     mensaje,
     manejarEnvio
 
   }
 
-} 
+}
