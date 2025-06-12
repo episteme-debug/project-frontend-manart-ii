@@ -3,11 +3,11 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import Link from 'next/link';
-import { listarproductos } from '../services/apis/listarProductosCarrito';
+import { listarproductos } from '../../services/apis/carrito/listarProductosCarrito';
 import { Button } from "@/components/ui/button";
-import { eliminarproducto } from "../services/apis/eliminarProducto";
-import { traerSubtotal } from "../services/apis/traerSubtotaldeCarrito";
-import { actualizarCantidad } from "../services/apis/actualizarCatidades"
+import { eliminarproducto } from "../../services/apis/carrito/eliminarProducto";
+import { traerSubtotal } from "../../services/apis/carrito/traerSubtotaldeCarrito"
+import { actualizarCantidad } from "../../services/apis/carrito/actualizarCatidades"
 
 interface Productos {
   idCarrito: number;
