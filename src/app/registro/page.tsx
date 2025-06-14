@@ -11,7 +11,7 @@ export default function RegisterPage() {
             flex: contenedor en fila (flex-row) para dos columnas. */}
       {/* === Columna Izquierda: Formulario === */}
       <div className="md: w-1/2 justify-center bg-white min-h-screen p-8">
-        {/*
+        {/* 
               md:w-1/2: en pantallas medianas y grandes ocupa 50 %.
               p-8: padding interior de 1.5 rem para separar del borde. */}
         <RegisterForm />

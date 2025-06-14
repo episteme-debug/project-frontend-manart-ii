@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import useRegister from "@/api/registro";
+import useRegister from "@/api/useRegister";
 
 export default function RegisterForm() {
   const [mostrarContrasena, setMostrarContrasena] = React.useState(false);
@@ -97,7 +97,7 @@ export default function RegisterForm() {
               Telefono
             </label>
             <input
-              type="number"
+              type="text"
               className="mt-1 block w-full px-4 py-2 border rounded-md 
             focus:outline-none focus:ring-2 focus:ring-[#789262]"
               value={telefonoUsuario}
