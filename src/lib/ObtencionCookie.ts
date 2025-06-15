@@ -1,7 +1,7 @@
 "use server"
 
 import { cookies } from "next/headers"
-import {jwtDecode} from "jwt-decode"
+import { jwtDecode } from "jwt-decode"
 
 type JwtPayload = {
     emailUsuario: string;
@@ -28,4 +28,12 @@ export async function obtenerCookie() {
     } catch (e) {
         return null;
     }
+}
+
+export async function obtenerUsuarioAutenticado() {
+    const usuario = await obtenerCookie();
+    if (!usuario) {
+        throw new Error("No autenticado");
+    }
+    return usuario;
 }
