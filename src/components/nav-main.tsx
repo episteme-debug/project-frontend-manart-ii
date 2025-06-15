@@ -33,12 +33,12 @@ export function NavMain({
     ...items,
     {
       title: "Gestión de Productos",
-      url: "dashboard/productos",
+      url: "productos",
       icon: Package,
       items: [
         {
           title: "Listado de Productos",
-          url: "dashboard/productos",
+          url: "",
         },
         {
           title: "Agregar Producto",

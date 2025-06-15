@@ -2,17 +2,14 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/co
 import { Separator } from "@/components/ui/separator"
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 import { obtenerCookie } from "@/lib/ObtencionCookie";
-import { obtenerUsuario } from "@/api/usuario"
 
 export default async function DashboardPage() {
   const user = await obtenerCookie();
   if (!user) return <p>No autenticado</p>;
-  const infoUsuario = await obtenerUsuario()
 
   return (
     <SidebarInset>
       <div>
-        <h1>HOLAAA {infoUsuario.telefonoUsuario}</h1>
         <h1>Hola {user.nombreUsuario}</h1>
         <p>Rol: {user.rolUsuario}</p>
       </div>
