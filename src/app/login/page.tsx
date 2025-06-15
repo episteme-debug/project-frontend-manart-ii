@@ -27,9 +27,9 @@ export default function LoginPage() {
             recortando los lados si es necesario */}
       </div>
       <div className='w-full md: w-1/2 bg-white min-h-screen p-8'>
-      <LoginForm />
+        <LoginForm />
       </div>
     </main>
-  
+
   );
 }

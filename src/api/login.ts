@@ -26,14 +26,14 @@ export function useLogin() {
         }
       );
 
-            if (respuesta.status === 200) {
-                setMensaje('Inicio de sesión exitoso\n' + respuesta.data.mensaje);
+      if (respuesta.status === 200) {
+        setMensaje('Inicio de sesión exitoso\n' + respuesta.data.mensaje);
 
-            }
-        } catch (error: any) {
-            setMensaje('Error al iniciar sesión');
-        }
-    };
+      }
+    } catch (error: any) {
+      setMensaje('Error al iniciar sesión');
+    }
+  };
 
   return {
     usuario,
