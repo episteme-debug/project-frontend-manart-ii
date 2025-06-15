@@ -45,7 +45,7 @@ export default function FormularioLogin() {
 
                         <input
                             type="text"
-                            className="block w-full px-4 py-2 border rounded-md shadow-sm border-[#C4B6A6]"
+                            className="block w-full px-4 py-2 border rounded-md shadow-sm border-[#C4B6A6] text-black"
                             value={usuario}
                             onChange={(e) => setUsuario(e.target.value)}
                             required
@@ -65,7 +65,7 @@ export default function FormularioLogin() {
                         <div className='relative'>
                             <input
                                 type={mostrarContrasena ? 'text' : 'password'}
-                                className="mt-1 block w-full px-4 py-2 border rounded-md shadow-sm border-[#C4B6A6]"
+                                className="mt-1 block w-full px-4 py-2 border rounded-md shadow-sm border-[#C4B6A6] text-black"
                                 value={contrasena}
                                 onChange={(e) => setContrasena(e.target.value)}
                                 required

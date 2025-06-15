@@ -44,7 +44,7 @@ export default function useRegister() {
       }
     }
     catch (error: any) {
-      console.error('📡 Error registrando usuario:', error);
+      console.error('Error registrando usuario:', error);
 
       const status = error.response?.status;
       const responseData = error.response?.data;

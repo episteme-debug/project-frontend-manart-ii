@@ -28,7 +28,7 @@ export function useLogin() {
 
       if (respuesta.status === 200) {
         setMensaje('Inicio de sesión exitoso\n' + respuesta.data.mensaje);
-
+        console.log("Inicio de sesión exitoso")
       }
     } catch (error: any) {
       setMensaje('Error al iniciar sesión');
