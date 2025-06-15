@@ -13,6 +13,8 @@ export default function RegisterForm() {
     setAlias,
     nombreUsuario,
     setNombreUsuario,
+    numeroDocumentoUsuario,
+    setNumeroDocumentoUsuario,
     apellidoUsuario,
     setApellidoUsuario,
     emailUsuario,
@@ -41,11 +43,11 @@ export default function RegisterForm() {
         <form onSubmit={manejarEnvio} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Alias
+              Nombre de usuario
             </label>
             <input
               type="text"
-              className="t-1 block w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#789262] text-black"
+              className="t-1 block w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#789262] text-black bg-[#FFFCF5]"
               value={alias}
               onChange={(e) => setAlias(e.target.value)}
               required
@@ -54,11 +56,11 @@ export default function RegisterForm() {
           {/* Nombre de usuario */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Nombre
+              Nombres
             </label>
             <input
               type="text"
-              className="mt-1 block w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#789262] text-black"
+              className="mt-1 block w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#789262] text-black bg-[#FFFCF5]"
               value={nombreUsuario}
               onChange={(e) => setNombreUsuario(e.target.value)}
               required
@@ -68,13 +70,27 @@ export default function RegisterForm() {
           {/* Apellido de usuario */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Apellido
+              Apellidos
             </label>
             <input
               type="text"
-              className="mt-1 block w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#789262] text-black"
+              className="mt-1 block w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#789262] text-black bg-[#FFFCF5]"
               value={apellidoUsuario}
               onChange={(e) => setApellidoUsuario(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Documento de usuario */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Número de documento
+            </label>
+            <input
+              type="text"
+              className="mt-1 block w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#789262] text-black bg-[#FFFCF5]"
+              value={numeroDocumentoUsuario}
+              onChange={(e) => setNumeroDocumentoUsuario(e.target.value)}
               required
             />
           </div>
@@ -86,7 +102,7 @@ export default function RegisterForm() {
             </label>
             <input
               type="email" // 6. type=email para validación básica
-              className="mt-1 block w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#789262] text-black"
+              className="mt-1 block w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#789262] text-black bg-[#FFFCF5]"
               value={emailUsuario}
               onChange={(e) => setEmailUsuario(e.target.value)}
               required
@@ -99,7 +115,7 @@ export default function RegisterForm() {
             <input
               type="text"
               className="mt-1 block w-full px-4 py-2 border rounded-md
-            focus:outline-none focus:ring-2 focus:ring-[#789262] text-black"
+            focus:outline-none focus:ring-2 focus:ring-[#789262] text-black bg-[#FFFCF5]"
               value={telefonoUsuario}
               onChange={(e) => setTelefonoUsuario(e.target.value)}
               required
@@ -115,7 +131,7 @@ export default function RegisterForm() {
           <div className='relative'>
             <input
               type={mostrarContrasena ? 'text' : 'password'}
-              className="mt-1 block w-full px-4 py-2 border rounded-md shadow-sm border-[#C4B6A6] text-black"
+              className="mt-1 block w-full px-4 py-2 border rounded-md shadow-sm border-[#C4B6A6] text-black bg-[#FFFCF5]"
               value={hashContrasenaUsuario}
               onChange={(e) => setHashContrasenaUsuario(e.target.value)}
               required
@@ -123,7 +139,7 @@ export default function RegisterForm() {
             <button
               type='button'
               onClick={AlternarVisible}
-              className="absolute inset-y-0 right-0 flex items-center px-3 text-[#b57944] hover:text-[#C57B4A]">
+              className="absolute inset-y-0 right-0 flex items-center px-3 text-[#b57944] hover:text-[#C57B4A] cursor-pointer">
               {mostrarContrasena ? (
                 // Ícono de "ojo tachado"
 
@@ -149,7 +165,7 @@ export default function RegisterForm() {
             <input
               type="text"
               className="mt-1 block w-full px-4 py-2 border rounded-md
-            focus:outline-none focus:ring-2 focus:ring-[#789262] text-black"
+            focus:outline-none focus:ring-2 focus:ring-[#789262] text-black bg-[#FFFCF5]"
               value={rolUsuario}
               onChange={(e) => setRolUsuario(e.target.value)}
               required
@@ -161,7 +177,7 @@ export default function RegisterForm() {
           {/* Botón de registro */}
           <button
             type="submit"
-            className="w-full bg-[#C57B4A] text-white py-2 rounded-md hover:bg-[#D9915F]-700 transition"
+            className="w-full bg-[#C57B4A] text-white py-2 rounded-md hover:bg-[#D9915F]-700 transition cursor-pointer"
           >
             Registrarme
           </button>

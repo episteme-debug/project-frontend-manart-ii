@@ -7,6 +7,7 @@ export default function useRegister() {
 
   const [alias, setAlias] = useState('');
   const [nombreUsuario, setNombreUsuario] = useState('');
+  const [numeroDocumentoUsuario, setNumeroDocumentoUsuario] = useState('');
   const [apellidoUsuario, setApellidoUsuario] = useState('');
   const [emailUsuario, setEmailUsuario] = useState('');
   const [telefonoUsuario, setTelefonoUsuario] = useState('');
@@ -23,6 +24,7 @@ export default function useRegister() {
       const respuesta = await axios.post('http://localhost:8080/api/autenticacion/public/registro', {
         alias,
         nombreUsuario,
+        numeroDocumentoUsuario,
         apellidoUsuario,
         emailUsuario,
         telefonoUsuario,
@@ -36,7 +38,7 @@ export default function useRegister() {
       });
 
       if (respuesta.status === 200) {
-        setMensaje('Registro exitoso. ¡Bienvenido, ' + nombreUsuario + '!');
+        setMensaje('Registro exitoso. ¡Bienvenid@, ' + nombreUsuario + '!');
 
       }
       else {
@@ -50,7 +52,7 @@ export default function useRegister() {
       const responseData = error.response?.data;
       console.error(responseData);
 
-      setMensaje(responseData?.message || 'Error en el registro');
+      setMensaje(responseData?.message || 'Error en el registro: ' + responseData.mensaje);
     }
   }
   return {
@@ -58,6 +60,8 @@ export default function useRegister() {
     setAlias,
     nombreUsuario,
     setNombreUsuario,
+    numeroDocumentoUsuario,
+    setNumeroDocumentoUsuario,
     apellidoUsuario,
     setApellidoUsuario,
     emailUsuario,
