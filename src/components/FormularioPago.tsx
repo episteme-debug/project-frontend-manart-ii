@@ -1,4 +1,4 @@
-import { PayUDatos } from '@/interface/PayUDatos';
+import { PayUDatos } from '@/interfaces/PayUDatos';
 
 interface Props {
     datos: PayUDatos;

@@ -1,11 +1,10 @@
 "use client"
 import React from "react"
-import axios from "axios"
-import { obtenerUsuarioPorId, UsuarioIn } from "@/api/usuario"
-import { error } from "console"
+import { obtenerUsuarioPorId } from "@/api/usuario"
+import { UsuarioRespuesta } from "@/interfaces/UsuarioInterfaz"
 
 export default function Usuario() {
-    const [usuario, setUsuario] = React.useState<UsuarioIn | null>(null)
+    const [usuario, setUsuario] = React.useState<UsuarioRespuesta | null>(null)
 
     React.useEffect(() => {
         async function cargarUsuario() {
@@ -32,6 +31,19 @@ export default function Usuario() {
             <p>{usuario.telefonoUsuario}</p>
             <p>{usuario.estadoUsuario}</p>
             <p>{usuario.rolUsuario}</p>
+            {usuario.listaProductos.map(producto => (
+                <div key={producto.idProducto}>
+                    {producto.nombreProducto}.
+                    {producto.descripcionProducto}
+
+                    {producto.listaArchivos.map(archivo => (
+                        <React.Fragment key={archivo.id}>
+                            <p>{archivo.ruta}</p>
+                            <img src={"http://localhost:8080/"+ archivo.ruta} alt=""/>
+                        </React.Fragment>
+                    ))}
+                </div>
+            ))}
         </div>
     )
 }
