@@ -23,7 +23,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-
+import { traerPorId } from "../../../../services/apis/detalleProducto/traerPorId"
 type id = {
   idProducto: number;
 };
@@ -45,16 +45,7 @@ export default async function Page({ params }: Props) {
   const posts: Post[] = await getPrimerosCinco();
   const { id } = params;
 
-  let producto: Post | null = null;
-
-  try {
-    const res = await axios.get<Post>(
-      `http://localhost:8080/api/producto/public/obtenerporid/${id}`
-    );
-    producto = res.data;
-  } catch (error) {
-    console.error("Error cargando producto:", error);
-  }
+  const producto = await traerPorId(id);
 
   if (!producto) return <p>Producto no encontrado</p>;
 

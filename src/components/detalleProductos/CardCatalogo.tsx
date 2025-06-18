@@ -6,7 +6,7 @@ import { traersCategorias } from "../../services/apis/detalleProducto/traersCate
 import { traerPromociones } from "../../services/apis/detalleProducto/traerPromociones";
 import { Button } from "@/components/ui/button";
 import PrecioRangoFiltro from "./PrecioRangoFiltro";
-
+import { filtarCategorias } from "../../services/apis/producto/filtarCategoria"
 import {
   Card,
   CardContent,
@@ -77,8 +77,6 @@ export default function CardCatalogo({
   const [productos, setProductos] = useState<Producto[]>([]);
 
   const [promociones, setpromociones] = useState<Promociones[]>([]);
-  //Trer los rangos
-  const [rangos, setrangos] = useState<Rango[]>([]);
   //Todas las cards sin flitos para ocultarlas
   const [mostrarTodos, setMostrarTodos] = useState(true);
   function cambiarMostrarTodos(valor: boolean) {
@@ -130,23 +128,21 @@ export default function CardCatalogo({
     filtrarPorCategoria();
   }, [nombreCategoria, porcentajeDescuento, precioMin, precioMax]);
   const filtrarPorCategoria = async () => {
-    try {
-      const res = await axios.get(
-        `http://localhost:8080/api/producto/public/filtar`,
-        {
-          params: {
-            nombreCategoria: nombreCategoria || undefined,
-            porcentajeDescuento: porcentajeDescuento ?? undefined,
-            precioMin: precioMin ?? undefined,
-            precioMax: precioMax ?? undefined,
-          },
-        }
-      );
-      setProductos(res.data);
-    } catch (error) {
-      console.error("Error al traer productos:", error);
+  try {
+    const res = await filtarCategorias(
+      nombreCategoria || undefined,
+      porcentajeDescuento ?? undefined,
+      precioMin ?? undefined,
+      precioMax ?? undefined
+    );
+
+    if (res) {
+      setProductos(res);
     }
-  };
+  } catch (error) {
+    console.error("Error al filtrar productos:", error);
+  }
+};
   useEffect(() => {
     traersCategorias().then((data) => setCategorias(data));
   }, []);
@@ -214,12 +210,12 @@ export default function CardCatalogo({
                 </div>
               )}
           </div>
-          <h2 className="text-2xl ml-2">Categorias</h2>
-          <div className="grid  p-1">
-            <div className="flex">
-              <div className="flex flex-wrap gap-2 mb-4 ">
+          <h2 className="text-2xl ml-2 ">Categorias</h2>
+          <div className="grid pl-1 max-w-100 ">
+            <div className="flex ">
+              <div className="flex flex-wrap gap-2 mb-4   w-60">
                 {categorias.map((categoria) => (
-                  <div key={categoria.idCategoria} className="flex bg-gray-300">
+                  <div key={categoria.idCategoria} className="flex bg-gray-300 whitespace-normal">
                     <Button
                       onClick={() => {
                         setnombreCategoria(categoria.nombreCategoria);
@@ -273,7 +269,7 @@ export default function CardCatalogo({
                       cambiarOcultamientoFiltros(false);
                       cambiarVisibilidadSeccion(false);
                     }}
-                    id=""
+                    
                   />
                   {promocion.nombrePromocion}{" "}
                   {promocion.porcentajeDescuentoPromocion}%

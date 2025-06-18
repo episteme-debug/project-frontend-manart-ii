@@ -1,9 +1,9 @@
 'use client'
 
 import axios from "axios";
-import { useRouter } from 'next/navigation'; // para redirigir
+import { useRouter } from 'next/navigation'; 
 import { Button } from "@/components/ui/button";
-
+import { agregarProducto } from "../../services/apis/carrito/agregarProducto"
 type id = {
   idProducto: number;
 };
@@ -12,28 +12,11 @@ export default function ComparaAhora({ idProducto }: id) {
   const router = useRouter();
 
   const agregarCarrito = async () => {
-    try {
-      const datos = {
-        idProducto: idProducto,
-        cantidad: 1,
-      };
+    try{
+      await agregarProducto(idProducto)
+       router.push('/carrito');  
+    }catch{
 
-      const respuesta = await axios.post(
-        'http://localhost:8080/api/relcarritoproducto/private/agregarproducto',
-        datos,
-        {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true,
-        }
-      );
-
-      console.log('Respuesta:', respuesta.data);
-      alert("Producto agregado con éxito");
-
-      router.push('/carrito');  
-    } catch (error) {
-      console.log('Error al enviar datos', error);
-      alert("Error al agregar el producto");
     }
   };
 

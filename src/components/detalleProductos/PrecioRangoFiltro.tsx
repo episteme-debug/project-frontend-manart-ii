@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button } from '@/components/ui/button';
 import { InputOTPSeparator } from "@/components/ui/input-otp";
-
+import { RagodePreciso } from "../../services/apis/detalleProducto/traerRangodePrecio"
 interface PrecioRangoFiltroProps {
   setprecioMin: (valor: number) => void;
   setprecioMax: (valor: number) => void;
@@ -20,17 +20,15 @@ export default function PrecioRangoFiltro({
 }: PrecioRangoFiltroProps) {
   const [valormini, setvalormini] = useState(0);
   const [valormax, setvalormax] = useState(0);
-
   useEffect(() => {
-    axios.get('http://localhost:8080/api/producto/public/rango-precios')
-      .then(response => {
-        const data = response.data;
-        setvalormini(data.precioMinimo);
-        setvalormax(data.precioMaximo);
-      })
-      .catch(error => {
-        console.error('Error al obtener el rango de precios:', error);
-      });
+    async function cargarDatos() {
+      const data = await RagodePreciso();
+      if (data.length > 0) {
+        setvalormini(data[0].PrecioMinimo);
+        setvalormax(data[0].PrecionMaximo);
+      }
+    }
+    cargarDatos();
   }, []);
 
   return (
