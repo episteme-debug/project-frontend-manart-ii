@@ -44,6 +44,9 @@ export default function FormularioLogin() {
                     Iniciar sesión
                 </button>
             </form>
+            <div>
+                <a href="/cambiar-contrasena" className="underline text-blue-700">Olvidaste la contraseña</a>
+            </div>
             <div className="mt-4 text-center">
                 {mensaje && <p className="mt-4 text-center text-red-600 w-full break-words">{mensaje}</p>}
             </div>
