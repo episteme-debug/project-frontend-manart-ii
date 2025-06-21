@@ -8,20 +8,24 @@ export default function EmailRecuperar() {
 
   const enviar = async ()=>{
    try {
+    if(email != "" && email.includes("@") && email.endsWith(".com")){
     await enviarCorreo(email);
     alert("Correo enviado con éxito");
+    }else{
+      alert("El correo no es valido debe tener '@' y terminar '.com'")
+    }
   } catch (error) {
     alert("Error al enviar el correo");
   }
   }
   return (
     <section className='w-full h-screen  flex justify-center text-center '>
-      <div className='shadow-2xl mt-5 mb-5 w-[50%]  ' >
+      <div className='shadow-2xl mt-5 mb-5 w-[30%] h-120  ' >
         <div className='flex justify-center text-center w-full '>
           <Image
           src="/logo.png"
           alt="Image"
-          width={400}
+          width={300}
           height={0}
         />
         </div>
