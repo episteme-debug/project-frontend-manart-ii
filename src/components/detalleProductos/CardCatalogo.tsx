@@ -16,16 +16,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSeparator,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
-import axios from "axios";
-import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -59,93 +51,78 @@ interface Promociones {
   porcentajeDescuentoPromocion: number;
   estadoPromocion: true;
 }
-interface Rango {
-  PrecioMinimo: number;
-  PrecionMaximo: number;
-}
+
 const stars = Array(5).fill(0);
+
 export default function CardCatalogo({
   posts,
   page,
-  totalPages,
+  totalPages
 }: {
   posts: Post[];
   page: number;
   totalPages: number;
 }) {
+
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [productos, setProductos] = useState<Producto[]>([]);
-
   const [promociones, setpromociones] = useState<Promociones[]>([]);
-  //Todas las cards sin flitos para ocultarlas
+
   const [mostrarTodos, setMostrarTodos] = useState(true);
   function cambiarMostrarTodos(valor: boolean) {
     setMostrarTodos(valor);
   }
-  //Fitros aplicados
+
   const [filtrosOcultos, setFiltrosOcultos] = useState(false);
   function cambiarOcultamientoFiltros(valor: boolean) {
     setFiltrosOcultos(valor);
   }
 
-  //ocultar al da x
   const [mostrarSeccionFiltros, setMostrarSeccionFiltros] = useState(true);
   function cambiarVisibilidadSeccion(valor: boolean) {
     setMostrarSeccionFiltros(valor);
   }
 
-
-  //
-  const [valormini, setvalormini] = useState<number>(0);
-  const [valormax, setvalormax] = useState<number>(0);
-  //
   const [nombreCategoria, setnombreCategoria] = useState<string | null>(null);
-  const [porcentajeDescuento, setporcentajeDescuento] = useState<number | null>(
-    null
-  );
+  const [porcentajeDescuento, setporcentajeDescuento] = useState<number | null>(null);
   const [precioMin, setprecioMin] = useState<number | null>(null);
   const [precioMax, setprecioMax] = useState<number | null>(null);
 
-  //
   useEffect(() => {
     if (
-      nombreCategoria != null &&
-      porcentajeDescuento != null &&
-      precioMax != null &&
+      nombreCategoria != null ||
+      porcentajeDescuento != null ||
+      precioMax != null ||
       precioMin != null
     ) {
       cambiarMostrarTodos(false);
-    }
-    if (
-      nombreCategoria == null &&
-      porcentajeDescuento == null &&
-      precioMax == null &&
-      precioMin == null
-    ) {
+      filtrarPorCategoria();
+    } else {
       cambiarVisibilidadSeccion(true);
       cambiarMostrarTodos(true);
     }
-    filtrarPorCategoria();
   }, [nombreCategoria, porcentajeDescuento, precioMin, precioMax]);
-  const filtrarPorCategoria = async () => {
-  try {
-    const res = await filtarCategorias(
-      nombreCategoria || undefined,
-      porcentajeDescuento ?? undefined,
-      precioMin ?? undefined,
-      precioMax ?? undefined
-    );
 
-    if (res) {
-      setProductos(res);
+  const filtrarPorCategoria = async () => {
+    try {
+      const res = await filtarCategorias(
+        nombreCategoria || undefined,
+        porcentajeDescuento ?? undefined,
+        precioMin ?? undefined,
+        precioMax ?? undefined
+      );
+      if (res) {
+        setProductos(res);
+      }
+    } catch (error) {
+      console.error("Error al filtrar productos:", error);
     }
-  } catch (error) {
-    console.error("Error al filtrar productos:", error);
-  }
-};
+  };
+
   useEffect(() => {
     traersCategorias().then((data) => setCategorias(data));
   }, []);
+
   useEffect(() => {
     traerPromociones().then((data) => setpromociones(data));
   }, []);
@@ -269,7 +246,7 @@ export default function CardCatalogo({
                       cambiarOcultamientoFiltros(false);
                       cambiarVisibilidadSeccion(false);
                     }}
-                    
+
                   />
                   {promocion.nombrePromocion}{" "}
                   {promocion.porcentajeDescuentoPromocion}%
@@ -442,32 +419,34 @@ export default function CardCatalogo({
           </div>
         </div>
         <div className="col-start-2 col-end-6">
-          <div className=" flex justify-center items-center  my-4 col-start-5 col-end-10 ">
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious href={`?page=${Math.max(1, page - 1)}`} />
-                </PaginationItem>
+          {(mostrarTodos && totalPages > 1) && (
 
-                {[...Array(totalPages)].map((_, i) => (
-                  <PaginationItem key={i}>
-                    <PaginationLink
-                      href={`?page=${i + 1}`}
-                      aria-current={page === i + 1 ? "page" : undefined}
-                    >
-                      {i + 1}
-                    </PaginationLink>
+            <div className="flex justify-center items-center my-4 col-start-5 col-end-10">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious href={`?page=${Math.max(1, page - 1)}`} />
                   </PaginationItem>
-                ))}
 
-                <PaginationItem>
-                  <PaginationNext
-                    href={`?page=${Math.min(totalPages, page + 1)}`}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
+                  {[...Array(totalPages)].map((_, i) => (
+                    <PaginationItem key={i}>
+                      <PaginationLink
+                        href={`?page=${i + 1}`}
+                        aria-current={page === i + 1 ? "page" : undefined}
+                      >
+                        {i + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+
+                  <PaginationItem>
+                    <PaginationNext href={`?page=${Math.min(totalPages, page + 1)}`} />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
+
         </div>
       </section>
     </section>

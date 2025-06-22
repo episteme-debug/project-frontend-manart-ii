@@ -34,11 +34,9 @@ interface Props {
   };
 }
 
-const stars = Array(5).fill(0)
-import Link from "next/link";
 export default async function CatalogoProducto({ searchParams }: Props) {
   const page = parseInt(searchParams?.page || '1', 10);
-  const limit = 20;
+  const limit = 15;
 
   const posts = await obtenerPosts();
 
@@ -48,7 +46,12 @@ export default async function CatalogoProducto({ searchParams }: Props) {
 
   return (
     <main className='min-h-screen'>
-        <CardCatalogo posts={currentPosts} page={page} totalPages={totalPages} />        
+      <CardCatalogo
+        posts={currentPosts}
+        page={page}
+        totalPages={totalPages}
+      />
     </main>
   );
 }
+
