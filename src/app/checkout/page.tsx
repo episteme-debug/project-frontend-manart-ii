@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react";
-import { generarPago } from "@/api/pedido";
+import { generarPago } from "@/api/Pedido";
 import FormularioPago from "@/components/FormularioPago";
 
 export default function Home() {

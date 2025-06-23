@@ -1,4 +1,5 @@
 import { ArchivoMultimediaRespuesta } from "./ArchivoMultimediaInterfaz"
+import { CategoriaProductoRespuesta } from "./CategoriaProductoInterfaz"
 
 export interface ProductoRespuesta {
     idProducto: number,
@@ -8,5 +9,6 @@ export interface ProductoRespuesta {
     stockProducto: number,
     precioProducto: number,
     idUsuario: number,
-    listaArchivos: ArchivoMultimediaRespuesta[]
+    listaArchivos: ArchivoMultimediaRespuesta[],
+    listaCategorias: CategoriaProductoRespuesta[],
 }

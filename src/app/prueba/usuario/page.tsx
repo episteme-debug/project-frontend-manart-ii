@@ -1,7 +1,7 @@
 "use client"
-import React from "react"
-import { obtenerUsuarioPorId } from "@/api/usuario"
+import { obtenerUsuarioPorId } from "@/api/Usuario"
 import { UsuarioRespuesta } from "@/interfaces/UsuarioInterfaz"
+import React from "react"
 
 export default function Usuario() {
     const [usuario, setUsuario] = React.useState<UsuarioRespuesta | null>(null)

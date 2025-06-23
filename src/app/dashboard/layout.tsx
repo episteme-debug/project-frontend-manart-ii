@@ -2,6 +2,7 @@ import type React from "react"
 import { AppSidebar } from "@/components/app-sidebar"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { ThemeProvider } from "@/components/theme-provider";
+import { ProveedorUsuario } from "@/contexts/UsuarioContext";
 
 export default function DashboardLayout({
   children,
@@ -11,7 +12,9 @@ export default function DashboardLayout({
   return (
     <SidebarProvider>
       <AppSidebar />
-      {children}
+      <ProveedorUsuario>
+        {children}
+      </ProveedorUsuario>
     </SidebarProvider>
   );
 }

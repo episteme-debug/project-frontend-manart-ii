@@ -1,3 +1,4 @@
+import { obtenerUsuarioPorId } from "@/api/Usuario"
 import { ProductForm } from "@/components/product/product-form"
 import {
   Breadcrumb,
@@ -9,23 +10,37 @@ import {
 } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
+import { ProductoRespuesta } from "@/interfaces/ProductoInterfaz"
 
-// Sample product data - in a real app, this would be fetched from an API
-const getProductById = (id: string) => {
+const getProductById = (producto: ProductoRespuesta) => {
+  const id = producto.idProducto
+
   return {
-    id: Number.parseInt(id),
-    name: `Producto ${id}`,
-    description: `Descripción detallada del producto ${id}. Este es un producto de alta calidad.`,
-    price: Math.floor(Math.random() * 10000) / 100,
-    stock: Math.floor(Math.random() * 100),
-    category: ["Electrónica", "Hogar", "Ropa", "Alimentos"][Math.floor(Math.random() * 4)],
+    id: id,
+    name: producto.nombreProducto,
+    description: producto.descripcionProducto,
+    price: producto.precioProducto,
+    stock: producto.stockProducto,
+    category: producto.listaCategorias,
+    region: producto.regionProducto,
     image: `/placeholder.svg?height=400&width=400&text=Producto+${id}`,
     createdAt: new Date().toISOString(),
   }
 }
 
-export default function EditProductPage({ params }: { params: { id: string } }) {
-  const product = getProductById(params.id)
+export default async function EditProductPage({ params }: { params: { id: string } }) {
+  let product
+  try {
+    const user = await obtenerUsuarioPorId()
+    const obtenerProducto = user.listaProductos.find(p => p.idProducto === parseInt(params.id))
+    if (!obtenerProducto) {
+      return <p>Cargando...</p>;
+    }
+    product = getProductById(obtenerProducto)
+  } catch (e) {
+    console.error("Error inesperado")
+    return <p>Error al cargar el producto.</p>;
+  }
 
   return (
     <SidebarInset>

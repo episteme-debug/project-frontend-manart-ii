@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { ImagePlus } from "lucide-react"
@@ -14,6 +14,8 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
+import { CategoriaProductoRespuesta } from "@/interfaces/CategoriaProductoInterfaz"
+import { listarCategorias } from "@/api/CategoriaProducto"
 
 // Define product type
 type Product = {
@@ -22,7 +24,8 @@ type Product = {
   description: string
   price: number
   stock: number
-  category: string
+  category: CategoriaProductoRespuesta[]
+  region: string
   image: string
   createdAt?: string
 }
@@ -33,11 +36,23 @@ const emptyProduct: Product = {
   description: "",
   price: 0,
   stock: 0,
-  category: "",
+  category: [],
+  region: "",
   image: "/placeholder.svg?height=400&width=400&text=Imagen+del+Producto",
 }
 
 export function ProductForm({ product = emptyProduct }: { product?: Product }) {
+  const [categoriasDisponibles, setCategoriasDisponibles] = useState<CategoriaProductoRespuesta[]>([])
+
+  useEffect(() => {
+    const cargarCategorias = async () => {
+      const categorias = await listarCategorias()
+      setCategoriasDisponibles(categorias)
+    }
+
+    cargarCategorias()
+  }, [])
+
   const router = useRouter()
   const { toast } = useToast()
   const [formData, setFormData] = useState<Product>(product)
@@ -45,7 +60,7 @@ export function ProductForm({ product = emptyProduct }: { product?: Product }) {
 
   const isNewProduct = !product.id
 
-  const handleChange = (field: keyof Product, value: string | number) => {
+  const handleChange = (field: keyof Product, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
@@ -158,30 +173,48 @@ export function ProductForm({ product = emptyProduct }: { product?: Product }) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="category">Categoría</Label>
-            <Select value={formData.category} onValueChange={(value) => handleChange("category", value)} required>
-              <SelectTrigger>
-                <SelectValue placeholder="Seleccione una categoría" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Electrónica">Electrónica</SelectItem>
-                <SelectItem value="Hogar">Hogar</SelectItem>
-                <SelectItem value="Ropa">Ropa</SelectItem>
-                <SelectItem value="Alimentos">Alimentos</SelectItem>
-              </SelectContent>
-            </Select>
+            <Label htmlFor="category">Categorías del producto</Label>
+            <select
+              multiple
+              id="category"
+              className="w-full rounded-md border border-input bg-background p-2 text-sm shadow-sm"
+              value={formData.category.map(c => c.idCategoriaProducto.toString())}
+              onChange={(e) => {
+                const selectedIds = Array.from(e.target.selectedOptions, opt => Number(opt.value))
+                const seleccionadas = categoriasDisponibles.filter(cat => selectedIds.includes(cat.idCategoriaProducto))
+                handleChange("category", seleccionadas)
+              }}
+            >
+              {categoriasDisponibles.map((categoria) => (
+                <option key={categoria.idCategoriaProducto} value={categoria.idCategoriaProducto}>
+                  {categoria.nombreCategoria}
+                </option>
+              ))}
+            </select>
+            <p className="text-sm text-muted-foreground">Puede seleccionar varias categorías (Ctrl o Cmd + click)</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="region">Región a la que pertenece el producto</Label>
+            {formData.region !== undefined && (
+              <Select value={formData.region} onValueChange={(value) => handleChange("region", value)} required>
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccione una categoría" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="AMAZONICA">Amazónica</SelectItem>
+                  <SelectItem value="ANDINA">Andina</SelectItem>
+                  <SelectItem value="CARIBE">Caribe</SelectItem>
+                  <SelectItem value="INSULAR">Insular</SelectItem>
+                  <SelectItem value="ORINOQUIA">Orinoquía</SelectItem>
+                  <SelectItem value="PACIFICA">Pacífica</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
           </div>
         </div>
       </div>
 
-      <div className="flex justify-end gap-4">
-        <Button type="button" variant="outline" onClick={() => router.push("/dashboard/productos")}>
-          Cancelar
-        </Button>
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Guardando..." : isNewProduct ? "Crear Producto" : "Guardar Cambios"}
-        </Button>
-      </div>
     </form>
   )
 }

@@ -26,19 +26,16 @@ import {
   PaginationPrevious,
   PaginationNext,
 } from "@/components/ui/pagination"
+import { ProductoRespuesta } from "@/interfaces/ProductoInterfaz"
 
-// Sample product data
-const sampleProducts = Array.from({ length: 20 }).map((_, i) => ({
-  id: i + 1,
-  name: `Producto ${i + 1}`,
-  image: `/placeholder.svg?height=200&width=200&text=Producto+${i + 1}`,
-  price: Math.floor((i * 123) % 10000) / 100, // determinístico
-  stock: (i * 7) % 100, // determinístico
-  category: ["Electrónica", "Hogar", "Ropa", "Alimentos"][i % 4],
-  createdAt: new Date(Date.now() - i * 86400000).toISOString(), // determinístico
-}));
+interface TipoProps {
+  listaProductos: ProductoRespuesta[]
+}
 
-export function ProductList() {
+export function ProductList(props: TipoProps) {
+
+  console.log(props)
+  const sampleProducts = props.listaProductos
   const searchParams = useSearchParams()
   const query = searchParams.get("query") || ""
   const dateFilter = searchParams.get("date") || ""
@@ -50,10 +47,10 @@ export function ProductList() {
 
   // Filter products based on search query and date
   const filteredProducts = sampleProducts.filter((product) => {
-    const matchesQuery = product.name.toLowerCase().includes(query.toLowerCase())
-    const matchesDate = dateFilter ? product.createdAt.startsWith(dateFilter) : true
+    const matchesQuery = product.nombreProducto.toLowerCase().includes(query.toLowerCase())
+    /*     const matchesDate = dateFilter ? product.createdAt.startsWith(dateFilter) : true */
 
-    return matchesQuery && matchesDate
+    return matchesQuery/*  && matchesDate */
   })
 
   // Calculate pagination
@@ -76,15 +73,15 @@ export function ProductList() {
         <>
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {paginatedProducts.map((product) => (
-              <Card key={product.id} className="overflow-hidden">
+              <Card key={product.idProducto} className="overflow-hidden">
                 <div className="relative h-48 w-full">
-                  <Image src={product.image || "/placeholder.svg"} alt={product.name} fill className="object-cover" />
+                  <Image src={"/placeholder.svg"} alt={product.nombreProducto} fill className="object-cover" />
                 </div>
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-medium">{product.name}</h3>
-                      <p className="text-sm text-muted-foreground">${product.price.toFixed(2)}</p>
+                      <h3 className="font-medium">{product.nombreProducto}</h3>
+                      <p className="text-sm text-muted-foreground">${product.precioProducto.toFixed(2)}</p>
                     </div>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -95,7 +92,7 @@ export function ProductList() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem asChild>
-                          <a href={`/dashboard/productos/${product.id}`}>
+                          <a href={`/dashboard/productos/${product.idProducto}`}>
                             <Edit className="mr-2 h-4 w-4" />
                             Editar
                           </a>
@@ -105,7 +102,7 @@ export function ProductList() {
                             <DropdownMenuItem
                               onSelect={(e) => {
                                 e.preventDefault()
-                                setProductToDelete(product.id)
+                                setProductToDelete(product.idProducto)
                               }}
                             >
                               <Trash className="mr-2 h-4 w-4" />
@@ -116,7 +113,7 @@ export function ProductList() {
                             <DialogHeader>
                               <DialogTitle>Confirmar eliminación</DialogTitle>
                               <DialogDescription>
-                                ¿Estás seguro de que deseas eliminar el producto "{product.name}"? Esta acción no se
+                                ¿Estás seguro de que deseas eliminar el producto "{product.nombreProducto}"? Esta acción no se
                                 puede deshacer.
                               </DialogDescription>
                             </DialogHeader>
@@ -124,7 +121,7 @@ export function ProductList() {
                               <DialogClose asChild>
                                 <Button variant="outline">Cancelar</Button>
                               </DialogClose>
-                              <Button variant="destructive" onClick={() => handleDeleteProduct(product.id)}>
+                              <Button variant="destructive" onClick={() => handleDeleteProduct(product.idProducto)}>
                                 Eliminar
                               </Button>
                             </DialogFooter>
@@ -135,8 +132,8 @@ export function ProductList() {
                   </div>
                 </CardContent>
                 <CardFooter className="flex justify-between border-t p-4 pt-2">
-                  <span className="text-xs text-muted-foreground">Stock: {product.stock}</span>
-                  <span className="text-xs text-muted-foreground">{product.category}</span>
+                  <span className="text-xs text-muted-foreground">Stock: {product.stockProducto}</span>
+                  <span className="text-xs text-muted-foreground">No Aplica for the moment</span>
                 </CardFooter>
               </Card>
             ))}
