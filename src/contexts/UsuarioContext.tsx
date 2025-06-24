@@ -19,7 +19,6 @@ export function ProveedorUsuario({ children }: { children: React.ReactNode }) {
             try {
                 const respuesta = await obtenerUsuarioPorId()
                 setUsuario(respuesta)
-                console.log(respuesta)
             } catch (error: any) {
                 console.error("Error inesperado:", error)
             }

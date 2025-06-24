@@ -1,7 +1,7 @@
 import { ArchivoMultimediaRespuesta } from "./ArchivoMultimediaInterfaz";
 
 export interface CategoriaProductoRespuesta {
-    idCategoriaProducto: number,
+    idCategoria: number,
     nombreCategoria: string,
     descripcionCategoria: string,
     estadoCategoria: boolean,

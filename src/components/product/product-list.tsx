@@ -34,7 +34,6 @@ interface TipoProps {
 
 export function ProductList(props: TipoProps) {
 
-  console.log(props)
   const sampleProducts = props.listaProductos
   const searchParams = useSearchParams()
   const query = searchParams.get("query") || ""

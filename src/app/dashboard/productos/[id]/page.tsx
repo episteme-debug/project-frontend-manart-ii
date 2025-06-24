@@ -12,19 +12,16 @@ import { Separator } from "@/components/ui/separator"
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 import { ProductoRespuesta } from "@/interfaces/ProductoInterfaz"
 
-const getProductById = (producto: ProductoRespuesta) => {
-  const id = producto.idProducto
-
-  return {
-    id: id,
-    name: producto.nombreProducto,
-    description: producto.descripcionProducto,
-    price: producto.precioProducto,
-    stock: producto.stockProducto,
-    category: producto.listaCategorias,
-    region: producto.regionProducto,
-    image: `/placeholder.svg?height=400&width=400&text=Producto+${id}`,
-    createdAt: new Date().toISOString(),
+const getProductById = (producto: ProductoRespuesta, idUsuario: number) => {
+return {
+    idUsuario: idUsuario,
+    idProducto: producto.idProducto,
+    nombreProducto: producto.nombreProducto,
+    descripcionProducto: producto.descripcionProducto,
+    precioProducto: producto.precioProducto,
+    stockProducto: producto.stockProducto,
+    listaCategorias: producto.listaCategorias,
+    regionProducto: producto.regionProducto
   }
 }
 
@@ -32,11 +29,14 @@ export default async function EditProductPage({ params }: { params: { id: string
   let product
   try {
     const user = await obtenerUsuarioPorId()
+    if (!user) {
+      return <p>Error de autenticacion</p>
+    }
     const obtenerProducto = user.listaProductos.find(p => p.idProducto === parseInt(params.id))
     if (!obtenerProducto) {
       return <p>Cargando...</p>;
     }
-    product = getProductById(obtenerProducto)
+    product = getProductById(obtenerProducto, user.idUsuario)
   } catch (e) {
     console.error("Error inesperado")
     return <p>Error al cargar el producto.</p>;

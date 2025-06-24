@@ -10,5 +10,15 @@ export interface ProductoRespuesta {
     precioProducto: number,
     idUsuario: number,
     listaArchivos: ArchivoMultimediaRespuesta[],
-    listaCategorias: CategoriaProductoRespuesta[],
+    listaCategorias: string[],
+}
+
+export interface ProductoCreacion {
+    nombreProducto: string,
+    descripcionProducto: string,
+    regionProducto: string,
+    stockProducto: number,
+    precioProducto: number,
+    idUsuario: number,
+    listaCategorias: number[],
 }
