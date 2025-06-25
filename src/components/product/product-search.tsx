@@ -58,20 +58,7 @@ export function ProductSearch() {
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
           />
         </div>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className={cn("w-full justify-start text-left sm:w-[240px]", !date && "text-muted-foreground")}
-            >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {date ? date.toLocaleDateString() : "Filtrar por fecha"}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
-          </PopoverContent>
-        </Popover>
+
         <div className="flex gap-2">
           <Button onClick={handleSearch}>Buscar</Button>
           <Button variant="outline" onClick={handleClearFilters}>

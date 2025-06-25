@@ -27,6 +27,7 @@ import {
   PaginationNext,
 } from "@/components/ui/pagination"
 import { ProductoRespuesta } from "@/interfaces/ProductoInterfaz"
+import { EliminarProducto } from "@/api/Producto"
 
 interface TipoProps {
   listaProductos: ProductoRespuesta[]
@@ -34,7 +35,7 @@ interface TipoProps {
 
 export function ProductList(props: TipoProps) {
 
-  const sampleProducts = props.listaProductos
+  const [productos, setProductos] = useState<ProductoRespuesta[]>(props.listaProductos)
   const searchParams = useSearchParams()
   const query = searchParams.get("query") || ""
   const dateFilter = searchParams.get("date") || ""
@@ -45,21 +46,24 @@ export function ProductList(props: TipoProps) {
   const itemsPerPage = 8
 
   // Filter products based on search query and date
-  const filteredProducts = sampleProducts.filter((product) => {
+  const filteredProducts = productos.filter((product) => {
     const matchesQuery = product.nombreProducto.toLowerCase().includes(query.toLowerCase())
-    /*     const matchesDate = dateFilter ? product.createdAt.startsWith(dateFilter) : true */
-
-    return matchesQuery/*  && matchesDate */
+    return matchesQuery
   })
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage)
   const paginatedProducts = filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
-  const handleDeleteProduct = (id: number) => {
-    // In a real app, this would call an API to delete the product
-    console.log(`Deleting product ${id}`)
-    setProductToDelete(null)
+  const handleDeleteProduct = async (id: number) => {
+    try {
+      await EliminarProducto(id)
+      setProductos((prev) => prev.filter((p) => p.idProducto !== id))
+      setProductToDelete(null)
+    } catch (error) {
+      console.error("Error al eliminar producto:", error)
+      alert("Error al eliminar el producto. Inténtalo de nuevo.")
+    }
   }
 
   return (
@@ -74,7 +78,7 @@ export function ProductList(props: TipoProps) {
             {paginatedProducts.map((product) => (
               <Card key={product.idProducto} className="overflow-hidden">
                 <div className="relative h-48 w-full">
-                  <Image src={"/placeholder.svg"} alt={product.nombreProducto} fill className="object-cover" />
+                  <Image src={"/images/ImagenProductoPorDefecto.jpg"} alt={product.nombreProducto} fill className="object-cover" />
                 </div>
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">

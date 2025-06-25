@@ -20,5 +20,6 @@ export interface ProductoCreacion {
     stockProducto: number,
     precioProducto: number,
     idUsuario: number,
-    listaCategorias: number[],
+    idProducto: number,
+    listaCategorias: number[]
 }

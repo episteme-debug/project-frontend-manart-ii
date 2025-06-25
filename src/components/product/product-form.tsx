@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { ImagePlus } from "lucide-react"
@@ -17,11 +17,18 @@ import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { CategoriaProductoRespuesta } from "@/interfaces/CategoriaProductoInterfaz"
 import { listarCategorias } from "@/api/CategoriaProducto"
-import { ProductoCreacion } from "@/interfaces/ProductoInterfaz"
-import { crear } from "@/api/Producto"
+import { ProductoCreacion, ProductoRespuesta } from "@/interfaces/ProductoInterfaz"
+import { CrearProducto } from "@/api/Producto"
+import Usuario from "@/app/prueba/usuario/page"
+import { obtenerUsuarioPorId } from "@/api/Usuario"
+import { CargaImagenes } from "./carga_imagenes"
+import { CargaImagenesRef } from "./carga_imagenes"
+import { SubirArchivos } from "@/api/ArchivoMultimedia"
 
-// Default empty product
-const emptyProduct: ProductoCreacion = {
+
+// Producto vacío
+const emptyProduct: ProductoRespuesta = {
+  idProducto: 0,
   idUsuario: 0,
   nombreProducto: "",
   descripcionProducto: "",
@@ -29,29 +36,44 @@ const emptyProduct: ProductoCreacion = {
   stockProducto: 0,
   precioProducto: 0,
   listaCategorias: [],
+  listaArchivos: []
 }
 
-export function ProductForm({ product = emptyProduct }: { product?: ProductoCreacion }) {
+export function ProductForm({ product = emptyProduct, idUsuario }: { product?: ProductoRespuesta, idUsuario: number }) {
   const [categoriasDisponibles, setCategoriasDisponibles] = useState<CategoriaProductoRespuesta[]>([])
 
   useEffect(() => {
-    const cargarCategorias = async () => {
-      const categorias = await listarCategorias()
-      setCategoriasDisponibles(categorias)
+    const axiosData = async () => {
+      try {
+        const categorias = await listarCategorias()
+        setCategoriasDisponibles(categorias)
+      } catch (error) {
+        console.error("Error al cargar datos:", error)
+      }
     }
 
-    cargarCategorias()
+    axiosData()
   }, [])
+
 
   const router = useRouter()
   const { toast } = useToast()
   const [formData, setFormData] = useState<ProductoCreacion>({
-    ...emptyProduct,
-    ...product,
-    listaCategorias: product?.listaCategorias ?? []
+    idUsuario: idUsuario,
+    nombreProducto: product.nombreProducto,
+    descripcionProducto: product.descripcionProducto,
+    regionProducto: product.regionProducto,
+    stockProducto: product.stockProducto,
+    precioProducto: product.precioProducto,
+    listaCategorias: [],
+    idProducto: product.idProducto
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Imagenes
+  const cargaImagenesRef = useRef<CargaImagenesRef>(null)
+  const archivos = cargaImagenesRef.current?.getArchivos() || []
 
   const handleChange = (field: keyof ProductoCreacion, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -60,11 +82,14 @@ export function ProductForm({ product = emptyProduct }: { product?: ProductoCrea
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+
+    
     console.log("Objeto a enviar:", formData)
     try {
-      await crear(formData)
+      await CrearProducto(formData)
+      await SubirArchivos(archivos, "Producto", formData.idProducto)
 
-      // Redirect to products list
+      // Redireccionar a la lista de productos
       router.push("/dashboard/productos")
     } catch (error) {
       toast({
@@ -81,25 +106,7 @@ export function ProductForm({ product = emptyProduct }: { product?: ProductoCrea
     <form onSubmit={handleSubmit} className="space-y-8">
       <div className="grid gap-8 md:grid-cols-[1fr_2fr]">
         {/* Image Upload Section */}
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex flex-col items-center gap-4">
-              <div className="relative aspect-square w-full overflow-hidden rounded-lg border">
-                <Image
-                  src="/images/PorDefectoProducto.png"
-                  alt="Imagen del producto"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <Button type="button" variant="outline" className="w-full">
-                <ImagePlus className="mr-2 h-4 w-4" />
-                Cambiar imagen
-              </Button>
-              <p className="text-xs text-muted-foreground">Formatos soportados: JPG, PNG. Tamaño máximo: 5MB</p>
-            </div>
-          </CardContent>
-        </Card>
+        <CargaImagenes ref={cargaImagenesRef}/>
 
         {/* Product Details Form */}
         <div className="space-y-6">

@@ -13,7 +13,7 @@ import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 import { ProductoRespuesta } from "@/interfaces/ProductoInterfaz"
 
 const getProductById = (producto: ProductoRespuesta, idUsuario: number) => {
-return {
+  return {
     idUsuario: idUsuario,
     idProducto: producto.idProducto,
     nombreProducto: producto.nombreProducto,
@@ -21,22 +21,32 @@ return {
     precioProducto: producto.precioProducto,
     stockProducto: producto.stockProducto,
     listaCategorias: producto.listaCategorias,
-    regionProducto: producto.regionProducto
+    regionProducto: producto.regionProducto,
+    listaArchivos: producto.listaArchivos
   }
 }
 
 export default async function EditProductPage({ params }: { params: { id: string } }) {
   let product
+  let user
   try {
-    const user = await obtenerUsuarioPorId()
+    user = await obtenerUsuarioPorId()
     if (!user) {
-      return <p>Error de autenticacion</p>
+      return <p>Error al obtener el usuario</p>
     }
-    const obtenerProducto = user.listaProductos.find(p => p.idProducto === parseInt(params.id))
+
+    const idProducto = Number(params?.id)
+
+    if (isNaN(idProducto)) {
+      return <p>ID de producto inválido</p>
+    }
+
+    const obtenerProducto = user.listaProductos.find(p => p.idProducto === idProducto)
     if (!obtenerProducto) {
       return <p>Cargando...</p>;
     }
     product = getProductById(obtenerProducto, user.idUsuario)
+
   } catch (e) {
     console.error("Error inesperado")
     return <p>Error al cargar el producto.</p>;
@@ -68,7 +78,7 @@ export default async function EditProductPage({ params }: { params: { id: string
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
         <div className="rounded-lg border bg-card p-6 shadow-sm">
           <h1 className="mb-6 text-2xl font-bold">Editar Producto</h1>
-          <ProductForm product={product} />
+          <ProductForm product={product} idUsuario={user.idUsuario} />
         </div>
       </div>
     </SidebarInset>
