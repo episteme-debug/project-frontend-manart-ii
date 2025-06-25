@@ -10,13 +10,14 @@ export async function SubirArchivos(files: File[], entidad: string, idObjeto: nu
   try {
     const user = await obtenerCookie()
     if (!user) throw new Error("Usuario no autenticado")
-
-    const token = cookies().get("token")?.value
+ 
+    const cookieStore = await cookies()
+    const token = cookieStore.get("token")?.value
     const url = `${baseURL}/private/transferirarchivos/${entidad}/${idObjeto}`
 
     const formData = new FormData()
     files.forEach((file) => {
-      formData.append("archivos", file) // ⬅️ nombre EXACTO que espera el backend
+      formData.append("archivos", file)
     })
 
     const response = await axios.post(url, formData, {

@@ -21,8 +21,8 @@ import { ProductoCreacion, ProductoRespuesta } from "@/interfaces/ProductoInterf
 import { CrearProducto } from "@/api/Producto"
 import Usuario from "@/app/prueba/usuario/page"
 import { obtenerUsuarioPorId } from "@/api/Usuario"
-import { CargaImagenes } from "./carga_imagenes"
-import { CargaImagenesRef } from "./carga_imagenes"
+import { CargaImagenes } from "./carga-imagenes"
+import { CargaImagenesRef } from "./carga-imagenes"
 import { SubirArchivos } from "@/api/ArchivoMultimedia"
 
 
@@ -73,7 +73,6 @@ export function ProductForm({ product = emptyProduct, idUsuario }: { product?: P
 
   // Imagenes
   const cargaImagenesRef = useRef<CargaImagenesRef>(null)
-  const archivos = cargaImagenesRef.current?.getArchivos() || []
 
   const handleChange = (field: keyof ProductoCreacion, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -87,6 +86,7 @@ export function ProductForm({ product = emptyProduct, idUsuario }: { product?: P
     console.log("Objeto a enviar:", formData)
     try {
       await CrearProducto(formData)
+      const archivos = cargaImagenesRef.current?.getArchivos() || []
       await SubirArchivos(archivos, "Producto", formData.idProducto)
 
       // Redireccionar a la lista de productos

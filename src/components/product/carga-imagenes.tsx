@@ -51,7 +51,7 @@ export const CargaImagenes = forwardRef<CargaImagenesRef>((_, ref) => {
   const navegar = (dir: "prev" | "next") => {
     setIndex(prev =>
       dir === "prev" ? (prev === 0 ? previews.length - 1 : prev - 1)
-                     : (prev === previews.length - 1 ? 0 : prev + 1)
+        : (prev === previews.length - 1 ? 0 : prev + 1)
     )
   }
 
@@ -85,10 +85,15 @@ export const CargaImagenes = forwardRef<CargaImagenesRef>((_, ref) => {
             ref={inputRef}
             onChange={e => e.target.files && cargar(e.target.files)}
           />
-          <Button onClick={() => inputRef.current?.click()} disabled={files.length >= 10}>
+          <Button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            disabled={files.length >= 10}
+          >
             <ImagePlus className="mr-2 h-4 w-4" />
             {files.length >= 10 ? "Máximo 10 imágenes" : "Cargar imágenes"}
           </Button>
+
           <p className="text-xs text-muted-foreground text-center">
             Formatos: JPG, PNG. Máx 5MB por imagen. Puedes subir hasta 10.
           </p>
