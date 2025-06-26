@@ -13,6 +13,8 @@ export default function RegisterForm() {
     setAlias,
     nombreUsuario,
     setNombreUsuario,
+    numeroDocumentoUsuario,
+    setNumeroDocumentoUsuario,
     apellidoUsuario,
     setApellidoUsuario,
     emailUsuario,
@@ -68,13 +70,27 @@ export default function RegisterForm() {
           {/* Apellido de usuario */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Apellido
+              Apellidos
             </label>
             <input
               type="text"
-              className="mt-1 block w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#789262]"
+              className="mt-1 block w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#789262] text-black bg-[#FFFCF5]"
               value={apellidoUsuario}
               onChange={(e) => setApellidoUsuario(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Documento de usuario */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Número de documento
+            </label>
+            <input
+              type="text"
+              className="mt-1 block w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#789262] text-black bg-[#FFFCF5]"
+              value={numeroDocumentoUsuario}
+              onChange={(e) => setNumeroDocumentoUsuario(e.target.value)}
               required
             />
           </div>
@@ -86,7 +102,7 @@ export default function RegisterForm() {
             </label>
             <input
               type="email" // 6. type=email para validación básica
-              className="mt-1 block w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#789262]"
+              className="mt-1 block w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#789262] text-black bg-[#FFFCF5]"
               value={emailUsuario}
               onChange={(e) => setEmailUsuario(e.target.value)}
               required
@@ -98,8 +114,8 @@ export default function RegisterForm() {
             </label>
             <input
               type="text"
-              className="mt-1 block w-full px-4 py-2 border rounded-md 
-            focus:outline-none focus:ring-2 focus:ring-[#789262]"
+              className="mt-1 block w-full px-4 py-2 border rounded-md
+            focus:outline-none focus:ring-2 focus:ring-[#789262] text-black bg-[#FFFCF5]"
               value={telefonoUsuario}
               onChange={(e) => setTelefonoUsuario(e.target.value)}
               required
@@ -115,7 +131,7 @@ export default function RegisterForm() {
           <div className='relative'>
             <input
               type={mostrarContrasena ? 'text' : 'password'}
-              className="mt-1 block w-full px-4 py-2 border rounded-md shadow-sm border-[#C4B6A6]"
+              className="mt-1 block w-full px-4 py-2 border rounded-md shadow-sm border-[#C4B6A6] text-black bg-[#FFFCF5]"
               value={hashContrasenaUsuario}
               onChange={(e) => setHashContrasenaUsuario(e.target.value)}
               required
@@ -123,7 +139,7 @@ export default function RegisterForm() {
             <button
               type='button'
               onClick={AlternarVisible}
-              className='absolute inset-y-0 right-0 flex items-center px-3 text-[#b57944] hover:text-[#C57B4A]'>
+              className="absolute inset-y-0 right-0 flex items-center px-3 text-[#b57944] hover:text-[#C57B4A] cursor-pointer">
               {mostrarContrasena ? (
                 // Ícono de "ojo tachado"
 
@@ -146,14 +162,17 @@ export default function RegisterForm() {
             <label className="block text-sm font-medium text-gray-700">
               Rol usuario
             </label>
-            <input
-              type="text"
-              className="mt-1 block w-full px-4 py-2 border rounded-md
-            focus:outline-none focus:ring-2 focus:ring-[#789262]"
+            <select
+            name="rolUsuario"
               value={rolUsuario}
               onChange={(e) => setRolUsuario(e.target.value)}
               required
-            />
+            >
+              <option value="ADMIN">Admin</option>
+              <option value="COMPRADOR">Comprador</option>
+              <option value="VENDEDOR">Vendedor</option>
+            </select>
+
           </div>
           <div className="text-right mt-5">
             <a className="text-sm text-[#D9915F]" href="/login">¿Ya tienes una cuenta amigo/a?</a>
@@ -161,7 +180,7 @@ export default function RegisterForm() {
           {/* Botón de registro */}
           <button
             type="submit"
-            className="w-full bg-[#C57B4A] text-white py-2 rounded-md hover:bg-[#D9915F]-700 transition"
+            className="w-full bg-[#C57B4A] text-white py-2 rounded-md hover:bg-[#D9915F]-700 transition cursor-pointer"
           >
             Registrarme
           </button>

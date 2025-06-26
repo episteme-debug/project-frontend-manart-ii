@@ -26,10 +26,10 @@ export default function LoginPage() {
         {/* object-cover ajusta la proporción de la imagen para no deformarse,
             recortando los lados si es necesario */}
       </div>
-      <div className='w-full md: w-1/2 bg-white min-h-screen p-8'>
-      <LoginForm />
+      <div className='w-full md:w-1/2 bg-white min-h-screen p-8'>
+        <LoginForm />
       </div>
     </main>
-  
+
   );
 }

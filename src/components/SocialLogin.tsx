@@ -16,7 +16,8 @@ export default function SocialLogin() {
         <li>
           <button
             data-test="login-with-google-button"
-            className="w-full flex items-center justify-center py-3 px-6 rounded-md border border-gray-300 bg-white text-gray-800 hover:shadow-md text-base font-medium "
+            className="w-full flex items-center justify-center py-3 px-6 rounded-md border border-gray-300 bg-white text-gray-800 hover:shadow-md text-base font-medium cursor-pointer"
+            onClick={() => window.open("http://localhost:8080/oauth2/authorization/google", "_blank")}
           >
             <span className="w-full flex items-center justify-center py-3 px-6
             rounded-md bg-white text-gray-800 hover:opacity-90 text-base font-medium">
@@ -27,7 +28,7 @@ export default function SocialLogin() {
         <li>
           <button
             data-test="login-with-apple-button"
-            className="w-full flex items-center justify-center py-3 px-6 rounded-md bg-black text-white hover:opacity-90 text-base font-medium"
+            className="w-full flex items-center justify-center py-3 px-6 rounded-md bg-black text-white hover:opacity-90 text-base font-medium cursor-pointer"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

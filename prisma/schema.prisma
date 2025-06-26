@@ -1,0 +1,276 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model archivo_multimedia {
+  id                BigInt                          @id @default(autoincrement())
+  fecha_creacion    DateTime                        @db.Date
+  id_objeto_entidad BigInt
+  nombre            String                          @db.VarChar(255)
+  ruta              String                          @db.VarChar(255)
+  tipo              archivo_multimedia_tipo
+  tipo_entidad      archivo_multimedia_tipo_entidad
+}
+
+model carrito_compra {
+  id_carrito                BigInt                      @id @default(autoincrement())
+  total                     Decimal                     @db.Decimal(38, 2)
+  id_usuario                BigInt
+  usuario                   usuario                     @relation(fields: [id_usuario], references: [id_usuario], onUpdate: Restrict, map: "FK300sfcjf1svex03ueuxwl5lne")
+  relacion_carrito_producto relacion_carrito_producto[]
+
+  @@index([id_usuario], map: "FK300sfcjf1svex03ueuxwl5lne")
+}
+
+model categoria_producto {
+  id_categoria                BigInt                        @id @default(autoincrement())
+  descripcion_categoria       String                        @db.VarChar(250)
+  estado_categoria            Boolean                       @db.Bit(1)
+  imagen_categoria            String                        @db.VarChar(150)
+  nombre_categoria            String                        @db.VarChar(100)
+  relacion_categoria_producto relacion_categoria_producto[]
+  relacion_producto_categoria relacion_producto_categoria[] @ignore
+}
+
+model direccion {
+  id_direccion          BigInt   @id @default(autoincrement())
+  barrio                String   @db.VarChar(255)
+  bis_via_principal     Boolean? @db.Bit(1)
+  bis_via_secundaria    Boolean? @db.Bit(1)
+  ciudad                String   @db.VarChar(255)
+  complemento           String?  @db.VarChar(255)
+  departamento          String   @db.VarChar(255)
+  es_predeterminada     Boolean  @db.Bit(1)
+  fecha_actualizacion   DateTime @db.Date
+  fecha_creacion        DateTime @db.Date
+  letra_via_principal   String?  @db.VarChar(255)
+  letra_via_secundaria  String?  @db.VarChar(255)
+  numero_predio         String   @db.VarChar(255)
+  numero_via_principal  String   @db.VarChar(255)
+  numero_via_secundaria String   @db.VarChar(255)
+  tipo_via              String   @db.VarChar(255)
+  id_usuario            BigInt
+  usuario               usuario  @relation(fields: [id_usuario], references: [id_usuario], onUpdate: Restrict, map: "FKj093ukytc4qt239ujg4a6n8tp")
+
+  @@index([id_usuario], map: "FKj093ukytc4qt239ujg4a6n8tp")
+}
+
+model factura {
+  id_factura               BigInt             @id @default(autoincrement())
+  cufe                     String             @db.VarChar(255)
+  iva                      Decimal            @db.Decimal(38, 2)
+  ciudad_cliente           String             @db.VarChar(50)
+  direccion_cliente        String             @db.VarChar(100)
+  email_cliente            String             @db.VarChar(100)
+  fecha_generacion_factura DateTime           @db.DateTime(6)
+  metodo_pago              String             @db.VarChar(30)
+  nit_cliente              String?            @db.VarChar(20)
+  nombre_cliente           String             @db.VarChar(100)
+  observaciones            String             @db.VarChar(255)
+  telefono_cliente         String?            @db.VarChar(20)
+  total_bruto              Decimal            @db.Decimal(38, 2)
+  total_items              Int
+  total_neto               Decimal            @db.Decimal(38, 2)
+  valor_letras             String             @db.VarChar(200)
+  pedido_id_pedido         BigInt?            @unique(map: "UK6qooeixwyttviolvi02y6ke9u")
+  pedido                   pedido?            @relation(fields: [pedido_id_pedido], references: [id_pedido], onDelete: Restrict, onUpdate: Restrict, map: "FKtjqgjivny9hchqd1k3dxw97s6")
+  factura_producto         factura_producto[]
+}
+
+model factura_producto {
+  id_item         BigInt   @id @default(autoincrement())
+  cantidad        Int
+  descripcion     String   @db.VarChar(255)
+  id_producto     BigInt
+  precio_total    Decimal? @db.Decimal(38, 2)
+  precio_unitario Decimal  @db.Decimal(38, 2)
+  unidad_medida   String   @db.VarChar(255)
+  id_factura      BigInt
+  factura         factura  @relation(fields: [id_factura], references: [id_factura], onUpdate: Restrict, map: "FK3yxcenone9y6341oglmo991w8")
+
+  @@index([id_factura], map: "FK3yxcenone9y6341oglmo991w8")
+}
+
+model pedido {
+  id_pedido                BigInt                     @id @default(autoincrement())
+  estado                   pedido_estado
+  fecha_pedido             DateTime                   @db.Date
+  total                    Decimal                    @db.Decimal(38, 2)
+  id_usuario               BigInt
+  factura                  factura?
+  usuario                  usuario                    @relation(fields: [id_usuario], references: [id_usuario], onUpdate: Restrict, map: "FK9ggns8wgi350asplcie001cv4")
+  relacion_pedido_producto relacion_pedido_producto[]
+
+  @@index([id_usuario], map: "FK9ggns8wgi350asplcie001cv4")
+}
+
+model producto {
+  id_producto                 BigInt                        @id @default(autoincrement())
+  descripcion_producto        String                        @db.VarChar(500)
+  estado_producto             Boolean                       @db.Bit(1)
+  imagen_producto             String                        @db.VarChar(255)
+  nombre_producto             String                        @db.VarChar(100)
+  precio_producto             Decimal                       @db.Decimal(38, 2)
+  region_producto             producto_region_producto
+  stock_producto              Int
+  id_promocion                BigInt?
+  id_usuario                  BigInt
+  usuario                     usuario                       @relation(fields: [id_usuario], references: [id_usuario], onUpdate: Restrict, map: "FKjhnhu11h92o6gjd4eha5xux79")
+  promocion                   promocion?                    @relation(fields: [id_promocion], references: [id_promocion], onDelete: Restrict, onUpdate: Restrict, map: "FKk5efcxek1cwlk8n6u70rafskl")
+  relacion_carrito_producto   relacion_carrito_producto[]
+  relacion_categoria_producto relacion_categoria_producto[]
+  relacion_pedido_producto    relacion_pedido_producto[]
+  relacion_producto_categoria relacion_producto_categoria[] @ignore
+  rese_a_producto             rese_a_producto[]
+
+  @@index([id_usuario], map: "FKjhnhu11h92o6gjd4eha5xux79")
+  @@index([id_promocion], map: "FKk5efcxek1cwlk8n6u70rafskl")
+}
+
+model promocion {
+  id_promocion                   BigInt     @id @default(autoincrement())
+  detalles_promocion             String     @db.VarChar(200)
+  estado_promocion               Boolean    @db.Bit(1)
+  fecha_fin_promocion            DateTime   @db.Date
+  fecha_inicio_promocion         DateTime   @db.Date
+  nombre_promocion               String     @db.VarChar(100)
+  porcentaje_descuento_promocion Int
+  producto                       producto[]
+}
+
+model publicacion {
+  id                         BigInt   @id @default(autoincrement())
+  contenido                  String   @db.VarChar(255)
+  estado                     Boolean  @db.Bit(1)
+  fecha_creacion             DateTime @db.DateTime(6)
+  fecha_ultima_actualizacion DateTime @db.DateTime(6)
+  titulo                     String   @db.VarChar(255)
+  id_usuario                 BigInt
+  usuario                    usuario  @relation(fields: [id_usuario], references: [id_usuario], onUpdate: Restrict, map: "FK9kh5k6pnpbv4xeqrdwv4585b7")
+
+  @@index([id_usuario], map: "FK9kh5k6pnpbv4xeqrdwv4585b7")
+}
+
+model relacion_carrito_producto {
+  id_item         BigInt         @id @default(autoincrement())
+  cantidad        Int
+  precio_unitario Decimal        @db.Decimal(38, 2)
+  subtotal        Decimal        @db.Decimal(38, 2)
+  id_carrito      BigInt
+  id_producto     BigInt
+  producto        producto       @relation(fields: [id_producto], references: [id_producto], onUpdate: Restrict, map: "FK5pn7a9qnb9vk75g2eobjfcxut")
+  carrito_compra  carrito_compra @relation(fields: [id_carrito], references: [id_carrito], onUpdate: Restrict, map: "FK633g6pun052tb3r4livg46ek5")
+
+  @@index([id_producto], map: "FK5pn7a9qnb9vk75g2eobjfcxut")
+  @@index([id_carrito], map: "FK633g6pun052tb3r4livg46ek5")
+}
+
+model relacion_categoria_producto {
+  id_relacion_categoria_producto BigInt              @id @default(autoincrement())
+  id_categoria_producto          BigInt?
+  id_producto                    BigInt?
+  producto                       producto?           @relation(fields: [id_producto], references: [id_producto], onDelete: Restrict, onUpdate: Restrict, map: "FKck422s4c0uhvbejy0lma6rj3m")
+  categoria_producto             categoria_producto? @relation(fields: [id_categoria_producto], references: [id_categoria], onDelete: Restrict, onUpdate: Restrict, map: "FKk3g24c0h5bbkq5re4foyq0gtc")
+
+  @@index([id_producto], map: "FKck422s4c0uhvbejy0lma6rj3m")
+  @@index([id_categoria_producto], map: "FKk3g24c0h5bbkq5re4foyq0gtc")
+}
+
+model relacion_pedido_producto {
+  id_pedidoxproducto BigInt   @id @default(autoincrement())
+  cantidad           Int
+  precio_unitario    Decimal  @db.Decimal(38, 2)
+  subtotal           Decimal  @db.Decimal(38, 2)
+  id_pedido          BigInt
+  id_producto        BigInt
+  producto           producto @relation(fields: [id_producto], references: [id_producto], onUpdate: Restrict, map: "FKds93hhwf29qdbrjhsp0nsd6ij")
+  pedido             pedido   @relation(fields: [id_pedido], references: [id_pedido], onUpdate: Restrict, map: "FKhewfg2iq9jgws7gugqnv2ycc")
+
+  @@index([id_producto], map: "FKds93hhwf29qdbrjhsp0nsd6ij")
+  @@index([id_pedido], map: "FKhewfg2iq9jgws7gugqnv2ycc")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model relacion_producto_categoria {
+  producto_id        BigInt
+  categoria_id       BigInt
+  categoria_producto categoria_producto @relation(fields: [categoria_id], references: [id_categoria], onUpdate: Restrict, map: "FKaa6osypfhteayfu63slsfj2vp")
+  producto           producto           @relation(fields: [producto_id], references: [id_producto], onUpdate: Restrict, map: "FKe0uyq0w2kqcmcluisdjum6927")
+
+  @@index([categoria_id], map: "FKaa6osypfhteayfu63slsfj2vp")
+  @@index([producto_id], map: "FKe0uyq0w2kqcmcluisdjum6927")
+  @@ignore
+}
+
+model rese_a_producto {
+  id                BigInt   @id @default(autoincrement())
+  calificacion      Int
+  comentario        String?  @db.VarChar(255)
+  fecha_publicacion DateTime @db.DateTime(6)
+  id_producto       BigInt
+  id_usuario        BigInt
+  usuario           usuario  @relation(fields: [id_usuario], references: [id_usuario], onUpdate: Restrict, map: "FK8vscj29l3ygts9bovor9i0qww")
+  producto          producto @relation(fields: [id_producto], references: [id_producto], onUpdate: Restrict, map: "FKans5rq6kqhhp5qbg5t9w940q4")
+
+  @@index([id_usuario], map: "FK8vscj29l3ygts9bovor9i0qww")
+  @@index([id_producto], map: "FKans5rq6kqhhp5qbg5t9w940q4")
+  @@map("reseña_producto")
+}
+
+model usuario {
+  id_usuario               BigInt              @id @default(autoincrement())
+  alias                    String              @db.VarChar(100)
+  apellido_usuario         String              @db.VarChar(100)
+  nombre_usuario           String              @db.VarChar(100)
+  email_usuario            String              @db.VarChar(200)
+  hash_contrasena_usuario  String              @db.VarChar(250)
+  telefono_usuario         String              @db.VarChar(20)
+  numero_documento_usuario String              @db.VarChar(255)
+  ciudad_usuaio           String              @db.VarChar(255)
+  estado_usuario           Boolean             @db.Bit(1)     @default(true)
+  imagen_perfil_usuario    String              @db.VarChar(255) @default("avatarGenerico.jpg")
+  rol_usuario              usuario_rol_usuario @default(ADMIN)
+  
+}
+
+
+enum pedido_estado {
+  COMPLETADO
+  DECLINADO
+  ERROR
+  PENDIENTE
+}
+
+enum archivo_multimedia_tipo {
+  AUDIO
+  IMAGEN
+  VIDEO
+}
+
+enum archivo_multimedia_tipo_entidad {
+  CategoriaProducto
+  Producto
+  Publicacion
+  Usuario
+}
+
+enum producto_region_producto {
+  AMAZONICA
+  ANDINA
+  CARIBE
+  INSULAR
+  ORINOQUIA
+  PACIFICA
+}
+
+enum usuario_rol_usuario {
+  ADMIN
+  COMPRADOR
+  ORGANIZADOR
+  VENDEDOR
+}
