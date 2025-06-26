@@ -41,7 +41,7 @@ export default function cardCarusel({ posts }: { posts: Post[] }) {
                   <Link className=' m-0 p-0  ' href={`${producto.idProducto}`}>
                   <p className='text-2xl underline hover:text-amber-300 transition-colors duration-300'>{producto.nombreProducto}</p>
                   </Link>
-                  <p>${producto.precioProducto} COP <span className='line-through'>Precio anterior</span></p>
+                  <p>${producto.precioProducto} COP </p>
                   <div className="flex">
                     {stars.map((_, i) => (
                       <svg

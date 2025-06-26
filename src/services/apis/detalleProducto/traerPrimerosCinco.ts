@@ -6,10 +6,10 @@ interface Productos {
   precioProducto: number;
     stockProducto: number;
 }
-export async function getPrimerosCinco(): Promise<Productos[]> {
+export async function getPrimerosCinco(id:String) {
   try {
     const response = await axios.get<Productos[]>(
-      "http://localhost:8080/api/producto/public/listarproductos"
+      `http://localhost:8080/api/producto/public/relacionados/${id}`
     );
     return response.data.slice(0, 6);
   } catch (error) {

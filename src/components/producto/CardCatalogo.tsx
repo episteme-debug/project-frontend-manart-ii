@@ -53,20 +53,25 @@ interface Promociones {
 }
 
 const stars = Array(5).fill(0);
+interface CardCatalogoProps {
+  posts: Post[];
+  page: number;
+  totalPages: number;
+  categorias: Categoria[];
+  promociones: Promociones[];
+}
 
 export default function CardCatalogo({
   posts,
   page,
-  totalPages
-}: {
-  posts: Post[];
-  page: number;
-  totalPages: number;
-}) {
+  totalPages,
+  categorias,
+  promociones
+}: CardCatalogoProps) {
 
-  const [categorias, setCategorias] = useState<Categoria[]>([]);
+
   const [productos, setProductos] = useState<Producto[]>([]);
-  const [promociones, setpromociones] = useState<Promociones[]>([]);
+
 
   const [mostrarTodos, setMostrarTodos] = useState(true);
   function cambiarMostrarTodos(valor: boolean) {
@@ -118,14 +123,6 @@ export default function CardCatalogo({
       console.error("Error al filtrar productos:", error);
     }
   };
-
-  useEffect(() => {
-    traersCategorias().then((data) => setCategorias(data));
-  }, []);
-
-  useEffect(() => {
-    traerPromociones().then((data) => setpromociones(data));
-  }, []);
 
   return (
     <section className="min-h-screen grid justify-items-center">
