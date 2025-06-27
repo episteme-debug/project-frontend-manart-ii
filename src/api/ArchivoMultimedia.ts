@@ -8,6 +8,7 @@ const baseURL = "http://localhost:8080/api/archivomultimedia"
 
 export async function SubirArchivos(files: File[], entidad: string, idObjeto: number) {
   try {
+    console.log("Dentro de subida")
     const user = await obtenerCookie()
     if (!user) throw new Error("Usuario no autenticado")
  

@@ -82,14 +82,20 @@ export function ProductForm({ product = emptyProduct, idUsuario }: { product?: P
     e.preventDefault()
     setIsSubmitting(true)
 
-    
-    console.log("Objeto a enviar:", formData)
     try {
-      await CrearProducto(formData)
-      const archivos = cargaImagenesRef.current?.getArchivos() || []
-      await SubirArchivos(archivos, "Producto", formData.idProducto)
+      // 1. Crear producto y esperar respuesta
+      const productoCreado = await CrearProducto(formData)
 
-      // Redireccionar a la lista de productos
+      // 2. Obtener archivos cargados desde el componente
+      const archivos = cargaImagenesRef.current?.getArchivos() || []
+
+      // 3. Subir archivos con el nuevo ID
+      if (!productoCreado) {
+        throw new Error("No se pudo crear el producto")
+      }
+      await SubirArchivos(archivos, "Producto", productoCreado.idProducto)
+
+      // 4. Redireccionar
       router.push("/dashboard/productos")
     } catch (error) {
       toast({
@@ -106,7 +112,9 @@ export function ProductForm({ product = emptyProduct, idUsuario }: { product?: P
     <form onSubmit={handleSubmit} className="space-y-8">
       <div className="grid gap-8 md:grid-cols-[1fr_2fr]">
         {/* Image Upload Section */}
-        <CargaImagenes ref={cargaImagenesRef}/>
+        <CargaImagenes
+          ref={cargaImagenesRef}
+          imagenesIniciales={product.listaArchivos} />
 
         {/* Product Details Form */}
         <div className="space-y-6">
