@@ -28,8 +28,10 @@ export async function SubirArchivos(files: File[], entidad: string, idObjeto: nu
     })
 
     return response.data
+    
   } catch (error: any) {
     console.error("Error al subir archivos:", error.response?.data || error.message)
     return null
+
   }
 }
