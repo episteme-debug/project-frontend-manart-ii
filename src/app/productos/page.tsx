@@ -1,7 +1,7 @@
 import CardCatalogo from '../../components/producto/CardCatalogo';
-import { obtenerPosts } from '../../services/apis/detalleProducto/traerTodosLosProductos';
-import { traersCategorias } from '../../services/apis/detalleProducto/traersCategorias';
-import { traerPromociones } from '../../services/apis/detalleProducto/traerPromociones';
+import { obtenerPosts } from '../../services/apis/producto/traerTodosLosProductos';
+import { traersCategorias } from '../../services/apis/producto/traersCategorias';
+import { traerPromociones } from '../../services/apis/producto/traerPromociones';
 
 interface Post {
   idProducto: number;

@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
+/** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
+  images: {
+    domains: ['localhost'], 
+  },
   async rewrites() {
     return [
       {
@@ -11,4 +15,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;

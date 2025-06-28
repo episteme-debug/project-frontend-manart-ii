@@ -8,19 +8,17 @@ export function useLogin() {
 
     const manejarEnvio = async (evento: React.FormEvent) => {
         evento.preventDefault();
-
+        console.log('Enviando datos de inicio de sesión:', { usuario, contrasena });
         try {
-            const respuesta = await axios.post('/api/autenticacion/public/login', {
+            const respuesta = await axios.post('http://localhost:8080/api/autenticacion/public/login', {
                 alias: usuario,
                 contraseña: contrasena,
-            }, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+            },
+            {withCredentials: true});
 
             if (respuesta.status === 200) {
-                setMensaje('Inicio de sesión exitoso\n' + respuesta.data.token);
+                setMensaje('Inicio de sesión exitoso\n' + respuesta.data.mensaje);
+
             }
         } catch (error: any) {
             setMensaje('Error al iniciar sesión');

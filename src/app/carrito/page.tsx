@@ -22,7 +22,7 @@ export default async function Home() {
   
   return (
     <section className="w-full min-h-screen bg-gray-100  grid  justify-items-center">
-      <section className="bg-gray-450 shadow-2xl max-w-[85%] rounded-md p-5">
+      <section className="bg-gray-450 shadow-2xl w-[90%] rounded-md p-5">
         <div>
           <ListarProductoCarritos />
         </div>

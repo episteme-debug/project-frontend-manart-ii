@@ -43,7 +43,7 @@ interface DetalleProductoClienteProps {
 export default function DetalleProductoCliente({ producto, posts }: DetalleProductoClienteProps) {
     return (
         <section className="grid w-full h-screen p-2 justify-items-center ">
-            <section className="grid grid-cols-10 bg-gray-450 shadow-2xl max-w-[85%] rounded-md p-5">
+            <section className="grid grid-cols-10 bg-gray-450 shadow-2xl w-[90%] rounded-md p-5">
                 {/* Imagenes */}
                 <div className="flex mr-1 pt-5 col-span-4 rounded-tl-lg h-[465px]">
                     <div className="relative h-full overflow-hidden">

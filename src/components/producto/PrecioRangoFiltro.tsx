@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button } from '@/components/ui/button';
 import { InputOTPSeparator } from "@/components/ui/input-otp";
-import { RagodePreciso } from "../../services/apis/detalleProducto/traerRangodePrecio"
+import { RagodePreciso } from "../../services/apis/producto/traerRangodePrecio"
 interface PrecioRangoFiltroProps {
   setprecioMin: (valor: number) => void;
   setprecioMax: (valor: number) => void;

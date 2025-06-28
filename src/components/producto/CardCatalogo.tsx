@@ -2,8 +2,8 @@
 import React from "react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { traersCategorias } from "../../services/apis/detalleProducto/traersCategorias";
-import { traerPromociones } from "../../services/apis/detalleProducto/traerPromociones";
+import { traersCategorias } from "../../services/apis/producto/traersCategorias";
+import { traerPromociones } from "../../services/apis/producto/traerPromociones";
 import { Button } from "@/components/ui/button";
 import PrecioRangoFiltro from "./PrecioRangoFiltro";
 import { filtarCategorias } from "../../services/apis/producto/filtarCategoria"
@@ -126,7 +126,7 @@ export default function CardCatalogo({
 
   return (
     <section className="min-h-screen grid justify-items-center">
-      <section className="grid grid-cols-5 max-w-[90%] shadow-2xl pt-5">
+      <section className="grid grid-cols-5 w-[90%] shadow-2xl pt-5">
         <div className="col-start-1 col-end-2 col-span-1 row-span-2 shadow-2xl h-auto ">
           <div className=" ">
             {(nombreCategoria != null ||
