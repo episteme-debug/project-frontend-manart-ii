@@ -21,7 +21,6 @@ interface Productos {
 
 
 function ListarProductoCarritos() {
-  //Listar producto de carrito
   const [productos, setProductos] = useState<Productos[]>([]);
 
   const [loading, setLoading] = useState(true);
@@ -46,8 +45,6 @@ function ListarProductoCarritos() {
     inhabilitar(true);
   }
   }, [productos]);
-
-  //Eliminar producto de carrito
   const handleEliminar = async (idItem: number) => {
     await eliminarproducto(idItem);
     const productosActualizados = await listarproductos();
@@ -140,7 +137,7 @@ function ListarProductoCarritos() {
           </div>
 
           <div className="w-[25%] pr-5 pl-5">
-            <div className="shadow-2xl bg-white justify-items-center p-4">
+            <div className="shadow-2xl bg-white p-4">
               <h1 className="text-2xl mb-4">Resumen de compra</h1>
               <hr />
               <p className="text-xl mt-4">

@@ -2,11 +2,9 @@
 import React from "react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { traersCategorias } from "../../services/apis/producto/traersCategorias";
-import { traerPromociones } from "../../services/apis/producto/traerPromociones";
 import { Button } from "@/components/ui/button";
-import PrecioRangoFiltro from "./PrecioRangoFiltro";
 import { filtarCategorias } from "../../services/apis/producto/filtarCategoria"
+import { InputOTPSeparator } from "@/components/ui/input-otp";
 import {
   Card,
   CardContent,
@@ -51,7 +49,10 @@ interface Promociones {
   porcentajeDescuentoPromocion: number;
   estadoPromocion: true;
 }
-
+interface Rango {
+  precioMinimo: number;
+  precioMaximo: number;
+}
 const stars = Array(5).fill(0);
 interface CardCatalogoProps {
   posts: Post[];
@@ -59,6 +60,7 @@ interface CardCatalogoProps {
   totalPages: number;
   categorias: Categoria[];
   promociones: Promociones[];
+  rango: Rango;
 }
 
 export default function CardCatalogo({
@@ -66,12 +68,12 @@ export default function CardCatalogo({
   page,
   totalPages,
   categorias,
-  promociones
+  promociones,
+  rango
 }: CardCatalogoProps) {
 
 
   const [productos, setProductos] = useState<Producto[]>([]);
-
 
   const [mostrarTodos, setMostrarTodos] = useState(true);
   function cambiarMostrarTodos(valor: boolean) {
@@ -212,14 +214,75 @@ export default function CardCatalogo({
           </div>
           <br />
 
-          <div className=" ">
-            <PrecioRangoFiltro
-              setprecioMin={setprecioMin}
-              setprecioMax={setprecioMax}
-              inhabilitar={cambiarMostrarTodos}
-              habilitar={cambiarOcultamientoFiltros}
-              Ocultra={cambiarVisibilidadSeccion}
-            />
+          <div className="g w-full ">
+            <div className="ml-2">
+              <h2>Rango de precios</h2>
+              <Button className="flex  bg-gray-300 not-hover" onClick={() => {
+                setprecioMin(rango.precioMinimo);
+                setprecioMax(30000);
+                cambiarMostrarTodos(false);
+                cambiarOcultamientoFiltros(false);
+                cambiarVisibilidadSeccion(false);
+              }}
+                className={` rounded mb-2 hover:bg-amber-500
+            ${precioMin === rango.precioMinimo && precioMax === 30000
+                    ? "bg-amber-400 text-white"
+                    : "bg-gray-300 text-black"
+                  }`}
+              >
+                <span className="text-black">{rango.precioMinimo}</span>
+                <InputOTPSeparator />
+                <span className="text-black">30.000</span>
+              </Button>
+              <Button className="flex" onClick={() => {
+                setprecioMin(30000);
+                setprecioMax(50000);
+                cambiarMostrarTodos(false);
+                cambiarOcultamientoFiltros(false);
+                cambiarVisibilidadSeccion(false);
+              }}
+               className={` rounded mb-2 hover:bg-amber-500
+            ${precioMin === 30000 && precioMax === 50000
+                    ? "bg-amber-400 text-white"
+                    : "bg-gray-300 text-black"
+                  }`}>
+                <span>30.000</span>
+                <InputOTPSeparator />
+                <span>50.000</span>
+              </Button>
+              <Button className="flex" onClick={() => {
+                setprecioMin(50000);
+                setprecioMax(100000);
+                cambiarMostrarTodos(false);
+                cambiarOcultamientoFiltros(false);
+                cambiarVisibilidadSeccion(false);
+              }}
+               className={` rounded mb-2 hover:bg-amber-500
+            ${precioMin === 50000 && precioMax === 100000
+                    ? "bg-amber-400 text-white"
+                    : "bg-gray-300 text-black"
+                  }`}>
+                <span>50.000</span>
+                <InputOTPSeparator />
+                <span>100.000</span>
+              </Button>
+              <Button className="flex" onClick={() => {
+                setprecioMin(100000);
+                setprecioMax(rango.precioMaximo);
+                cambiarMostrarTodos(false);
+                cambiarOcultamientoFiltros(false);
+                cambiarVisibilidadSeccion(false);
+              }}
+               className={` rounded mb-2 hover:bg-amber-500
+            ${precioMin === 100000 && precioMax === rango.precioMaximo
+                    ? "bg-amber-400 text-white"
+                    : "bg-gray-300 text-black"
+                  }`}>
+                <span>100.000</span>
+                <InputOTPSeparator />
+                <span>{rango.precioMaximo}</span>
+              </Button>
+            </div>
           </div>
           <br />
           <div className="">
@@ -446,6 +509,6 @@ export default function CardCatalogo({
 
         </div>
       </section>
-    </section>
+    </section >
   );
 }

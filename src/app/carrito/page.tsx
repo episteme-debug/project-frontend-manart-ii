@@ -1,7 +1,4 @@
 import ListarProductoCarritos from "../../components/carrito/listarProductoCarritos";
-import { getPrimerosCinco } from "../../services/apis/detalleProducto/traerPrimerosCinco";
-import CardCarusel from "../../components/carrito/cardCaruselCarrito";
-
 import {
   Carousel,
   CarouselContent,
