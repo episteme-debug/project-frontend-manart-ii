@@ -62,3 +62,28 @@ export async function EliminarProducto(idProducto: number) {
 
   }
 }
+
+export async function ListarProductosPorUsuario(): Promise<ProductoRespuesta[] | null> {
+  try {
+    const user = await obtenerCookie()
+    if (!user) {
+      throw new Error("No autenticado")
+    }
+
+    const cookieStore = await cookies()
+    const token = cookieStore.get("token")?.value
+
+    const url = `${baseURL}/private/listarporusuario`
+
+    const respuesta = await axios.get<ProductoRespuesta[]>(url, {
+      headers: {
+        Cookie: `token=${token}`,
+      },
+    })
+
+    return respuesta.data
+  } catch (error: any) {
+    console.error("Error al obtener los productos:", error?.response?.data || error.message)
+    return null
+  }
+}

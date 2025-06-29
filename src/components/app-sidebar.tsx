@@ -72,24 +72,28 @@ const data = {
       ],
     },
     {
-      title: "Documentation",
+      title: "Gestión de Productos",
+      url: "dashboard/",
+      icon: SquareTerminal,
+      isActive: true,
+      items: [
+        {
+          title: "Listado de Productos",
+          url: "/dashboard/productos",
+        },
+        {
+          title: "Agregar Producto",
+          url: "/dashboard/productos/nuevo",
+        },
+      ],
+    },
+    {
+      title: "Gestión de Pedidos",
       url: "#",
       icon: BookOpen,
       items: [
         {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
+          title: "Listado de Pedidos",
           url: "#",
         },
       ],

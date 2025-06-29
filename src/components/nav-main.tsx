@@ -28,24 +28,9 @@ export function NavMain({
     }[]
   }[]
 }) {
-  // Add the Products Management item
+
   const navItems = [
     ...items,
-    {
-      title: "Gestión de Productos",
-      url: "productos",
-      icon: Package,
-      items: [
-        {
-          title: "Listado de Productos",
-          url: "",
-        },
-        {
-          title: "Agregar Producto",
-          url: "/productos/nuevo",
-        },
-      ],
-    },
   ]
 
   return (

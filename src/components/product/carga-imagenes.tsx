@@ -11,11 +11,12 @@ import { ChevronLeft, ChevronRight, Trash, X, ImagePlus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ArchivoMultimediaRespuesta } from "@/interfaces/ArchivoMultimediaInterfaz"
+import { EliminarArchivo } from "@/api/ArchivoMultimedia"
 
 export type CargaImagenesRef = {
   getArchivos: () => File[]
   getImagenesIniciales: () => ArchivoMultimediaRespuesta[]
-  getEliminadas: () => ArchivoMultimediaRespuesta[] // <- nuevo
+  getEliminadas: () => ArchivoMultimediaRespuesta[]
 }
 
 type CargaImagenesProps = {
@@ -64,11 +65,17 @@ export const CargaImagenes = forwardRef<CargaImagenesRef, CargaImagenesProps>(
       })
     }
 
-    const eliminar = (i: number) => {
+    const eliminar = async (i: number) => {
       const preview = previews[i]
       if (preview.tipo === "inicial") {
         setUrlsIniciales((prev) => prev.filter((img) => img !== preview.archivo))
         setEliminadas((prev) => [...prev, preview.archivo])
+
+        try {
+          await EliminarArchivo(preview.archivo.id)
+        } catch (error) {
+          console.error("Error al eliminar la imagen d ela base de datos.", error)
+        }
       } else {
         const fileIndex = previews.filter((p) => p.tipo === "nuevo").indexOf(preview)
         setArchivos((prev) => prev.filter((_, j) => j !== fileIndex))
@@ -87,10 +94,15 @@ export const CargaImagenes = forwardRef<CargaImagenesRef, CargaImagenesProps>(
       )
     }
 
-    const BASE_URL = "http://localhost:8080"
-
-const obtenerSrc = (p: Preview) =>
-  p.tipo === "inicial" ? `${BASE_URL}${p.archivo.ruta}` : p.dataUrl
+    const BASE_URL = "/static/"
+    const obtenerSrc = (p?: Preview) => {
+      if (!p) return ""
+      if (p.tipo === "inicial") {
+        console.log(`${BASE_URL}${p.archivo.ruta}`)
+        return `${BASE_URL}${p.archivo.ruta}`
+      }
+      return p.dataUrl
+    }
 
 
     return (
@@ -101,14 +113,25 @@ const obtenerSrc = (p: Preview) =>
               className="relative w-full max-w-sm aspect-square border rounded shadow overflow-hidden cursor-pointer"
               onClick={() => previews[index] && setOpen(true)}
             >
-              <Image
-                key={obtenerSrc(previews[index])}
-                src={obtenerSrc(previews[index])}
-                alt="Vista previa"
-                fill
-                priority
-                className="object-contain bg-white transition duration-200"
-              />
+              {previews[index] ? (
+                <Image
+                  key={obtenerSrc(previews[index])}
+                  src={obtenerSrc(previews[index])}
+                  alt="Vista previa"
+                  fill
+                  priority
+                  className="object-contain bg-white transition duration-200"
+                />
+              ) : (
+                <Image
+                  src="/images/ImagenProductoPorDefecto.jpg"
+                  alt="Imagen por defecto"
+                  fill
+                  priority
+                  className="object-contain bg-white opacity-50"
+                />
+              )}
+
               {previews.length > 1 && (
                 <>
                   <Chevron dir="left" onClick={() => navegar("prev")} responsive />
@@ -164,9 +187,8 @@ const obtenerSrc = (p: Preview) =>
                 <button
                   key={i}
                   onClick={() => setIndex(i)}
-                  className={`h-2.5 w-2.5 rounded-full transition ${
-                    i === index ? "bg-white scale-125" : "bg-gray-500 opacity-60"
-                  }`}
+                  className={`h-2.5 w-2.5 rounded-full transition ${i === index ? "bg-white scale-125" : "bg-gray-500 opacity-60"
+                    }`}
                 />
               ))}
             </div>
@@ -203,9 +225,8 @@ const Chevron = ({
       className={`absolute top-1/2 -translate-y-1/2 ${positionClass} z-10`}
     >
       <Icon
-        className={`text-white drop-shadow-lg cursor-pointer transition ${
-          big ? "w-10 h-10" : "w-6 h-6"
-        }`}
+        className={`text-white drop-shadow-lg cursor-pointer transition ${big ? "w-10 h-10" : "w-6 h-6"
+          }`}
       />
     </button>
   )

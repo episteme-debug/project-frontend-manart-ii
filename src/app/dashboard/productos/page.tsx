@@ -1,4 +1,3 @@
-"use client"
 import { Suspense } from "react"
 import { ProductList } from "@/components/product/product-list"
 import { ProductListSkeleton } from "@/components/product/product-list-skeleton"
@@ -14,13 +13,8 @@ import {
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
-import { useUsuario } from "@/contexts/UsuarioContext"
 
 export default function ProductsPage() {
-  const usuario = useUsuario()
-  if (!usuario || !Array.isArray(usuario.usuario?.listaProductos)) return []
-
-  const listaProductos = usuario.usuario.listaProductos
   return (
     <SidebarInset>
       <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
@@ -48,7 +42,7 @@ export default function ProductsPage() {
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
         <ProductSearch />
         <Suspense fallback={<ProductListSkeleton />}>
-          <ProductList listaProductos={listaProductos}/>
+          <ProductList/>
         </Suspense>
       </div>
     </SidebarInset>

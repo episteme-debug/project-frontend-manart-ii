@@ -3,13 +3,10 @@
 import type React from "react"
 
 import { useState, useEffect, useRef } from "react"
-import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { ImagePlus } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -19,8 +16,7 @@ import { CategoriaProductoRespuesta } from "@/interfaces/CategoriaProductoInterf
 import { listarCategorias } from "@/api/CategoriaProducto"
 import { ProductoCreacion, ProductoRespuesta } from "@/interfaces/ProductoInterfaz"
 import { CrearProducto } from "@/api/Producto"
-import Usuario from "@/app/prueba/usuario/page"
-import { obtenerUsuarioPorId } from "@/api/Usuario"
+
 import { CargaImagenes } from "./carga-imagenes"
 import { CargaImagenesRef } from "./carga-imagenes"
 import { SubirArchivos } from "@/api/ArchivoMultimedia"
@@ -93,10 +89,14 @@ export function ProductForm({ product = emptyProduct, idUsuario }: { product?: P
       if (!productoCreado) {
         throw new Error("No se pudo crear el producto")
       }
-      await SubirArchivos(archivos, "Producto", productoCreado.idProducto)
+
+      if (archivos.length > 0) {
+        await SubirArchivos(archivos, "Producto", productoCreado.idProducto)
+      }
 
       // 4. Redireccionar
       router.push("/dashboard/productos")
+      router.refresh()
     } catch (error) {
       toast({
         title: "Error",

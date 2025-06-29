@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Roboto_Mono } from "next/font/google";
-import Link from 'next/link'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider"
 

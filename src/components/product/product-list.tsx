@@ -1,9 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import Image from "next/image"
 import { useSearchParams } from "next/navigation"
 import { Edit, MoreHorizontal, Trash } from "lucide-react"
+
+import { ListarProductosPorUsuario, EliminarProducto } from "@/api/Producto"
+import { ProductoRespuesta } from "@/interfaces/ProductoInterfaz"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
@@ -15,9 +18,13 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import {
   Pagination,
   PaginationContent,
@@ -26,39 +33,53 @@ import {
   PaginationPrevious,
   PaginationNext,
 } from "@/components/ui/pagination"
-import { ProductoRespuesta } from "@/interfaces/ProductoInterfaz"
-import { EliminarProducto } from "@/api/Producto"
 
-interface TipoProps {
-  listaProductos: ProductoRespuesta[]
-}
-
-export function ProductList(props: TipoProps) {
-
-  const [productos, setProductos] = useState<ProductoRespuesta[]>(props.listaProductos)
-  const searchParams = useSearchParams()
-  const query = searchParams.get("query") || ""
-  const dateFilter = searchParams.get("date") || ""
-
+export function ProductList() {
+  const [productos, setProductos] = useState<ProductoRespuesta[]>([])
   const [currentPage, setCurrentPage] = useState(1)
-  const [productToDelete, setProductToDelete] = useState<number | null>(null)
+  const [productToDelete, setProductToDelete] = useState<ProductoRespuesta | null>(null)
+
+  const searchParams = useSearchParams()
+  const query = searchParams.get("query")?.toLowerCase() || ""
 
   const itemsPerPage = 8
 
-  // Filter products based on search query and date
-  const filteredProducts = productos.filter((product) => {
-    const matchesQuery = product.nombreProducto.toLowerCase().includes(query.toLowerCase())
-    return matchesQuery
-  })
+  // 🧠 Cargar productos una vez al montar
+  useEffect(() => {
+    const cargarProductos = async () => {
+      try {
+        const productosDesdeApi = await ListarProductosPorUsuario()
+        if (productosDesdeApi != null) {
+          setProductos(productosDesdeApi)
+        }
+      } catch (error) {
+        console.error("Error al cargar productos:", error)
+      }
+    }
 
-  // Calculate pagination
+    cargarProductos()
+  }, [])
+
+  const filteredProducts = useMemo(() => {
+    return productos.filter(product =>
+      product.nombreProducto.toLowerCase().includes(query)
+    )
+  }, [productos, query])
+
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage)
-  const paginatedProducts = filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage
+    return filteredProducts.slice(start, start + itemsPerPage)
+  }, [filteredProducts, currentPage])
 
   const handleDeleteProduct = async (id: number) => {
     try {
       await EliminarProducto(id)
-      setProductos((prev) => prev.filter((p) => p.idProducto !== id))
+      const actualizados = await ListarProductosPorUsuario()
+      if (actualizados != null) {
+        setProductos(actualizados)
+      }
       setProductToDelete(null)
     } catch (error) {
       console.error("Error al eliminar producto:", error)
@@ -78,7 +99,17 @@ export function ProductList(props: TipoProps) {
             {paginatedProducts.map((product) => (
               <Card key={product.idProducto} className="overflow-hidden">
                 <div className="relative h-48 w-full">
-                  <Image src={"/images/ImagenProductoPorDefecto.jpg"} alt={product.nombreProducto} fill className="object-cover" />
+                  <Image
+                    src={
+                      product.listaArchivos.length > 0
+                        ? `/static/${product.listaArchivos[0].ruta.replace(/^\/+/, "")}`
+                        : "/images/ImagenProductoPorDefecto.jpg"
+                    }
+                    alt={product.nombreProducto}
+                    fill
+                    className="object-cover"
+                    loading="lazy"
+                  />
                 </div>
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
@@ -100,47 +131,50 @@ export function ProductList(props: TipoProps) {
                             Editar
                           </a>
                         </DropdownMenuItem>
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <DropdownMenuItem
-                              onSelect={(e) => {
-                                e.preventDefault()
-                                setProductToDelete(product.idProducto)
-                              }}
-                            >
-                              <Trash className="mr-2 h-4 w-4" />
-                              Eliminar
-                            </DropdownMenuItem>
-                          </DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle>Confirmar eliminación</DialogTitle>
-                              <DialogDescription>
-                                ¿Estás seguro de que deseas eliminar el producto "{product.nombreProducto}"? Esta acción no se
-                                puede deshacer.
-                              </DialogDescription>
-                            </DialogHeader>
-                            <DialogFooter>
-                              <DialogClose asChild>
-                                <Button variant="outline">Cancelar</Button>
-                              </DialogClose>
-                              <Button variant="destructive" onClick={() => handleDeleteProduct(product.idProducto)}>
-                                Eliminar
-                              </Button>
-                            </DialogFooter>
-                          </DialogContent>
-                        </Dialog>
+                        <DropdownMenuItem
+                          onSelect={(e) => {
+                            e.preventDefault()
+                            setProductToDelete(product)
+                          }}
+                        >
+                          <Trash className="mr-2 h-4 w-4" />
+                          Eliminar
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
                 </CardContent>
                 <CardFooter className="flex justify-between border-t p-4 pt-2">
                   <span className="text-xs text-muted-foreground">Stock: {product.stockProducto}</span>
-                  <span className="text-xs text-muted-foreground">No Aplica for the moment</span>
+                  <span className="text-xs text-muted-foreground">
+                    {product.listaCategorias.length > 0 ? product.listaCategorias[0] : "Sin categoría"}
+                  </span>
                 </CardFooter>
               </Card>
             ))}
           </div>
+
+          {productToDelete && (
+            <Dialog open onOpenChange={() => setProductToDelete(null)}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Confirmar eliminación</DialogTitle>
+                  <DialogDescription>
+                    ¿Estás seguro de que deseas eliminar el producto "{productToDelete.nombreProducto}"?
+                    Esta acción no se puede deshacer.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="outline">Cancelar</Button>
+                  </DialogClose>
+                  <Button variant="destructive" onClick={() => handleDeleteProduct(productToDelete.idProducto)}>
+                    Eliminar
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          )}
 
           {totalPages > 1 && (
             <Pagination className="mx-auto">
