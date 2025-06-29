@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import Link from 'next/link';
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { eliminarproducto } from "../../services/apis/carrito/eliminarProducto";
 import { traerSubtotal } from "../../services/apis/carrito/traerSubtotaldeCarrito"
 import { actualizarCantidad } from "../../services/apis/carrito/actualizarCatidades"
+import { traerArchivo } from "../../api/detalleCategoria/taerArchivos"
 
 interface Productos {
   idCarrito: number;
@@ -25,25 +26,26 @@ function ListarProductoCarritos() {
 
   const [loading, setLoading] = useState(true);
   const [subtotal, setSubtotal] = useState<number | null>(null);
+  const [imagenesProductos, setImagenesProductos] = useState<{ [id: number]: string }>({});
 
   useEffect(() => {
     listarproductos().then((data) => setProductos(data)).finally(() => setLoading(false));
   }, []);
 
   const [visible, setvisible] = useState(true);
-    function inhabilitar(estado: boolean) {
-      setvisible(estado)
-    }
-  
+  function inhabilitar(estado: boolean) {
+    setvisible(estado)
+  }
+
   useEffect(() => {
     if (productos.length > 0) {
       const idCarrito = productos[0].idCarrito;
       traerSubtotal(idCarrito).then((total) => setSubtotal(total));
       inhabilitar(false);
     } else {
-    setSubtotal(0.0);
-    inhabilitar(true);
-  }
+      setSubtotal(0.0);
+      inhabilitar(true);
+    }
   }, [productos]);
   const handleEliminar = async (idItem: number) => {
     await eliminarproducto(idItem);
@@ -51,29 +53,48 @@ function ListarProductoCarritos() {
     setProductos(productosActualizados);
   };
 
+  useEffect(() => {
+    const cargarImagenesDePosts = async () => {
+      const nuevasImagenes: { [id: number]: string } = {};
+
+      for (const post of productos) {
+        try {
+          const entidad = "Producto";
+          const data = await traerArchivo(entidad, post.idProducto);
+          if (Array.isArray(data) && data.length > 0 && data[0].ruta) {
+            const rutaNormalizada = data[0].ruta.replace(/\\/g, "/");
+            const urlCompleta = `http://localhost:8080/${rutaNormalizada}`;
+            nuevasImagenes[post.idProducto] = urlCompleta;
+          }
+        } catch (error) {
+          console.error(`Error al cargar imagen del producto ${post.idProducto}:`, error);
+        }
+      }
+
+      setImagenesProductos(nuevasImagenes);
+    };
+    cargarImagenesDePosts();
+  }, [productos]);
+
   if (loading) {
     return <p>Cargando Productos...</p>;
   }
-
   return (
     <section>
-  <div className={`bg-white shadow-xl w-[100%] h-[200] mb-4 flex items-stretch justify-center ${visible ? 'block'  :  'hidden' }`}>
-    <div className='self-center  '><h1 className='text-2xl'>Tu carrito esta vacio mira nuestro productos y empieza a agregar</h1> </div>
-  </div>
-      <div className={`mb-6 ${visible ? 'hidden' : 'block' } `}>
+      <div className={`bg-white shadow-xl w-[100%] h-[200] mb-4 flex items-stretch justify-center ${visible ? 'block' : 'hidden'}`}>
+        <div className='self-center  '><h1 className='text-2xl'>Tu carrito esta vacio mira nuestro productos y empieza a agregar</h1> </div>
+      </div>
+      <div className={`mb-6 ${visible ? 'hidden' : 'block'} `}>
         <div className="w-full flex">
           <div className="w-[75%] bg-white shadow-xl p-5">
             {productos.map((producto) => (
               <div key={producto.idItem} className="flex w-full shadow-xs mb-5" id='cardProductoscarrito'>
                 <div className="w-50">
                   <AspectRatio ratio={14 / 9}>
-                    <Image
-                      src="/logo.png"
-                      alt="Image"
-                      className="rounded-md object-cover w-full h-full"
-                      width={600}
-                      height={0}
-                    />
+                    <Image src={imagenesProductos[producto.idProducto] || "/imagen-defecto.png"} alt={producto.nombreProducto} width={300}
+                      height={300}
+                      className="object-contain w-full max-h-[100px]"
+                      priority />
                   </AspectRatio>
                 </div>
                 <div className="w-full content-center grid grid-cols-8">

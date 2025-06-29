@@ -1,9 +1,10 @@
 "use client";
-
+import { useState, useEffect } from "react";
 import React from "react";
 import Image from "next/image";
-import CardCarusel from "../cardCarusel";
+import CardCarusel from "./cardCarusel";
 import ActivarBoton from "../../components/carrito/agregarCarrito";
+import { traerArchivo } from "../../api/detalleCategoria/taerArchivos"
 import ComparaAhora from "../../components/carrito/comparAhora";
 import {
     Carousel,
@@ -41,6 +42,30 @@ interface DetalleProductoClienteProps {
 }
 
 export default function DetalleProductoCliente({ producto, posts }: DetalleProductoClienteProps) {
+    const [imagenesProductos, setImagenesProductos] = useState<{ [id: number]: string }>({});
+    useEffect(() => {
+        const cargarImagenesDePosts = async () => {
+            const nuevasImagenes: { [id: number]: string } = {};
+            if (posts.length === 0) return;
+            for (const post of posts) {
+                try {
+                    const entidad = "Producto";
+                    const data = await traerArchivo(entidad, producto.idProducto);
+                    if (Array.isArray(data) && data.length > 0 && data[0].ruta) {
+                        const rutaNormalizada = data[0].ruta.replace(/\\/g, "/");
+                        const urlCompleta = `http://localhost:8080/${rutaNormalizada}`;
+                        nuevasImagenes[producto.idProducto] = urlCompleta;
+                    }
+                } catch (error) {
+                    console.error(`Error al cargar imagen del producto ${post.idProducto}:`, error);
+                }
+            }
+            setImagenesProductos(nuevasImagenes);
+        };
+        cargarImagenesDePosts();
+
+    }, [posts]);
+
     return (
         <section className="grid w-full h-screen p-2 justify-items-center ">
             <section className="grid grid-cols-10 bg-gray-450 shadow-2xl w-[90%] rounded-md p-5">
@@ -55,7 +80,7 @@ export default function DetalleProductoCliente({ producto, posts }: DetalleProdu
                                         className="relative flex justify-center items-center h-[70px] mb-1"
                                     >
                                         <div className="relative w-[60px] h-[60px]">
-                                            <Image src="/logo.png" alt={`Logo ${i}`} fill className="object-contain rounded" />
+                                            <Image src="/imagen-defecto.png" alt={`Logo ${i}`} fill className="object-contain rounded" />
                                         </div>
                                     </CarouselItem>
                                 ))}
@@ -63,9 +88,16 @@ export default function DetalleProductoCliente({ producto, posts }: DetalleProdu
                         </Carousel>
                     </div>
                     <div className="ml-6 flex-1 h-full">
-                        <div className="relative w-full h-full">
-                            <Image src="/logo.png" alt="Main Image" fill className="rounded-lg object-cover border-1 border-gray" />
+                        <div className="relative w-full h-[450px] max-w-[400px] mx-auto">
+                            <Image
+                                src={imagenesProductos[producto.idProducto] || "/imagen-defecto.png"}
+                                alt={producto.nombreProducto}
+                                fill
+                                className="rounded-lg object-contain border border-gray"
+                                priority
+                            />
                         </div>
+
                     </div>
                 </div>
 

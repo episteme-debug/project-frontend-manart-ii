@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { filtarCategorias } from "../../services/apis/producto/filtarCategoria"
+import Image from "next/image"
+import { traerArchivo } from "../../api/detalleCategoria/taerArchivos"
 import { InputOTPSeparator } from "@/components/ui/input-otp";
 import {
   Card,
@@ -28,6 +30,7 @@ interface Post {
   descripcionProducto: string;
   precioProducto: number;
   stockProducto: number;
+  imagenProducto?: String
 }
 interface Categoria {
   idCategoria: number;
@@ -35,13 +38,6 @@ interface Categoria {
   descripcionCategoria: string;
   estadoCategoria: boolean;
   archivoMultimedia: any[];
-}
-interface Producto {
-  idProducto: number;
-  nombreProducto: string;
-  descripcionProducto: string;
-  precioProducto: number;
-  stockProducto: number;
 }
 interface Promociones {
   idPromocion: number;
@@ -73,7 +69,8 @@ export default function CardCatalogo({
 }: CardCatalogoProps) {
 
 
-  const [productos, setProductos] = useState<Producto[]>([]);
+  const [productos, setProductos] = useState<Post[]>([]);
+  const [imagenesProductos, setImagenesProductos] = useState<{ [id: number]: string }>({});
 
   const [mostrarTodos, setMostrarTodos] = useState(true);
   function cambiarMostrarTodos(valor: boolean) {
@@ -94,6 +91,58 @@ export default function CardCatalogo({
   const [porcentajeDescuento, setporcentajeDescuento] = useState<number | null>(null);
   const [precioMin, setprecioMin] = useState<number | null>(null);
   const [precioMax, setprecioMax] = useState<number | null>(null);
+  useEffect(() => {
+    const cargarTodasImagenes = async () => {
+      const nuevasImagenes: { [id: number]: string } = {};
+
+      for (const producto of productos) {
+        try {
+          const entidad = "Producto";
+          const data = await traerArchivo(entidad, producto.idProducto);
+         if (Array.isArray(data) && data.length > 0 && data[0].ruta) {
+        const rutaNormalizada = data[0].ruta.replace(/\\/g, "/")
+        const urlCompleta = `http://localhost:8080/${rutaNormalizada}`
+            nuevasImagenes[producto.idProducto] = urlCompleta;
+          }
+        } catch (error) {
+          console.error(`Error al cargar imagen de producto ${producto.idProducto}:`, error);
+        }
+      }
+
+      setImagenesProductos(nuevasImagenes);
+    };
+
+     if (!mostrarTodos) {
+      cargarTodasImagenes();
+    }
+  }, [productos]);
+
+  useEffect(() => {
+  const cargarImagenesDePosts = async () => {
+    const nuevasImagenes: { [id: number]: string } = {};
+
+    for (const post of posts) {
+      try {
+        const entidad = "Producto";
+        const data = await traerArchivo(entidad, post.idProducto);
+        if (Array.isArray(data) && data.length > 0 && data[0].ruta) {
+          const rutaNormalizada = data[0].ruta.replace(/\\/g, "/");
+          const urlCompleta = `http://localhost:8080/${rutaNormalizada}`;
+          nuevasImagenes[post.idProducto] = urlCompleta;
+        }
+      } catch (error) {
+        console.error(`Error al cargar imagen del producto ${post.idProducto}:`, error);
+      }
+    }
+
+    setImagenesProductos(nuevasImagenes);
+  };
+
+  if (mostrarTodos) {
+    cargarImagenesDePosts();
+  }
+}, [mostrarTodos, posts]);
+
 
   useEffect(() => {
     if (
@@ -217,14 +266,14 @@ export default function CardCatalogo({
           <div className="g w-full ">
             <div className="ml-2">
               <h2>Rango de precios</h2>
-              <Button className="flex  bg-gray-300 not-hover" onClick={() => {
+              <Button onClick={() => {
                 setprecioMin(rango.precioMinimo);
                 setprecioMax(30000);
                 cambiarMostrarTodos(false);
                 cambiarOcultamientoFiltros(false);
                 cambiarVisibilidadSeccion(false);
               }}
-                className={` rounded mb-2 hover:bg-amber-500
+                className={`flex rounded mb-2 hover:bg-amber-500
             ${precioMin === rango.precioMinimo && precioMax === 30000
                     ? "bg-amber-400 text-white"
                     : "bg-gray-300 text-black"
@@ -234,14 +283,14 @@ export default function CardCatalogo({
                 <InputOTPSeparator />
                 <span className="text-black">30.000</span>
               </Button>
-              <Button className="flex" onClick={() => {
+              <Button onClick={() => {
                 setprecioMin(30000);
                 setprecioMax(50000);
                 cambiarMostrarTodos(false);
                 cambiarOcultamientoFiltros(false);
                 cambiarVisibilidadSeccion(false);
               }}
-               className={` rounded mb-2 hover:bg-amber-500
+                className={`flex rounded mb-2 hover:bg-amber-500
             ${precioMin === 30000 && precioMax === 50000
                     ? "bg-amber-400 text-white"
                     : "bg-gray-300 text-black"
@@ -250,14 +299,14 @@ export default function CardCatalogo({
                 <InputOTPSeparator />
                 <span>50.000</span>
               </Button>
-              <Button className="flex" onClick={() => {
+              <Button onClick={() => {
                 setprecioMin(50000);
                 setprecioMax(100000);
                 cambiarMostrarTodos(false);
                 cambiarOcultamientoFiltros(false);
                 cambiarVisibilidadSeccion(false);
               }}
-               className={` rounded mb-2 hover:bg-amber-500
+                className={`flex rounded mb-2 hover:bg-amber-500
             ${precioMin === 50000 && precioMax === 100000
                     ? "bg-amber-400 text-white"
                     : "bg-gray-300 text-black"
@@ -266,14 +315,14 @@ export default function CardCatalogo({
                 <InputOTPSeparator />
                 <span>100.000</span>
               </Button>
-              <Button className="flex" onClick={() => {
+              <Button onClick={() => {
                 setprecioMin(100000);
                 setprecioMax(rango.precioMaximo);
                 cambiarMostrarTodos(false);
                 cambiarOcultamientoFiltros(false);
                 cambiarVisibilidadSeccion(false);
               }}
-               className={` rounded mb-2 hover:bg-amber-500
+                className={`flex rounded mb-2 hover:bg-amber-500
             ${precioMin === 100000 && precioMax === rango.precioMaximo
                     ? "bg-amber-400 text-white"
                     : "bg-gray-300 text-black"
@@ -381,8 +430,11 @@ export default function CardCatalogo({
                 >
                   <Card className="">
                     <div className="group  static flex justify-center-safe m-0 p-0 ">
-                      <div className="">
-                        <img src="logo.png" alt="Logo" className="h-70 w-100" />
+                      <div className="max-h-300">
+                        <Image src={imagenesProductos[producto.idProducto] || "/imagen-defecto.png"} alt={producto.nombreProducto} width={300}
+                          height={300}
+                          className="object-contain w-full max-h-[250px]"
+                          priority/>
                       </div>
                     </div>
                     <div className=" p-5 h-full">
@@ -435,8 +487,11 @@ export default function CardCatalogo({
                 >
                   <Card className="">
                     <div className="group static flex justify-center-safe">
-                      <div className="">
-                        <img src="logo.png" alt="Logo" className="h-70 w-100" />
+                      <div className="max-h-300">
+                        <Image src={imagenesProductos[post.idProducto] || "/imagen-defecto.png"} alt={post.nombreProducto} width={300}
+                          height={300}
+                          className="object-contain w-full max-h-[250px]"
+                          priority/>
                       </div>
                     </div>
                     <div className=" p-5 h-full">

@@ -80,8 +80,9 @@ export function CategoriasForm({ categoria = emptyCategoria }: { categoria?: Cat
 
       // Si está editando y hay archivo nuevo, eliminar el anterior
       if (!isNueva && archivo) {
+        const entidad = "CategoriaProducto";
         try {
-          const respuesta = await traerArchivo(idCategoria);
+          const respuesta = await traerArchivo(entidad,idCategoria);
           if (Array.isArray(respuesta) && respuesta.length > 0 && respuesta[0].id) {
             await eliminarArchivo(respuesta[0].id);
           }
@@ -92,9 +93,10 @@ export function CategoriasForm({ categoria = emptyCategoria }: { categoria?: Cat
 
       // Subir imagen nueva
       if (archivo) {
+        const entidad = "CategoriaProducto";
         const formDataArchivo = new FormData();
         formDataArchivo.append("archivos", archivo);
-        await subirArchivo(idCategoria, formDataArchivo);
+        await subirArchivo(entidad,idCategoria, formDataArchivo);
       }
 
        toast({
