@@ -1,10 +1,11 @@
 import axios from "axios";
 
-export async function filtarCategorias(
+export async function filtarProducto(
   nombreCategoria?: string,
   porcentajeDescuento?: number,
   precioMin?: number,
-  precioMax?: number
+  precioMax?: number,
+  region?: String
 ) {
   try {
     const res = await axios.get("http://localhost:8080/api/producto/public/filtar", {
@@ -12,7 +13,8 @@ export async function filtarCategorias(
         nombreCategoria,
         porcentajeDescuento,
         precioMin,
-        precioMax
+        precioMax,
+        region
       },
     });
 

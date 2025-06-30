@@ -9,6 +9,7 @@ import { eliminarCategoria } from "../../api/detalleCategoria/eliminarCategoria"
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { traerimagenCategoria } from '../../api/detalleCategoria/traerimagenCategoria'
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import {
   Dialog,
   DialogClose,
@@ -19,6 +20,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -91,12 +103,42 @@ export default function CategoriaList() {
 
   const totalPages = Math.ceil(filteredCart.length / itemsPerPage)
   const paginated = filteredCart.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+  const [alertaExioto, setalertaExioto] = useState(false)
+  const [alertaMal,setalertaMal] = useState(false)
+ const handleDeleteProduct = async (id: number) => {
+  try {
+    const response = await eliminarCategoria(id);
+console.log(response?.status)
+    if (response?.status === 200 || response?.status === 201) {
+      setProductToDelete(null);
+      setalertaExioto(true);
+      if (true) {
+        setTimeout(() => {
+          setalertaExioto(false);
+        }, 4000);
+      }
+      const categoriasActualizadad = await obtenerCategorias();
+      setCart(categoriasActualizadad)
+    } else {
+      setalertaMal(true);
+      if (true) {
+        setTimeout(() => {
+          setalertaMal(false);
+        }, 4000);
+      }
+    }
 
-  const handleDeleteProduct = async (id: number) => {
-    await eliminarCategoria(id);
-    console.log(`Eliminando categoría ${id}`)
-    setProductToDelete(null)
+  } catch (error) {
+   setalertaMal(true);
+    if (true) {
+      setTimeout(() => {
+        setalertaMal(false);
+      }, 4000);
+    }
   }
+};
+
+
 
 
   return (
@@ -112,7 +154,7 @@ export default function CategoriaList() {
               <Card key={cat.idCategoria} className="overflow-hidden  ">
                 <div className="relative h-48 w-full ">
                   <Image
-                    src={imagen[cat.idCategoria] || "/placeholder.png"}
+                    src={imagen[cat.idCategoria] || "/imagen-defecto.png"}
                     alt={cat.nombreCategoria}
                     fill
                     className="object-cover"
@@ -162,9 +204,11 @@ export default function CategoriaList() {
                               <DialogClose asChild>
                                 <Button variant="outline">Cancelar</Button>
                               </DialogClose>
-                              <Button variant="destructive" onClick={() => handleDeleteProduct(cat.idCategoria)}>
-                                Eliminar
-                              </Button>
+                              <DialogClose asChild>
+                                <Button variant="destructive" onClick={() => handleDeleteProduct(cat.idCategoria)}>
+                                  Eliminar
+                                </Button>
+                              </DialogClose>
                             </DialogFooter>
                           </DialogContent>
                         </Dialog>
@@ -174,6 +218,42 @@ export default function CategoriaList() {
                 </CardContent>
               </Card>
             ))}
+            <div className='hidden'>
+              <AlertDialog open={alertaExioto} >
+                <AlertDialogTrigger asChild>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className='flex justify-center'>
+                      <DotLottieReact
+                        src="https://lottie.host/9228f5fe-70c8-4c17-99fc-4f8bac3a9f51/TF4TVTn8fU.lottie"
+                        autoplay
+                      /></AlertDialogTitle>
+                    <AlertDialogDescription className='flex justify-center'>
+                      Se elimino exitizamente.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+            <div className='hidden'>
+              <AlertDialog open={alertaMal} >
+                <AlertDialogTrigger asChild>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className='flex justify-center'>
+                      <DotLottieReact
+                        src="https://lottie.host/9547debb-f307-484a-9239-5d4bde96ea0c/jR3hqsBEyh.lottie"
+                        autoplay
+                      /></AlertDialogTitle>
+                    <AlertDialogDescription className='flex justify-center'>
+                      Algo salio mal intetalo despues.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
           </div>
 
           {totalPages > 1 && (

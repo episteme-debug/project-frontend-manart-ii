@@ -23,10 +23,6 @@ const stars = Array(5).fill(0)
 export default function cardCaruselCarrito({ posts }: { posts: Post[] }) {
   const [favorito, setFavorito] = useState(false);
 
-
-
-
-
   return (
     <section className='w-full'>
 

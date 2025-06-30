@@ -19,7 +19,7 @@ export async function crearCategoria(
       }
     );
     console.log(response.data);
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error al crear la categoría:", error);
     throw error;

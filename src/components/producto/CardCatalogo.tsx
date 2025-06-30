@@ -3,7 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { filtarCategorias } from "../../services/apis/producto/filtarCategoria"
+import { filtarProducto } from "../../services/apis/producto/filtarProducto"
 import Image from "next/image"
 import { traerArchivo } from "../../api/detalleCategoria/taerArchivos"
 import { InputOTPSeparator } from "@/components/ui/input-otp";
@@ -86,11 +86,17 @@ export default function CardCatalogo({
   function cambiarVisibilidadSeccion(valor: boolean) {
     setMostrarSeccionFiltros(valor);
   }
-
+  //const de los filtro de los producto 
   const [nombreCategoria, setnombreCategoria] = useState<string | null>(null);
   const [porcentajeDescuento, setporcentajeDescuento] = useState<number | null>(null);
   const [precioMin, setprecioMin] = useState<number | null>(null);
   const [precioMax, setprecioMax] = useState<number | null>(null);
+  const [region, setregion] = useState<String | null>(null)
+
+  const productosPorPagina = 15;
+  const [paginaFiltro, setPaginaFiltro] = useState(1);
+  const [totalPaginasFiltro, setTotalPaginasFiltro] = useState(1);
+
   useEffect(() => {
     const cargarTodasImagenes = async () => {
       const nuevasImagenes: { [id: number]: string } = {};
@@ -99,9 +105,9 @@ export default function CardCatalogo({
         try {
           const entidad = "Producto";
           const data = await traerArchivo(entidad, producto.idProducto);
-         if (Array.isArray(data) && data.length > 0 && data[0].ruta) {
-        const rutaNormalizada = data[0].ruta.replace(/\\/g, "/")
-        const urlCompleta = `http://localhost:8080/${rutaNormalizada}`
+          if (Array.isArray(data) && data.length > 0 && data[0].ruta) {
+            const rutaNormalizada = data[0].ruta.replace(/\\/g, "/")
+            const urlCompleta = `http://localhost:8080/${rutaNormalizada}`
             nuevasImagenes[producto.idProducto] = urlCompleta;
           }
         } catch (error) {
@@ -112,36 +118,36 @@ export default function CardCatalogo({
       setImagenesProductos(nuevasImagenes);
     };
 
-     if (!mostrarTodos) {
+    if (!mostrarTodos) {
       cargarTodasImagenes();
     }
   }, [productos]);
 
   useEffect(() => {
-  const cargarImagenesDePosts = async () => {
-    const nuevasImagenes: { [id: number]: string } = {};
+    const cargarImagenesDePosts = async () => {
+      const nuevasImagenes: { [id: number]: string } = {};
 
-    for (const post of posts) {
-      try {
-        const entidad = "Producto";
-        const data = await traerArchivo(entidad, post.idProducto);
-        if (Array.isArray(data) && data.length > 0 && data[0].ruta) {
-          const rutaNormalizada = data[0].ruta.replace(/\\/g, "/");
-          const urlCompleta = `http://localhost:8080/${rutaNormalizada}`;
-          nuevasImagenes[post.idProducto] = urlCompleta;
+      for (const post of posts) {
+        try {
+          const entidad = "Producto";
+          const data = await traerArchivo(entidad, post.idProducto);
+          if (Array.isArray(data) && data.length > 0 && data[0].ruta) {
+            const rutaNormalizada = data[0].ruta.replace(/\\/g, "/");
+            const urlCompleta = `http://localhost:8080/${rutaNormalizada}`;
+            nuevasImagenes[post.idProducto] = urlCompleta;
+          }
+        } catch (error) {
+          console.error(`Error al cargar imagen del producto ${post.idProducto}:`, error);
         }
-      } catch (error) {
-        console.error(`Error al cargar imagen del producto ${post.idProducto}:`, error);
       }
+
+      setImagenesProductos(nuevasImagenes);
+    };
+
+    if (mostrarTodos) {
+      cargarImagenesDePosts();
     }
-
-    setImagenesProductos(nuevasImagenes);
-  };
-
-  if (mostrarTodos) {
-    cargarImagenesDePosts();
-  }
-}, [mostrarTodos, posts]);
+  }, [mostrarTodos, posts]);
 
 
   useEffect(() => {
@@ -149,31 +155,41 @@ export default function CardCatalogo({
       nombreCategoria != null ||
       porcentajeDescuento != null ||
       precioMax != null ||
-      precioMin != null
+      precioMin != null ||
+      region != null
     ) {
       cambiarMostrarTodos(false);
-      filtrarPorCategoria();
+      filtrarPorProducto();
     } else {
       cambiarVisibilidadSeccion(true);
       cambiarMostrarTodos(true);
     }
-  }, [nombreCategoria, porcentajeDescuento, precioMin, precioMax]);
+  }, [nombreCategoria, porcentajeDescuento, precioMin, precioMax, region]);
 
-  const filtrarPorCategoria = async () => {
+  const filtrarPorProducto = async () => {
     try {
-      const res = await filtarCategorias(
+      const res = await filtarProducto(
         nombreCategoria || undefined,
         porcentajeDescuento ?? undefined,
         precioMin ?? undefined,
-        precioMax ?? undefined
+        precioMax ?? undefined,
+        region ?? undefined
       );
       if (res) {
         setProductos(res);
+        const total = Math.ceil(res.length / productosPorPagina);
+        setTotalPaginasFiltro(total);
+        setPaginaFiltro(1);
       }
     } catch (error) {
       console.error("Error al filtrar productos:", error);
     }
   };
+  const productosPaginados = productos.slice(
+    (paginaFiltro - 1) * productosPorPagina,
+    paginaFiltro * productosPorPagina
+  );
+
 
   return (
     <section className="min-h-screen grid justify-items-center">
@@ -183,7 +199,8 @@ export default function CardCatalogo({
             {(nombreCategoria != null ||
               porcentajeDescuento != null ||
               precioMax != null ||
-              precioMin != null) && (
+              precioMin != null ||
+              region != null) && (
                 <div className={` pb-1  ${filtrosOcultos ? "hidden" : "block"}`}>
                   <h2 className="text-2xl mt-2 ml-2 ">Filtros Aplicados</h2>
                   {nombreCategoria != null && (
@@ -232,15 +249,30 @@ export default function CardCatalogo({
                       </Button>
                     </div>
                   )}
+                  {region != null && (
+                    <div className=" flex items-center  justify-center bg-amber-300 m-1  max-w-65 w-55 rounded-lg">
+                      <p className="ml-2 bg-amber-300">
+                        Region {region}
+                      </p>
+                      <Button
+                        className="bg-transparent hover:bg-transparent border-none shadow-none text-black"
+                        onClick={() => {
+                          setregion(null);
+                        }}
+                      >
+                        X
+                      </Button>
+                    </div>
+                  )}
                 </div>
               )}
           </div>
           <h2 className="text-2xl ml-2 ">Categorias</h2>
-          <div className="grid pl-1 max-w-100 ">
-            <div className="flex ">
-              <div className="flex flex-wrap gap-2 mb-4   w-60">
+          <div className="grid max-w-100 ">
+            <div className="">
+              <div className=" gap-2 w-full">
                 {categorias.map((categoria) => (
-                  <div key={categoria.idCategoria} className="flex bg-gray-300 whitespace-normal">
+                  <div key={categoria.idCategoria} className=" ml-2 mb-2 whitespace-normal">
                     <Button
                       onClick={() => {
                         setnombreCategoria(categoria.nombreCategoria);
@@ -366,7 +398,7 @@ export default function CardCatalogo({
           </div>
 
           <br />
-          <div className="">
+          {/* <div className="">
             <h2 className="text-2xl ml-2">Calificacion</h2>
             <div className="flex ml-2">
               {stars.map((_, i) => (
@@ -387,34 +419,137 @@ export default function CardCatalogo({
                 </svg>
               ))}
             </div>
-          </div>
-          <br />
+          </div> 
+          <br />*/}
+
           <div className="">
             <h2 className="text-2xl ml-2">Regiones</h2>
-            <Link href="#" className="ml-2">
+            <label className="ml-2">
+              <input
+                type="radio"
+                name="Región Andina"
+                value="ANDINA"
+                checked={
+                  region == "ANDINA"
+                }
+                onChange={() => {
+                  setregion(
+                    "ANDINA"
+                  );
+                  cambiarMostrarTodos(false);
+                  cambiarOcultamientoFiltros(false);
+                  cambiarVisibilidadSeccion(false);
+                }}
+
+              />
               Región Andina
-            </Link>
+            </label>
             <br />
-            <Link href="#" className="ml-2">
+            <label className="ml-2">
+              <input
+                type="radio"
+                name="Región Caribe"
+                value="CARIBE"
+                checked={
+                  region == "CARIBE"
+                }
+                onChange={() => {
+                  setregion(
+                    "CARIBE"
+                  );
+                  cambiarMostrarTodos(false);
+                  cambiarOcultamientoFiltros(false);
+                  cambiarVisibilidadSeccion(false);
+                }}
+
+              />
               Región Caribe
-            </Link>
+            </label>
             <br />
-            <Link href="#" className="ml-2">
+            <label className="ml-2">
+              <input
+                type="radio"
+                name="Región Pacífica"
+                value="PACIFICA"
+                checked={
+                  region == "PACIFICA"
+                }
+                onChange={() => {
+                  setregion(
+                    "PACIFICA"
+                  );
+                  cambiarMostrarTodos(false);
+                  cambiarOcultamientoFiltros(false);
+                  cambiarVisibilidadSeccion(false);
+                }}
+
+              />
               Región Pacífica
-            </Link>
+            </label>
             <br />
-            <Link href="#" className="ml-2">
+            <label className="ml-2">
+              <input
+                type="radio"
+                name="Región Amazónica"
+                value="AMAZONICA"
+                checked={
+                  region == "AMAZONICA"
+                }
+                onChange={() => {
+                  setregion(
+                    "AMAZONICA"
+                  );
+                  cambiarMostrarTodos(false);
+                  cambiarOcultamientoFiltros(false);
+                  cambiarVisibilidadSeccion(false);
+                }}
+
+              />
               Región Amazónica
-            </Link>
+            </label>
+
             <br />
-            <Link href="#" className="ml-2">
+            <label className="ml-2">
+              <input
+                type="radio"
+                name="Región Orinoquía"
+                value="ORINOQUIA"
+                checked={
+                  region == "ORINOQUIA"
+                }
+                onChange={() => {
+                  setregion(
+                    "ORINOQUIA"
+                  );
+                  cambiarMostrarTodos(false);
+                  cambiarOcultamientoFiltros(false);
+                  cambiarVisibilidadSeccion(false);
+                }}
+
+              />
               Región Orinoquía
-            </Link>
+            </label>
             <br />
-            <Link href="#" className="ml-2">
+            <label className="ml-2">
+              <input
+                type="radio"
+                name="Región Insular"
+                value="INSULAR"
+                checked={
+                  region == "INSULAR"
+                }
+                onChange={() => {
+                  setregion(
+                    "INSULAR"
+                  );
+                  cambiarMostrarTodos(false);
+                  cambiarOcultamientoFiltros(false);
+                  cambiarVisibilidadSeccion(false);
+                }}
+
+              />
               Región Insular
-            </Link>
-            <br />
+            </label>
           </div>
         </div>
         <div className="col-start-2 col-end-6  flex justify-center">
@@ -423,7 +558,7 @@ export default function CardCatalogo({
               className={`grid grid-cols-3 gap-5  place-content-stretch mr-5 ml-5 ${mostrarSeccionFiltros ? "hidden" : "block"
                 }`}
             >
-              {productos.map((producto) => (
+              {productosPaginados.map((producto) => (
                 <div
                   key={producto.idProducto}
                   className="  rounded-lg shadow-xl  "
@@ -434,7 +569,7 @@ export default function CardCatalogo({
                         <Image src={imagenesProductos[producto.idProducto] || "/imagen-defecto.png"} alt={producto.nombreProducto} width={300}
                           height={300}
                           className="object-contain w-full max-h-[250px]"
-                          priority/>
+                          priority />
                       </div>
                     </div>
                     <div className=" p-5 h-full">
@@ -448,7 +583,6 @@ export default function CardCatalogo({
                       </Link>
                       <p>
                         ${producto.precioProducto} COP{" "}
-                        <span className="line-through">Precio anterior</span>
                       </p>
                       <div className="flex">
                         {stars.map((_, i) => (
@@ -491,7 +625,7 @@ export default function CardCatalogo({
                         <Image src={imagenesProductos[post.idProducto] || "/imagen-defecto.png"} alt={post.nombreProducto} width={300}
                           height={300}
                           className="object-contain w-full max-h-[250px]"
-                          priority/>
+                          priority />
                       </div>
                     </div>
                     <div className=" p-5 h-full">
@@ -505,7 +639,6 @@ export default function CardCatalogo({
                       </Link>{" "}
                       <p>
                         ${post.precioProducto} COP{" "}
-                        <span className="line-through">Precio anterior</span>
                       </p>
                       <div className="flex">
                         {stars.map((_, i) => (
@@ -561,6 +694,44 @@ export default function CardCatalogo({
               </Pagination>
             </div>
           )}
+          {!mostrarTodos && totalPaginasFiltro > 1 && (
+            <div className="flex justify-center my-4">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() =>
+                        setPaginaFiltro((prev) => Math.max(1, prev - 1))
+                      }
+                    />
+                  </PaginationItem>
+
+                  {[...Array(totalPaginasFiltro)].map((_, i) => (
+                    <PaginationItem key={i}>
+                      <PaginationLink
+                        href="#"
+                        onClick={() => setPaginaFiltro(i + 1)}
+                        isActive={paginaFiltro === i + 1}
+                      >
+                        {i + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() =>
+                        setPaginaFiltro((prev) =>
+                          Math.min(totalPaginasFiltro, prev + 1)
+                        )
+                      }
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
+
 
         </div>
       </section>

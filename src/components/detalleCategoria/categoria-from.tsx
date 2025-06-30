@@ -3,7 +3,6 @@
 import { useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import axios from "axios"
 import { ImagePlus } from "lucide-react"
 import { useEffect } from 'react'
 import { Button } from "@/components/ui/button"
@@ -11,7 +10,6 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { useToast } from "@/hooks/use-toast"
 
 import { crearCategoria } from "../../api/detalleCategoria/crearCategoria"
 import { actulizarCategoria } from "../../api/detalleCategoria/actulizarCategoria"
@@ -19,6 +17,18 @@ import { subirArchivo } from "../../api/detalleCategoria/subirArchivo"
 import { traerimagenCategoria } from "../../api/detalleCategoria/traerimagenCategoria"
 import { traerArchivo } from "../../api/detalleCategoria/taerArchivos"
 import { eliminarArchivo } from "../../api/detalleCategoria/eliminarArchivo"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 type Categoria = {
   idCategoria?: number
   nombreCategoria: string
@@ -35,13 +45,12 @@ const emptyCategoria: Categoria = {
 
 export function CategoriasForm({ categoria = emptyCategoria }: { categoria?: Categoria }) {
   const router = useRouter()
-  const { toast } = useToast()
-
+  const [alertaExioto, setalertaExioto] = useState(false);
+  const [alertaMal, setalertaMal] = useState(false)
   const [formData, setFormData] = useState<Categoria>(categoria)
   const [archivo, setArchivo] = useState<File | null>(null)
   const [vistaPrevia, setVistaPrevia] = useState<string>(categoria?.imagen || "/placeholder.svg")
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [mensajeExito, setMensajeExito] = useState<"creada" | "actualizada" | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const isNueva = !categoria?.idCategoria
 
@@ -66,13 +75,46 @@ export function CategoriasForm({ categoria = emptyCategoria }: { categoria?: Cat
 
       if (isNueva) {
         const respuesta = await crearCategoria(formData.nombreCategoria, formData.descripcionCategoria);
-        idCategoria = respuesta.idCategoria;
+        idCategoria = respuesta.data.idCategoria;
+        console.log(respuesta.status)
+        if (respuesta && (respuesta.status === 200 || respuesta.status === 201)) {
+          setalertaExioto(true);
+          if (true) {
+            setTimeout(() => {
+              setalertaExioto(false);
+            router.push("/dashboard/detalleCategoria");
+            }, 4000);
+          }
+        } else {
+          setalertaMal(true);
+          if (true) {
+            setTimeout(() => {
+              setalertaMal(false);
+            }, 4000);
+          }
+        }
       } else if (categoria.idCategoria) {
         const respuesta = await actulizarCategoria(
           categoria.idCategoria,
           formData.nombreCategoria,
           formData.descripcionCategoria
         );
+        if (respuesta && (respuesta.status === 200 || respuesta.status === 201)) {
+          setalertaExioto(true);
+          if (true) {
+            setTimeout(() => {
+              setalertaExioto(false);
+            router.push("/dashboard/detalleCategoria");
+            }, 4000);
+          }
+        } else {
+          setalertaMal(true);
+          if (true) {
+            setTimeout(() => {
+              setalertaMal(false);
+            }, 4000);
+          }
+        }
         idCategoria = categoria.idCategoria;
       } else {
         throw new Error("No se proporcionó ID para actualizar.");
@@ -82,7 +124,7 @@ export function CategoriasForm({ categoria = emptyCategoria }: { categoria?: Cat
       if (!isNueva && archivo) {
         const entidad = "CategoriaProducto";
         try {
-          const respuesta = await traerArchivo(entidad,idCategoria);
+          const respuesta = await traerArchivo(entidad, idCategoria);
           if (Array.isArray(respuesta) && respuesta.length > 0 && respuesta[0].id) {
             await eliminarArchivo(respuesta[0].id);
           }
@@ -96,21 +138,17 @@ export function CategoriasForm({ categoria = emptyCategoria }: { categoria?: Cat
         const entidad = "CategoriaProducto";
         const formDataArchivo = new FormData();
         formDataArchivo.append("archivos", archivo);
-        await subirArchivo(entidad,idCategoria, formDataArchivo);
+        await subirArchivo(entidad, idCategoria, formDataArchivo);
       }
-
-       toast({
-          title: "¡Operación exitosa!",
-          description: "La operación se realizó correctamente.",
-          variant: "default", 
-        })
-      // Esperar 2 segundos antes de redirigir
-      setTimeout(() => {
-        router.push("/dashboard/detalleCategoria");
-      }, 2000);
 
     } catch (error) {
       console.error(error);
+      setalertaMal(true);
+          if (true) {
+            setTimeout(() => {
+              setalertaMal(false);
+            }, 4000);
+          }
     } finally {
       setIsSubmitting(false);
     }
@@ -165,7 +203,7 @@ export function CategoriasForm({ categoria = emptyCategoria }: { categoria?: Cat
               id="nombreCategoria"
               value={formData.nombreCategoria}
               onChange={(e) => handleChange("nombreCategoria", e.target.value)}
-              placeholder="Ej: Cerámica Indígena"
+              placeholder="Ej: Collares"
               required
             />
           </div>
@@ -185,7 +223,7 @@ export function CategoriasForm({ categoria = emptyCategoria }: { categoria?: Cat
       </div>
 
       <div className="flex justify-end gap-4">
-        <Button type="button" variant="outline" onClick={() => router.push("/dashboard/categorias")}>
+        <Button type="button" variant="outline" onClick={() => router.push("/dashboard/detalleCategoria")}>
           Cancelar
         </Button>
         <Button type="submit" disabled={isSubmitting}>
@@ -193,7 +231,43 @@ export function CategoriasForm({ categoria = emptyCategoria }: { categoria?: Cat
         </Button>
       </div>
 
+      <div className='hidden'>
+        <AlertDialog open={alertaExioto} >
+          <AlertDialogTrigger asChild>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className='flex justify-center'>
+                <DotLottieReact
+                  src="https://lottie.host/9228f5fe-70c8-4c17-99fc-4f8bac3a9f51/TF4TVTn8fU.lottie"
+                  autoplay
+                /></AlertDialogTitle>
+              <AlertDialogDescription className='flex justify-center'>
+                Operacion exitosa.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
 
+      <div className='hidden'>
+        <AlertDialog open={alertaMal} >
+          <AlertDialogTrigger asChild>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className='flex justify-center'>
+                <DotLottieReact
+                  src="https://lottie.host/9547debb-f307-484a-9239-5d4bde96ea0c/jR3hqsBEyh.lottie"
+                  autoplay
+                /></AlertDialogTitle>
+              <AlertDialogDescription className='flex justify-center'>
+                Algo salio mal intetalo despues.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
     </form>
 
   )

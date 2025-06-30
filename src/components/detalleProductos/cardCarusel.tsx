@@ -57,7 +57,7 @@ export default function cardCarusel({ posts }: { posts: Post[] }) {
           <div key={producto.idProducto} className="  rounded-lg  "  >
 
 
-            <Card className=" rounded-lg  ">
+            <Card className=" rounded-lg h-110 ">
               <div className="group  static flex justify-center-safe m-0 p-0 ">
                 <div className="max-h-300">
                   <Image src={imagenesProductos[producto.idProducto] || "/imagen-defecto.png"} alt={producto.nombreProducto} width={300}

@@ -17,9 +17,9 @@ export async function actulizarCategoria(
         withCredentials: true,
       }
     );
-    return respuesta.data;
+    return respuesta;
   } catch (error) {
     console.error("Algo salio mal", error);
-    return [];
+    return null;
   }
 }
