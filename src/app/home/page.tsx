@@ -1,10 +1,19 @@
-import { redirect } from "next/navigation";
+import { Header } from "@/components/home/layout/header"
+import { Footer } from "@/components/home/layout/footer"
+import { HeroSection } from "@/components/home/sections/hero-section"
+import { ProductGrid } from "@/components/home/sections/product-grid"
+import { StatsSection } from "@/components/home/sections/stats-section"
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div>
-      <h1>Bienvenido a nuestra tienda</h1>
-      <p>Explora nuestros productos y disfruta de una experiencia de compra única.</p>
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-yellow-50 to-orange-50">
+      <Header />
+      <main>
+        <HeroSection />
+        <ProductGrid />
+        <StatsSection />
+      </main>
+      <Footer />
     </div>
-  );
+  )
 }

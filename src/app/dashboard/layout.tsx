@@ -10,11 +10,17 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <ProveedorUsuario>
-        {children}
-      </ProveedorUsuario>
-    </SidebarProvider>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange>
+      <SidebarProvider>
+        <AppSidebar />
+        <ProveedorUsuario>
+          {children}
+        </ProveedorUsuario>
+      </SidebarProvider>
+    </ThemeProvider>
   );
 }
