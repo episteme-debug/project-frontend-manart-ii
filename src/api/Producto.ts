@@ -3,7 +3,6 @@
 import { ProductoCreacion, ProductoRespuesta } from "@/interfaces/ProductoInterfaz";
 import { obtenerCookie } from "@/lib/ObtencionCookie";
 import axios from "axios";
-import { error } from "console";
 import { cookies } from "next/headers";
 
 const baseURL = "http://localhost:8080/api/producto"
@@ -85,5 +84,72 @@ export async function ListarProductosPorUsuario(): Promise<ProductoRespuesta[] |
   } catch (error: any) {
     console.error("Error al obtener los productos:", error?.response?.data || error.message)
     return null
+  }
+}
+
+// Peticiones de Edison
+
+export async function filtrarProducto(
+  nombreCategoria?: string,
+  porcentajeDescuento?: number,
+  precioMin?: number,
+  precioMax?: number,
+  region?: string
+) {
+  try {
+    const res = await axios.get("http://localhost:8080/api/producto/public/filtrar", {
+      params: {
+        nombreCategoria,
+        porcentajeDescuento,
+        precioMin,
+        precioMax,
+        region
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    console.error("Error al traer productos:", error);
+  }
+}
+
+
+interface Post {
+  idProducto: number;
+  nombreProducto: string;
+  descripcionProducto: string;
+  precioProducto: number;
+  stockProducto: number;
+  imagenProducto?: string;
+}
+
+export async function ObtenerProductos(): Promise<Post[]> {
+  try {
+    const response = await axios.get<Post[]>(
+      "http://localhost:8080/api/producto/public/listarproductos"
+    );
+    return response.data;
+  } catch (error) {
+    console.error("erorr al obtenes los productos:", error);
+    return [];
+  }
+}
+
+
+export interface Rango {
+  precioMinimo: number;
+  precioMaximo: number;
+}
+export async function RagodePrecios(): Promise<Rango> {
+  try {
+    const response = await axios.get("http://localhost:8080/api/producto/public/rango-precios");
+    console.log(response.data)
+    return response.data; 
+  } catch (error) {
+    console.error("Error al obtener el rango de precios:", error);
+    return {
+      precioMinimo: 0,
+      precioMaximo: 0,
+    };
   }
 }
