@@ -92,9 +92,9 @@ export function Header() {
             <div className="flex items-center space-x-2">
               <button className="relative p-2 hover:bg-green-50 rounded-lg transition-smooth">
                 <Heart className="w-5 h-5" />
-                <span className="absolute -top-1 -right-1 w-4 h-4 gradient-tropical rounded-full text-xs text-white flex items-center justify-center">
-                  3
-                </span>
+{/*                 <span className="absolute -top-1 -right-1 w-4 h-4 gradient-tropical rounded-full text-xs text-white flex items-center justify-center">
+                  
+                </span> */}
               </button>
 
               <Link
@@ -102,9 +102,9 @@ export function Header() {
                 className="relative p-2 hover:bg-green-50 rounded-lg transition-smooth"
               >
                 <ShoppingCart className="w-5 h-5" />
-                <span className="absolute -top-1 -right-1 w-4 h-4 gradient-emerald rounded-full text-xs text-white flex items-center justify-center">
-                  2
-                </span>
+{/*                 <span className="absolute -top-1 -right-1 w-4 h-4 gradient-emerald rounded-full text-xs text-white flex items-center justify-center">
+                  
+                </span> */}
               </Link>
 
               <button className="p-2 hover:bg-green-50 rounded-lg transition-smooth">

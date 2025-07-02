@@ -97,15 +97,16 @@ export async function filtrarProducto(
   region?: string
 ) {
   try {
-    const res = await axios.get("http://localhost:8080/api/producto/public/filtrar", {
-      params: {
+
+    const res = await axios.post("http://localhost:8080/api/producto/public/filtrar", 
+      {
         nombreCategoria,
         porcentajeDescuento,
         precioMin,
         precioMax,
         region
-      },
-    });
+      }
+    )
 
     return res.data;
   } catch (error) {
@@ -176,7 +177,7 @@ interface Post {
   stockProducto: number;
 }
 
-export async function ObtenerPorId(id:String) {
+export async function ObtenerPorId(id:string) {
      try {
     const res = await axios.get<Post>(
       `http://localhost:8080/api/producto/public/obtenerporid/${id}`

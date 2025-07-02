@@ -6,8 +6,7 @@ import { Button } from "@/components/ui/button";
 import { filtrarProducto } from "@/api/Producto";
 import Image from "next/image";
 import { TraerArchivo } from "@/api/CategoriaProducto";
-import { InputOTPSeparator } from "@/components/ui/input-otp";
-import { Card } from "@/components/ui/card";
+
 import {
   Pagination,
   PaginationContent,
@@ -76,7 +75,6 @@ export default function CardCatalogo({
     setMostrarSeccionFiltros(valor);
   }
 
-  // Estados para expandir/contraer secciones de filtros
   const [seccionesAbiertas, setSeccionesAbiertas] = useState({
     categorias: true,
     precios: true,
@@ -91,7 +89,6 @@ export default function CardCatalogo({
     }));
   };
 
-  //const de los filtro de los producto 
   const [nombreCategoria, setnombreCategoria] = useState<string | null>(null);
   const [porcentajeDescuento, setporcentajeDescuento] = useState<number | null>(null);
   const [precioMin, setprecioMin] = useState<number | null>(null);
@@ -222,9 +219,9 @@ export default function CardCatalogo({
   ];
 
   return (
-    <section className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <section className="min-h-screen bg-gradient-to-br from-[#fdf8ef] via-[#fcf5eb] to-[#fcf4e8]">
       <div className="container mx-auto px-4 py-6 lg:py-10">
-        {/* Header con botón de filtros móvil */}
+
         <div className="flex justify-between items-center mb-6 lg:hidden">
           <h1 className="text-2xl font-bold text-gray-800">Catálogo</h1>
           <Button
@@ -237,17 +234,17 @@ export default function CardCatalogo({
         </div>
 
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* Sidebar de filtros */}
+
           <aside className={`
             lg:w-80 lg:block bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden
             ${mostrarFiltrosMobile ? 'block' : 'hidden lg:block'}
             ${mostrarFiltrosMobile ? 'fixed inset-x-4 top-20 z-50 max-h-[calc(100vh-6rem)] overflow-y-auto' : ''}
           `}>
             <div className="p-6">
-              {/* Header de filtros */}
+
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <Filter className="w-5 h-5 text-blue-600" />
+                  <Filter className="w-5 h-5 text-[#010668]" />
                   <h2 className="text-xl font-bold text-gray-800">Filtros</h2>
                 </div>
                 {hayFiltrosActivos && (
@@ -272,7 +269,6 @@ export default function CardCatalogo({
                 )}
               </div>
 
-              {/* Filtros aplicados */}
               {hayFiltrosActivos && (
                 <div className="mb-6 p-4 bg-amber-50 rounded-xl border border-amber-200">
                   <h3 className="text-sm font-semibold text-amber-800 mb-3">Filtros Aplicados</h3>
@@ -313,7 +309,6 @@ export default function CardCatalogo({
                 </div>
               )}
 
-              {/* Categorías */}
               <div className="mb-6">
                 <button
                   onClick={() => toggleSeccion('categorias')}
@@ -347,7 +342,6 @@ export default function CardCatalogo({
                 )}
               </div>
 
-              {/* Rango de precios */}
               <div className="mb-6">
                 <button
                   onClick={() => toggleSeccion('precios')}
@@ -371,7 +365,7 @@ export default function CardCatalogo({
                         }}
                         variant={precioMin === rango_precio.min && precioMax === rango_precio.max ? "default" : "outline"}
                         className={`w-full justify-start text-left py-3 px-4 ${precioMin === rango_precio.min && precioMax === rango_precio.max
-                            ? "bg-blue-600 text-white hover:bg-blue-700"
+                            ? "bg-[#010668] text-white hover:bg-[#45507f7a]"
                             : "hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
                           }`}
                       >
@@ -382,7 +376,6 @@ export default function CardCatalogo({
                 )}
               </div>
 
-              {/* Descuentos */}
               <div className="mb-6">
                 <button
                   onClick={() => toggleSeccion('descuentos')}
@@ -418,7 +411,6 @@ export default function CardCatalogo({
                 )}
               </div>
 
-              {/* Regiones */}
               <div className="mb-6">
                 <button
                   onClick={() => toggleSeccion('regiones')}
@@ -456,7 +448,6 @@ export default function CardCatalogo({
             </div>
           </aside>
 
-          {/* Overlay para móvil */}
           {mostrarFiltrosMobile && (
             <div
               className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
@@ -464,9 +455,8 @@ export default function CardCatalogo({
             />
           )}
 
-          {/* Contenido principal */}
           <main className="flex-1">
-            {/* Grid de productos filtrados */}
+
             <div className={`${mostrarSeccionFiltros ? "hidden" : "block"}`}>
               {productosPaginados.length === 0 ? (
                 <div className="text-center py-20">
@@ -527,7 +517,6 @@ export default function CardCatalogo({
               )}
             </div>
 
-            {/* Grid de todos los productos */}
             <div className={`${mostrarTodos ? "block" : "hidden"}`}>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
                 {posts.map((post) => (
@@ -585,7 +574,6 @@ export default function CardCatalogo({
               </div>
             </div>
 
-            {/* Paginación */}
             <div className="mt-12">
               {(mostrarTodos && totalPages > 1) && (
                 <div className="flex justify-center">

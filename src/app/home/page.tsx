@@ -2,7 +2,7 @@ import { Header } from "@/components/home/layout/header"
 import { Footer } from "@/components/home/layout/footer"
 import { HeroSection } from "@/components/home/sections/hero-section"
 import { ProductGrid } from "@/components/home/sections/product-grid"
-import { StatsSection } from "@/components/home/sections/stats-section"
+import { PatrimonioSection } from "@/components/home/sections/stats-section"
 
 export default function HomePage() {
   return (
@@ -11,7 +11,7 @@ export default function HomePage() {
       <main>
         <HeroSection />
         <ProductGrid />
-        <StatsSection />
+        <PatrimonioSection />
       </main>
       <Footer />
     </div>
