@@ -30,7 +30,8 @@ export async function POST(req: Request) {
     numero_documento_usuario: body.numeroDocumentoUsuario,
     estado_usuario: body.estado_usuario,               
     imagen_perfil_usuario: body.imagen_perfil_usuario,         
-    rol_usuario: body.rolUsuario,               
+    rol_usuario: body.rolUsuario,     
+    ciudad_usuario: body.ciudadUsuario,          
 
   });
   return NextResponse.json(nuevo, { status: 201 });

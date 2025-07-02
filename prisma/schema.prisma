@@ -231,13 +231,17 @@ model usuario {
   hash_contrasena_usuario  String              @db.VarChar(250)
   telefono_usuario         String              @db.VarChar(20)
   numero_documento_usuario String              @db.VarChar(255)
-  ciudad_usuaio           String              @db.VarChar(255)
-  estado_usuario           Boolean             @db.Bit(1)     @default(true)
-  imagen_perfil_usuario    String              @db.VarChar(255) @default("avatarGenerico.jpg")
+  ciudad_usuario           String              @db.VarChar(255)
+  estado_usuario           Boolean             @default(true) @db.Bit(1)
+  imagen_perfil_usuario    String              @default("avatarGenerico.jpg") @db.VarChar(255)
   rol_usuario              usuario_rol_usuario @default(ADMIN)
-  
+  direcciones              direccion[]
+  reseñas                 rese_a_producto[]
+  publicaciones            publicacion[]
+  productos                producto[]
+  pedidos                  pedido[]
+  carritos                 carrito_compra[]
 }
-
 
 enum pedido_estado {
   COMPLETADO

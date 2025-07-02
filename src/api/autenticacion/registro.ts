@@ -9,6 +9,7 @@ export async function POST(req: Request) {
     apellidoUsuario: string;
     emailUsuario: string;
     telefonoUsuario: string;
+    numeroDocumentoUsuario: string;
     hashContrasenaUsuario: string;
     rolUsuario: usuario_rol_usuario;
     ciudadUsuario: string;
@@ -19,13 +20,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Alias ya existe" }, { status: 409 });
   }
 
-  // 2. Mapea tus campos camelCase → snake_case del modelo
+  // 2. Mapear los campos snake_case del modelo
   const nuevo = await createUsuario({
     alias: body.alias,
     nombre_usuario: body.nombreUsuario,
     apellido_usuario: body.apellidoUsuario,
     email_usuario: body.emailUsuario,
     telefono_usuario: body.telefonoUsuario,
+    numero_documento_usuario: body.numeroDocumentoUsuario,
     hash_contrasena_usuario: body.hashContrasenaUsuario,
     rol_usuario: body.rolUsuario || usuario_rol_usuario.COMPRADOR, // usa COMPRADOR por defecto si no se manda
     ciudad_usuario: body.ciudadUsuario,
