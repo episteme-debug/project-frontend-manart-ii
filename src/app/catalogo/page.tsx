@@ -52,16 +52,13 @@ export default async function CatalogoProducto({ searchParams }: Props) {
   const currentPosts = posts.slice(startIndex, startIndex + limit);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-20">
-      <CardCatalogo
-        posts={currentPosts}
-        page={page}
-        totalPages={totalPages}
-        categorias={categorias}
-        promociones={promociones}
-        rango={Rango}
-      />
-    </section>
-
+    <CardCatalogo
+      posts={currentPosts}
+      page={page}
+      totalPages={totalPages}
+      categorias={categorias}
+      promociones={promociones}
+      rango={Rango}
+    />
   );
 }

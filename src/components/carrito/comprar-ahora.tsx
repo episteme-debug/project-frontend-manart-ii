@@ -8,7 +8,7 @@ type id = {
   idProducto: number;
 };
 
-export default function ComparaAhora({ idProducto }: id) {
+export default function ComprarAhora({ idProducto }: id) {
   const router = useRouter();
 
   const agregarCarrito = async () => {

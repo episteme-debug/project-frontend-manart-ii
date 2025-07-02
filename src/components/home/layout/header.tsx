@@ -19,7 +19,7 @@ export function Header() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link href="/" className="flex items-center space-x-3 group">
+            <Link href="/home" className="flex items-center space-x-3 group">
               <Image
                 src="/static/corporativo/logo.png"
                 alt="Logo ManArt"
@@ -29,9 +29,8 @@ export function Header() {
               />
             </Link>
 
-            {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center space-x-8">
-              <Link href="/" className="text-sm font-medium text-gray-700 hover:text-green-600 transition-smooth">
+              <Link href="/home" className="text-sm font-medium text-gray-700 hover:text-green-600 transition-smooth">
                 Inicio
               </Link>
               <Link
@@ -79,7 +78,6 @@ export function Header() {
               </Link>
             </nav>
 
-            {/* Search Bar */}
             <div className="hidden md:flex items-center flex-1 max-w-xs mx-8">
               <div className="relative w-full">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -91,7 +89,6 @@ export function Header() {
               </div>
             </div>
 
-            {/* Action Icons */}
             <div className="flex items-center space-x-2">
               <button className="relative p-2 hover:bg-green-50 rounded-lg transition-smooth">
                 <Heart className="w-5 h-5" />
@@ -100,15 +97,15 @@ export function Header() {
                 </span>
               </button>
 
-              <button
-                onClick={() => setCartOpen(true)}
+              <Link
+                href={"/carrito"}
                 className="relative p-2 hover:bg-green-50 rounded-lg transition-smooth"
               >
                 <ShoppingCart className="w-5 h-5" />
                 <span className="absolute -top-1 -right-1 w-4 h-4 gradient-emerald rounded-full text-xs text-white flex items-center justify-center">
                   2
                 </span>
-              </button>
+              </Link>
 
               <button className="p-2 hover:bg-green-50 rounded-lg transition-smooth">
                 <User className="w-5 h-5" />
@@ -133,7 +130,7 @@ export function Header() {
                   <input type="text" placeholder="Buscar..." className="w-full pl-10 pr-4 py-2 border rounded-lg" />
                 </div>
                 <nav className="space-y-2">
-                  <Link href="/" className="block py-2 text-black hover:text-green-600 transition-smooth">
+                  <Link href="/home" className="block py-2 text-black hover:text-green-600 transition-smooth">
                     Inicio
                   </Link>
                   <Link
@@ -155,31 +152,7 @@ export function Header() {
         </div>
       </header>
 
-      {/* Cart Slide Panel */}
-      <div className={`fixed inset-0 z-50 ${cartOpen ? "block" : "hidden"}`}>
-        <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setCartOpen(false)}></div>
-        <div
-          className={`absolute right-0 top-0 h-full w-96 bg-white shadow-xl animate-cart-slide ${cartOpen ? "open" : ""}`}
-        >
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold">Carrito de Compras</h2>
-              <button onClick={() => setCartOpen(false)} className="p-2 hover:bg-gray-100 rounded-lg">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="space-y-4">
-              <div className="flex items-center space-x-4 p-4 border rounded-lg">
-                <div className="w-16 h-16 bg-gray-200 rounded-lg"></div>
-                <div className="flex-1">
-                  <h3 className="font-medium">Mochila Wayuu</h3>
-                  <p className="text-sm text-gray-600">€145</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      
     </>
   )
 }

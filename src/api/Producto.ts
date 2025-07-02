@@ -123,9 +123,9 @@ interface Post {
   imagenProducto?: string;
 }
 
-export async function ObtenerProductos(): Promise<Post[]> {
+export async function ObtenerProductos(): Promise<ProductoRespuesta[]> {
   try {
-    const response = await axios.get<Post[]>(
+    const response = await axios.get<ProductoRespuesta[]>(
       "http://localhost:8080/api/producto/public/listarproductos"
     );
     return response.data;
@@ -151,5 +151,38 @@ export async function RagodePrecios(): Promise<Rango> {
       precioMinimo: 0,
       precioMaximo: 0,
     };
+  }
+}
+
+export async function ObtenerProductosRelacionados(id:string) {
+  console.log(id)
+  try {
+    const response = await axios.get<ProductoRespuesta[]>(
+      `http://localhost:8080/api/producto/public/relacionados/${id}`
+    );
+    console.log(response.data)
+    return response.data.slice(0, 6);
+  } catch (error) {
+    console.error("erorr al obtenes los productos:", error);
+    return [];
+  }
+}
+
+interface Post {
+  idProducto: number;
+  nombreProducto: string;
+  descripcionProducto: string;
+  precioProducto: number;
+  stockProducto: number;
+}
+
+export async function ObtenerPorId(id:String) {
+     try {
+    const res = await axios.get<Post>(
+      `http://localhost:8080/api/producto/public/obtenerporid/${id}`
+    );
+    return res.data;
+  } catch (error) {
+    console.error("Error cargando producto:", error);
   }
 }

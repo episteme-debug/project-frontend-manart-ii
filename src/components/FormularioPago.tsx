@@ -1,3 +1,5 @@
+"use client";
+import { useEffect, useRef } from "react";
 import { PayUDatos } from '@/interfaces/PayUDatos';
 
 interface Props {
@@ -5,9 +7,17 @@ interface Props {
 }
 
 export default function FormularioPago({ datos }: Props) {
-    console.log("Datos recibidos en FormularioPago:", datos);
+    const formRef = useRef<HTMLFormElement>(null);
+
+    useEffect(() => {
+        if (formRef.current) {
+            formRef.current.submit();
+        }
+    }, []);
+
     return (
         <form
+            ref={formRef}
             method="post"
             action="https://sandbox.checkout.payulatam.com/ppp-web-gateway-payu"
         >
@@ -24,7 +34,6 @@ export default function FormularioPago({ datos }: Props) {
             <input name="buyerEmail" type="hidden" value={datos.buyerEmail} />
             <input name="responseUrl" type="hidden" value={datos.responseUrl} />
             <input name="confirmationUrl" type="hidden" value={datos.confirmationUrl} />
-            <input name="Submit" type="submit" value="Pagar ahora" />
         </form>
     );
 }

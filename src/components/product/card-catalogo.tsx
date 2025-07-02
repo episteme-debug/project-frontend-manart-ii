@@ -3,9 +3,9 @@ import React from "react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { filtrarProducto } from "@/api/Producto"; 
+import { filtrarProducto } from "@/api/Producto";
 import Image from "next/image";
-import { TraerArchivo } from "@/api/CategoriaProducto"; 
+import { TraerArchivo } from "@/api/CategoriaProducto";
 import { InputOTPSeparator } from "@/components/ui/input-otp";
 import { Card } from "@/components/ui/card";
 import {
@@ -17,15 +17,9 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { ArchivoMultimediaRespuesta } from "@/interfaces/ArchivoMultimediaInterfaz";
+import { Star, Heart, Filter, X, ChevronDown, ChevronUp } from "lucide-react"
+import { ProductoRespuesta } from "@/interfaces/ProductoInterfaz";
 
-interface Post {
-  idProducto: number;
-  nombreProducto: string;
-  descripcionProducto: string;
-  precioProducto: number;
-  stockProducto: number;
-  imagenProducto?: string
-}
 interface Categoria {
   idCategoria: number;
   nombreCategoria: string;
@@ -45,7 +39,7 @@ interface Rango {
 }
 const stars = Array(5).fill(0);
 interface CardCatalogoProps {
-  posts: Post[];
+  posts: ProductoRespuesta[];
   page: number;
   totalPages: number;
   categorias: Categoria[];
@@ -62,8 +56,7 @@ export default function CardCatalogo({
   rango
 }: CardCatalogoProps) {
 
-
-  const [productos, setProductos] = useState<Post[]>([]);
+  const [productos, setProductos] = useState<ProductoRespuesta[]>([]);
   const [imagenesProductos, setImagenesProductos] = useState<{ [id: number]: string }>({});
 
   const [mostrarTodos, setMostrarTodos] = useState(true);
@@ -72,6 +65,8 @@ export default function CardCatalogo({
   }
 
   const [filtrosOcultos, setFiltrosOcultos] = useState(false);
+  const [mostrarFiltrosMobile, setMostrarFiltrosMobile] = useState(false);
+
   function cambiarOcultamientoFiltros(valor: boolean) {
     setFiltrosOcultos(valor);
   }
@@ -80,6 +75,22 @@ export default function CardCatalogo({
   function cambiarVisibilidadSeccion(valor: boolean) {
     setMostrarSeccionFiltros(valor);
   }
+
+  // Estados para expandir/contraer secciones de filtros
+  const [seccionesAbiertas, setSeccionesAbiertas] = useState({
+    categorias: true,
+    precios: true,
+    descuentos: true,
+    regiones: true
+  });
+
+  const toggleSeccion = (seccion: keyof typeof seccionesAbiertas) => {
+    setSeccionesAbiertas(prev => ({
+      ...prev,
+      [seccion]: !prev[seccion]
+    }));
+  };
+
   //const de los filtro de los producto 
   const [nombreCategoria, setnombreCategoria] = useState<string | null>(null);
   const [porcentajeDescuento, setporcentajeDescuento] = useState<number | null>(null);
@@ -143,7 +154,6 @@ export default function CardCatalogo({
     }
   }, [mostrarTodos, posts]);
 
-
   useEffect(() => {
     if (
       nombreCategoria != null ||
@@ -179,556 +189,475 @@ export default function CardCatalogo({
       console.error("Error al filtrar productos:", error);
     }
   };
+
   const productosPaginados = productos.slice(
     (paginaFiltro - 1) * productosPorPagina,
     paginaFiltro * productosPorPagina
   );
 
+  const limpiarTodosFiltros = () => {
+    setnombreCategoria(null);
+    setporcentajeDescuento(null);
+    setprecioMin(null);
+    setprecioMax(null);
+    setregion(null);
+  };
+
+  const hayFiltrosActivos = nombreCategoria != null || porcentajeDescuento != null || precioMax != null || precioMin != null || region != null;
+
+  const rangosPrecio = [
+    { min: rango.precioMinimo, max: 30000, label: `${rango.precioMinimo.toLocaleString()} - 30.000` },
+    { min: 30000, max: 50000, label: "30.000 - 50.000" },
+    { min: 50000, max: 100000, label: "50.000 - 100.000" },
+    { min: 100000, max: rango.precioMaximo, label: `100.000 - ${rango.precioMaximo.toLocaleString()}` }
+  ];
+
+  const regiones = [
+    { value: "ANDINA", label: "Región Andina" },
+    { value: "CARIBE", label: "Región Caribe" },
+    { value: "PACIFICA", label: "Región Pacífica" },
+    { value: "AMAZONICA", label: "Región Amazónica" },
+    { value: "ORINOQUIA", label: "Región Orinoquía" },
+    { value: "INSULAR", label: "Región Insular" }
+  ];
 
   return (
-    <section className="min-h-screen grid justify-items-center">
-      <section className="grid grid-cols-5 w-[90%] shadow-2xl pt-5">
-        <div className="col-start-1 col-end-2 col-span-1 row-span-2 shadow-2xl h-auto ">
-          <div className=" ">
-            {(nombreCategoria != null ||
-              porcentajeDescuento != null ||
-              precioMax != null ||
-              precioMin != null ||
-              region != null) && (
-                <div className={` pb-1  ${filtrosOcultos ? "hidden" : "block"}`}>
-                  <h2 className="text-2xl mt-2 ml-2 ">Filtros Aplicados</h2>
-                  {nombreCategoria != null && (
-                    <div>
-                      <div className="flex items-center  justify-center bg-amber-300 m-1 mb-2  max-w-65 w-50 rounded-lg">
-                        <p className="ml-1">{nombreCategoria}</p>
-                        <Button
-                          className="bg-transparent hover:bg-transparent border-none shadow-none text-black"
-                          onClick={() => {
-                            setnombreCategoria(null);
-                          }}
-                        >
-                          X
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                  {porcentajeDescuento != null && (
-                    <div className=" flex items-center  justify-center bg-amber-300 m-1  max-w-65 w-50 rounded-lg">
-                      <p className="ml-2 bg-amber-300">
-                        {porcentajeDescuento}% de Descuentos
-                      </p>
-                      <Button
-                        className="bg-transparent hover:bg-transparent border-none shadow-none text-black"
-                        onClick={() => {
-                          setporcentajeDescuento(null);
-                        }}
-                      >
-                        X
-                      </Button>
-                    </div>
-                  )}
-                  {precioMin != null && precioMin != null && (
-                    <div className=" flex items-center  justify-center bg-amber-300 m-1  max-w-65 w-55 rounded-lg">
-                      <p className="ml-2 bg-amber-300">
-                        Precios {precioMin} a {precioMax}
-                      </p>
-                      <Button
-                        className="bg-transparent hover:bg-transparent border-none shadow-none text-black"
-                        onClick={() => {
-                          setprecioMin(null);
-                          setprecioMax(null);
-                        }}
-                      >
-                        X
-                      </Button>
-                    </div>
-                  )}
-                  {region != null && (
-                    <div className=" flex items-center  justify-center bg-amber-300 m-1  max-w-65 w-55 rounded-lg">
-                      <p className="ml-2 bg-amber-300">
-                        Region {region}
-                      </p>
-                      <Button
-                        className="bg-transparent hover:bg-transparent border-none shadow-none text-black"
-                        onClick={() => {
-                          setregion(null);
-                        }}
-                      >
-                        X
-                      </Button>
-                    </div>
-                  )}
+    <section className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+      <div className="container mx-auto px-4 py-6 lg:py-10">
+        {/* Header con botón de filtros móvil */}
+        <div className="flex justify-between items-center mb-6 lg:hidden">
+          <h1 className="text-2xl font-bold text-gray-800">Catálogo</h1>
+          <Button
+            onClick={() => setMostrarFiltrosMobile(!mostrarFiltrosMobile)}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+          >
+            <Filter className="w-4 h-4" />
+            Filtros
+          </Button>
+        </div>
+
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Sidebar de filtros */}
+          <aside className={`
+            lg:w-80 lg:block bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden
+            ${mostrarFiltrosMobile ? 'block' : 'hidden lg:block'}
+            ${mostrarFiltrosMobile ? 'fixed inset-x-4 top-20 z-50 max-h-[calc(100vh-6rem)] overflow-y-auto' : ''}
+          `}>
+            <div className="p-6">
+              {/* Header de filtros */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <Filter className="w-5 h-5 text-blue-600" />
+                  <h2 className="text-xl font-bold text-gray-800">Filtros</h2>
+                </div>
+                {hayFiltrosActivos && (
+                  <Button
+                    onClick={limpiarTodosFiltros}
+                    variant="outline"
+                    size="sm"
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    Limpiar
+                  </Button>
+                )}
+                {mostrarFiltrosMobile && (
+                  <Button
+                    onClick={() => setMostrarFiltrosMobile(false)}
+                    variant="ghost"
+                    size="sm"
+                    className="lg:hidden"
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                )}
+              </div>
+
+              {/* Filtros aplicados */}
+              {hayFiltrosActivos && (
+                <div className="mb-6 p-4 bg-amber-50 rounded-xl border border-amber-200">
+                  <h3 className="text-sm font-semibold text-amber-800 mb-3">Filtros Aplicados</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {nombreCategoria && (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-200 text-amber-800 rounded-full text-sm">
+                        {nombreCategoria}
+                        <button onClick={() => setnombreCategoria(null)} className="hover:bg-amber-300 rounded-full p-0.5">
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    )}
+                    {porcentajeDescuento && (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-200 text-amber-800 rounded-full text-sm">
+                        {porcentajeDescuento}% descuento
+                        <button onClick={() => setporcentajeDescuento(null)} className="hover:bg-amber-300 rounded-full p-0.5">
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    )}
+                    {precioMin && precioMax && (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-200 text-amber-800 rounded-full text-sm">
+                        ${precioMin.toLocaleString()} - ${precioMax.toLocaleString()}
+                        <button onClick={() => { setprecioMin(null); setprecioMax(null); }} className="hover:bg-amber-300 rounded-full p-0.5">
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    )}
+                    {region && (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-200 text-amber-800 rounded-full text-sm">
+                        {regiones.find(r => r.value === region)?.label}
+                        <button onClick={() => setregion(null)} className="hover:bg-amber-300 rounded-full p-0.5">
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    )}
+                  </div>
                 </div>
               )}
-          </div>
-          <h2 className="text-2xl ml-2 ">Categorias</h2>
-          <div className="grid max-w-100 ">
-            <div className="">
-              <div className=" gap-2 w-full">
-                {categorias.map((categoria) => (
-                  <div key={categoria.idCategoria} className=" ml-2 mb-2 whitespace-normal">
-                    <Button
-                      onClick={() => {
-                        setnombreCategoria(categoria.nombreCategoria);
-                        cambiarMostrarTodos(false);
-                        cambiarOcultamientoFiltros(false);
-                        cambiarVisibilidadSeccion(false);
-                      }}
-                      className={` rounded hover:bg-amber-500
-            ${nombreCategoria === categoria.nombreCategoria
-                          ? "bg-amber-400 text-white"
-                          : "bg-gray-300 text-black"
-                        }`}
+
+              {/* Categorías */}
+              <div className="mb-6">
+                <button
+                  onClick={() => toggleSeccion('categorias')}
+                  className="flex items-center justify-between w-full p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
+                >
+                  <h3 className="text-lg font-semibold text-gray-800">Categorías</h3>
+                  {seccionesAbiertas.categorias ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                </button>
+                {seccionesAbiertas.categorias && (
+                  <div className="mt-3 space-y-2 max-h-48 overflow-y-auto">
+                    {categorias.map((categoria) => (
+                      <Button
+                        key={categoria.idCategoria}
+                        onClick={() => {
+                          setnombreCategoria(categoria.nombreCategoria);
+                          cambiarMostrarTodos(false);
+                          cambiarOcultamientoFiltros(false);
+                          cambiarVisibilidadSeccion(false);
+                          setMostrarFiltrosMobile(false);
+                        }}
+                        variant={nombreCategoria === categoria.nombreCategoria ? "default" : "outline"}
+                        className={`w-full justify-start text-left h-auto py-3 px-4 ${nombreCategoria === categoria.nombreCategoria
+                            ? "bg-blue-600 text-white hover:bg-blue-700"
+                            : "hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
+                          }`}
+                      >
+                        {categoria.nombreCategoria}
+                      </Button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Rango de precios */}
+              <div className="mb-6">
+                <button
+                  onClick={() => toggleSeccion('precios')}
+                  className="flex items-center justify-between w-full p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
+                >
+                  <h3 className="text-lg font-semibold text-gray-800">Rango de Precios</h3>
+                  {seccionesAbiertas.precios ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                </button>
+                {seccionesAbiertas.precios && (
+                  <div className="mt-3 space-y-2">
+                    {rangosPrecio.map((rango_precio, index) => (
+                      <Button
+                        key={index}
+                        onClick={() => {
+                          setprecioMin(rango_precio.min);
+                          setprecioMax(rango_precio.max);
+                          cambiarMostrarTodos(false);
+                          cambiarOcultamientoFiltros(false);
+                          cambiarVisibilidadSeccion(false);
+                          setMostrarFiltrosMobile(false);
+                        }}
+                        variant={precioMin === rango_precio.min && precioMax === rango_precio.max ? "default" : "outline"}
+                        className={`w-full justify-start text-left py-3 px-4 ${precioMin === rango_precio.min && precioMax === rango_precio.max
+                            ? "bg-blue-600 text-white hover:bg-blue-700"
+                            : "hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
+                          }`}
+                      >
+                        ${rango_precio.label}
+                      </Button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Descuentos */}
+              <div className="mb-6">
+                <button
+                  onClick={() => toggleSeccion('descuentos')}
+                  className="flex items-center justify-between w-full p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
+                >
+                  <h3 className="text-lg font-semibold text-gray-800">Descuentos</h3>
+                  {seccionesAbiertas.descuentos ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                </button>
+                {seccionesAbiertas.descuentos && (
+                  <div className="mt-3 space-y-3">
+                    {promociones.map((promocion) => (
+                      <label key={promocion.idPromocion} className="flex items-center space-x-3 cursor-pointer group">
+                        <input
+                          type="radio"
+                          name="promocion"
+                          value={promocion.porcentajeDescuentoPromocion}
+                          checked={porcentajeDescuento === promocion.porcentajeDescuentoPromocion}
+                          onChange={() => {
+                            setporcentajeDescuento(promocion.porcentajeDescuentoPromocion);
+                            cambiarMostrarTodos(false);
+                            cambiarOcultamientoFiltros(false);
+                            cambiarVisibilidadSeccion(false);
+                            setMostrarFiltrosMobile(false);
+                          }}
+                          className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                        />
+                        <span className="text-gray-700 group-hover:text-blue-600 transition-colors">
+                          {promocion.nombrePromocion} ({promocion.porcentajeDescuentoPromocion}%)
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Regiones */}
+              <div className="mb-6">
+                <button
+                  onClick={() => toggleSeccion('regiones')}
+                  className="flex items-center justify-between w-full p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
+                >
+                  <h3 className="text-lg font-semibold text-gray-800">Regiones</h3>
+                  {seccionesAbiertas.regiones ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                </button>
+                {seccionesAbiertas.regiones && (
+                  <div className="mt-3 space-y-3 max-h-48 overflow-y-auto">
+                    {regiones.map((regionItem) => (
+                      <label key={regionItem.value} className="flex items-center space-x-3 cursor-pointer group">
+                        <input
+                          type="radio"
+                          name="region"
+                          value={regionItem.value}
+                          checked={region === regionItem.value}
+                          onChange={() => {
+                            setregion(regionItem.value);
+                            cambiarMostrarTodos(false);
+                            cambiarOcultamientoFiltros(false);
+                            cambiarVisibilidadSeccion(false);
+                            setMostrarFiltrosMobile(false);
+                          }}
+                          className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                        />
+                        <span className="text-gray-700 group-hover:text-blue-600 transition-colors">
+                          {regionItem.label}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </aside>
+
+          {/* Overlay para móvil */}
+          {mostrarFiltrosMobile && (
+            <div
+              className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+              onClick={() => setMostrarFiltrosMobile(false)}
+            />
+          )}
+
+          {/* Contenido principal */}
+          <main className="flex-1">
+            {/* Grid de productos filtrados */}
+            <div className={`${mostrarSeccionFiltros ? "hidden" : "block"}`}>
+              {productosPaginados.length === 0 ? (
+                <div className="text-center py-20">
+                  <div className="text-gray-400 text-6xl mb-4">🔍</div>
+                  <h3 className="text-xl font-semibold text-gray-600 mb-2">No se encontraron productos</h3>
+                  <p className="text-gray-500">Intenta ajustar tus filtros de búsqueda</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+                  {productosPaginados.map((producto, index) => (
+                    <div
+                      key={producto.idProducto}
+                      className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-blue-200"
                     >
-                      {categoria.nombreCategoria}
-                    </Button>
+                      <div className="relative aspect-square overflow-hidden bg-gray-50">
+                        <Image
+                          src={"/images/ImagenProductoPorDefecto.jpg"}
+                          alt={producto.nombreProducto}
+                          fill
+                          className="object-cover transition-transform duration-300 group-hover:scale-110"
+                        />
+                        <button className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white">
+                          <Heart className="w-5 h-5 text-gray-600 hover:text-red-500" />
+                        </button>
+                        <div className="absolute bottom-4 left-4 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                          Nuevo
+                        </div>
+                      </div>
+
+                      <div className="p-6 space-y-4">
+                        <div>
+                          <h3 className="font-bold text-lg text-gray-800 group-hover:text-blue-600 transition-colors line-clamp-2">
+                            {producto.nombreProducto}
+                          </h3>
+                          <p className="text-sm text-gray-500">por Artesano</p>
+                        </div>
+
+                        <div className="flex items-center space-x-1">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`w-4 h-4 ${i < 4 ? "text-yellow-400 fill-current" : "text-gray-300"}`}
+                            />
+                          ))}
+                          <span className="text-sm text-gray-600 ml-2">4.0</span>
+                        </div>
+
+                        <div className="flex justify-between items-center">
+                          <div className="space-y-1">
+                            <span className="text-2xl font-bold text-blue-600">${producto.precioProducto.toLocaleString()}</span>
+                            <p className="text-xs text-gray-500">COP</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Grid de todos los productos */}
+            <div className={`${mostrarTodos ? "block" : "hidden"}`}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+                {posts.map((post) => (
+                  <div
+                    key={post.idProducto}
+                    className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-blue-200"
+                  >
+                    <div className="relative aspect-square overflow-hidden bg-gray-50">
+                      <Image
+                        src={
+                          post.listaArchivos.length > 0
+                            ? `/static/${post.listaArchivos[0].ruta.replace(/^\/+/, "")}`
+                            : "/images/ImagenProductoPorDefecto.jpg"
+                        }
+                        alt={post.nombreProducto}
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-110"
+                        priority
+                      />
+                      <button className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white">
+                        <Heart className="w-5 h-5 text-gray-600 hover:text-red-500" />
+                      </button>
+                    </div>
+
+                    <div className="p-6 space-y-4">
+                      <div>
+                        <Link
+                          className="font-bold text-lg text-gray-800 hover:text-blue-600 transition-colors line-clamp-2 block"
+                          href={`catalogo/detalleproducto/${post.idProducto}`}
+                        >
+                          {post.nombreProducto}
+                        </Link>
+                        <p className="text-sm text-gray-500">por Artesano</p>
+                      </div>
+
+                      <div className="flex items-center space-x-1">
+                        {stars.map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`w-4 h-4 ${i < 4 ? "text-yellow-400 fill-current" : "text-gray-300"}`}
+                          />
+                        ))}
+                        <span className="text-sm text-gray-600 ml-2">4.0</span>
+                      </div>
+
+                      <div className="flex justify-between items-center">
+                        <div className="space-y-1">
+                          <span className="text-2xl font-bold text-blue-600">${post.precioProducto.toLocaleString()}</span>
+                          <p className="text-xs text-gray-500">COP</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
-          </div>
-          <br />
 
-          <div className="g w-full ">
-            <div className="ml-2">
-              <h2>Rango de precios</h2>
-              <Button onClick={() => {
-                setprecioMin(rango.precioMinimo);
-                setprecioMax(30000);
-                cambiarMostrarTodos(false);
-                cambiarOcultamientoFiltros(false);
-                cambiarVisibilidadSeccion(false);
-              }}
-                className={`flex rounded mb-2 hover:bg-amber-500
-            ${precioMin === rango.precioMinimo && precioMax === 30000
-                    ? "bg-amber-400 text-white"
-                    : "bg-gray-300 text-black"
-                  }`}
-              >
-                <span className="text-black">{rango.precioMinimo}</span>
-                <InputOTPSeparator />
-                <span className="text-black">30.000</span>
-              </Button>
-              <Button onClick={() => {
-                setprecioMin(30000);
-                setprecioMax(50000);
-                cambiarMostrarTodos(false);
-                cambiarOcultamientoFiltros(false);
-                cambiarVisibilidadSeccion(false);
-              }}
-                className={`flex rounded mb-2 hover:bg-amber-500
-            ${precioMin === 30000 && precioMax === 50000
-                    ? "bg-amber-400 text-white"
-                    : "bg-gray-300 text-black"
-                  }`}>
-                <span>30.000</span>
-                <InputOTPSeparator />
-                <span>50.000</span>
-              </Button>
-              <Button onClick={() => {
-                setprecioMin(50000);
-                setprecioMax(100000);
-                cambiarMostrarTodos(false);
-                cambiarOcultamientoFiltros(false);
-                cambiarVisibilidadSeccion(false);
-              }}
-                className={`flex rounded mb-2 hover:bg-amber-500
-            ${precioMin === 50000 && precioMax === 100000
-                    ? "bg-amber-400 text-white"
-                    : "bg-gray-300 text-black"
-                  }`}>
-                <span>50.000</span>
-                <InputOTPSeparator />
-                <span>100.000</span>
-              </Button>
-              <Button onClick={() => {
-                setprecioMin(100000);
-                setprecioMax(rango.precioMaximo);
-                cambiarMostrarTodos(false);
-                cambiarOcultamientoFiltros(false);
-                cambiarVisibilidadSeccion(false);
-              }}
-                className={`flex rounded mb-2 hover:bg-amber-500
-            ${precioMin === 100000 && precioMax === rango.precioMaximo
-                    ? "bg-amber-400 text-white"
-                    : "bg-gray-300 text-black"
-                  }`}>
-                <span>100.000</span>
-                <InputOTPSeparator />
-                <span>{rango.precioMaximo}</span>
-              </Button>
-            </div>
-          </div>
-          <br />
-          <div className="">
-            <h2 className="text-2xl ml-2">Descuentos</h2>
-            {promociones.map((promocion) => (
-              <div key={promocion.idPromocion}>
-                <label className="ml-2">
-                  <input
-                    type="radio"
-                    name={promocion.nombrePromocion}
-                    value={promocion.porcentajeDescuentoPromocion}
-                    checked={
-                      porcentajeDescuento ===
-                      promocion.porcentajeDescuentoPromocion
-                    }
-                    onChange={() => {
-                      setporcentajeDescuento(
-                        promocion.porcentajeDescuentoPromocion
-                      );
-                      cambiarMostrarTodos(false);
-                      cambiarOcultamientoFiltros(false);
-                      cambiarVisibilidadSeccion(false);
-                    }}
+            {/* Paginación */}
+            <div className="mt-12">
+              {(mostrarTodos && totalPages > 1) && (
+                <div className="flex justify-center">
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious href={`?page=${Math.max(1, page - 1)}`} />
+                      </PaginationItem>
 
-                  />
-                  {promocion.nombrePromocion}{" "}
-                  {promocion.porcentajeDescuentoPromocion}%
-                </label>
-                <br />
-              </div>
-            ))}
-          </div>
-
-          <br />
-          {/* <div className="">
-            <h2 className="text-2xl ml-2">Calificacion</h2>
-            <div className="flex ml-2">
-              {stars.map((_, i) => (
-                <svg
-                  key={i}
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill={i < 1 ? "yellow" : "none"}
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="size-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
-                  />
-                </svg>
-              ))}
-            </div>
-          </div> 
-          <br />*/}
-
-          <div className="">
-            <h2 className="text-2xl ml-2">Regiones</h2>
-            <label className="ml-2">
-              <input
-                type="radio"
-                name="Región Andina"
-                value="ANDINA"
-                checked={
-                  region == "ANDINA"
-                }
-                onChange={() => {
-                  setregion(
-                    "ANDINA"
-                  );
-                  cambiarMostrarTodos(false);
-                  cambiarOcultamientoFiltros(false);
-                  cambiarVisibilidadSeccion(false);
-                }}
-
-              />
-              Región Andina
-            </label>
-            <br />
-            <label className="ml-2">
-              <input
-                type="radio"
-                name="Región Caribe"
-                value="CARIBE"
-                checked={
-                  region == "CARIBE"
-                }
-                onChange={() => {
-                  setregion(
-                    "CARIBE"
-                  );
-                  cambiarMostrarTodos(false);
-                  cambiarOcultamientoFiltros(false);
-                  cambiarVisibilidadSeccion(false);
-                }}
-
-              />
-              Región Caribe
-            </label>
-            <br />
-            <label className="ml-2">
-              <input
-                type="radio"
-                name="Región Pacífica"
-                value="PACIFICA"
-                checked={
-                  region == "PACIFICA"
-                }
-                onChange={() => {
-                  setregion(
-                    "PACIFICA"
-                  );
-                  cambiarMostrarTodos(false);
-                  cambiarOcultamientoFiltros(false);
-                  cambiarVisibilidadSeccion(false);
-                }}
-
-              />
-              Región Pacífica
-            </label>
-            <br />
-            <label className="ml-2">
-              <input
-                type="radio"
-                name="Región Amazónica"
-                value="AMAZONICA"
-                checked={
-                  region == "AMAZONICA"
-                }
-                onChange={() => {
-                  setregion(
-                    "AMAZONICA"
-                  );
-                  cambiarMostrarTodos(false);
-                  cambiarOcultamientoFiltros(false);
-                  cambiarVisibilidadSeccion(false);
-                }}
-
-              />
-              Región Amazónica
-            </label>
-
-            <br />
-            <label className="ml-2">
-              <input
-                type="radio"
-                name="Región Orinoquía"
-                value="ORINOQUIA"
-                checked={
-                  region == "ORINOQUIA"
-                }
-                onChange={() => {
-                  setregion(
-                    "ORINOQUIA"
-                  );
-                  cambiarMostrarTodos(false);
-                  cambiarOcultamientoFiltros(false);
-                  cambiarVisibilidadSeccion(false);
-                }}
-
-              />
-              Región Orinoquía
-            </label>
-            <br />
-            <label className="ml-2">
-              <input
-                type="radio"
-                name="Región Insular"
-                value="INSULAR"
-                checked={
-                  region == "INSULAR"
-                }
-                onChange={() => {
-                  setregion(
-                    "INSULAR"
-                  );
-                  cambiarMostrarTodos(false);
-                  cambiarOcultamientoFiltros(false);
-                  cambiarVisibilidadSeccion(false);
-                }}
-
-              />
-              Región Insular
-            </label>
-          </div>
-        </div>
-        <div className="col-start-2 col-end-6  flex justify-center">
-          <div className=" w-[90%]  ">
-            <div
-              className={`grid grid-cols-3 gap-5  place-content-stretch mr-5 ml-5 ${mostrarSeccionFiltros ? "hidden" : "block"
-                }`}
-            >
-              {productosPaginados.map((producto) => (
-                <div
-                  key={producto.idProducto}
-                  className="  rounded-lg shadow-xl  "
-                >
-                  <Card className="">
-                    <div className="group  static flex justify-center-safe m-0 p-0 ">
-                      <div className="max-h-300">
-                        <Image src={imagenesProductos[producto.idProducto] || "/imagen-defecto.png"} alt={producto.nombreProducto} width={300}
-                          height={300}
-                          className="object-contain w-full max-h-[250px]"
-                          priority />
-                      </div>
-                    </div>
-                    <div className=" p-5 h-full">
-                      <Link
-                        className=" m-0 p-0  "
-                        href={`productos/detalleproducto/${producto.idProducto}`}
-                      >
-                        <p className="text-2xl underline hover:text-amber-300 transition-colors duration-300">
-                          {producto.nombreProducto}
-                        </p>
-                      </Link>
-                      <p>
-                        ${producto.precioProducto} COP{" "}
-                      </p>
-                      <div className="flex">
-                        {stars.map((_, i) => (
-                          <svg
-                            key={i}
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill={i < producto.idProducto ? "yellow" : "none"}
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="size-6"
+                      {[...Array(totalPages)].map((_, i) => (
+                        <PaginationItem key={i}>
+                          <PaginationLink
+                            href={`?page=${i + 1}`}
+                            aria-current={page === i + 1 ? "page" : undefined}
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
-                            />
-                          </svg>
-                        ))}
-                      </div>
-                    </div>
-                  </Card>
-                </div>
-              ))}
-            </div>
+                            {i + 1}
+                          </PaginationLink>
+                        </PaginationItem>
+                      ))}
 
-            <div
-              id="Productos"
-              className={`grid grid-cols-3 gap-5  place-content-stretch mr-5 ml-5 ${mostrarTodos ? "block" : "hidden"
-                }`}
-            >
-              {posts.map((post) => (
-                <div
-                  key={post.idProducto}
-                  className=" w-[100%] rounded-lg shadow-xl  "
-                >
-                  <Card className="">
-                    <div className="group static flex justify-center-safe">
-                      <div className="max-h-300">
-                        <Image src={imagenesProductos[post.idProducto] || "/imagen-defecto.png"} alt={post.nombreProducto} width={300}
-                          height={300}
-                          className="object-contain w-full max-h-[250px]"
-                          priority />
-                      </div>
-                    </div>
-                    <div className=" p-5 h-full">
-                      <Link
-                        className=" m-0 p-0  "
-                        href={`productos/detalleproducto/${post.idProducto}`}
-                      >
-                        <p className="text-2xl underline hover:text-amber-300 transition-colors duration-300">
-                          {post.nombreProducto}
-                        </p>
-                      </Link>{" "}
-                      <p>
-                        ${post.precioProducto} COP{" "}
-                      </p>
-                      <div className="flex">
-                        {stars.map((_, i) => (
-                          <svg
-                            key={i}
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill={i < post.idProducto ? "yellow" : "none"}
-                            viewBox="0 0 24 24"
-                            strokeWidth={1.5}
-                            stroke="currentColor"
-                            className="size-6"
+                      <PaginationItem>
+                        <PaginationNext href={`?page=${Math.min(totalPages, page + 1)}`} />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
+              )}
+
+              {!mostrarTodos && totalPaginasFiltro > 1 && (
+                <div className="flex justify-center">
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious
+                          onClick={() =>
+                            setPaginaFiltro((prev) => Math.max(1, prev - 1))
+                          }
+                          className="cursor-pointer"
+                        />
+                      </PaginationItem>
+
+                      {[...Array(totalPaginasFiltro)].map((_, i) => (
+                        <PaginationItem key={i}>
+                          <PaginationLink
+                            href="#"
+                            onClick={() => setPaginaFiltro(i + 1)}
+                            aria-current={paginaFiltro === i + 1 ? "page" : undefined}
+                            className="cursor-pointer"
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
-                            />
-                          </svg>
-                        ))}
-                      </div>
-                    </div>
-                  </Card>
+                            {i + 1}
+                          </PaginationLink>
+                        </PaginationItem>
+                      ))}
+
+                      <PaginationItem>
+                        <PaginationNext
+                          onClick={() =>
+                            setPaginaFiltro((prev) =>
+                              Math.min(totalPaginasFiltro, prev + 1)
+                            )
+                          }
+                          className="cursor-pointer"
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
                 </div>
-              ))}
+              )}
             </div>
-          </div>
+          </main>
         </div>
-        <div className="col-start-2 col-end-6 bg-red">
-          {(mostrarTodos && totalPages > 1) && (
-
-            <div className="flex justify-center items-center my-4 col-start-5 col-end-10">
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious href={`?page=${Math.max(1, page - 1)}`} />
-                  </PaginationItem>
-
-                  {[...Array(totalPages)].map((_, i) => (
-                    <PaginationItem key={i}>
-                      <PaginationLink
-                        href={`?page=${i + 1}`}
-                        aria-current={page === i + 1 ? "page" : undefined}
-                      >
-                        {i + 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ))}
-
-                  <PaginationItem>
-                    <PaginationNext href={`?page=${Math.min(totalPages, page + 1)}`} />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </div>
-          )}
-          {!mostrarTodos && totalPaginasFiltro > 1 && (
-            <div className="flex justify-center my-4">
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={() =>
-                        setPaginaFiltro((prev) => Math.max(1, prev - 1))
-                      }
-                    />
-                  </PaginationItem>
-
-                  {[...Array(totalPaginasFiltro)].map((_, i) => (
-                    <PaginationItem key={i}>
-                      <PaginationLink
-                        href="#"
-                        onClick={() => setPaginaFiltro(i + 1)}
-                        isActive={paginaFiltro === i + 1}
-                      >
-                        {i + 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ))}
-
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={() =>
-                        setPaginaFiltro((prev) =>
-                          Math.min(totalPaginasFiltro, prev + 1)
-                        )
-                      }
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </div>
-          )}
-
-
-        </div>
-      </section>
-    </section >
+       </div> 
+    </section>
   );
 }

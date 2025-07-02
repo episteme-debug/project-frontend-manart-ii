@@ -8,20 +8,20 @@ export function Footer() {
         <div className="grid lg:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-4">
-            <h3 className="text-2xl font-bold">ArtesanHub</h3>
+            <h3 className="text-2xl font-bold">ManArt</h3>
             <p className="text-gray-300">Conectamos la magia artesanal de Colombia con el mundo.</p>
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <MapPin className="w-4 h-4" />
-                <span className="text-sm">Bogotá, Colombia</span>
+                <span className="text-sm">Mosquera, Cundinamarca</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Phone className="w-4 h-4" />
-                <span className="text-sm">+57 300 123 4567</span>
+                <span className="text-sm">+57 316 810 92 02</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="w-4 h-4" />
-                <span className="text-sm">hola@artesanhub.co</span>
+                <span className="text-sm">somosartesaniasmanart@gmail.com</span>
               </div>
             </div>
           </div>
@@ -84,7 +84,7 @@ export function Footer() {
 
         <div className="border-t border-gray-800 mt-12 pt-8 text-center">
           <p className="text-gray-400 flex items-center justify-center space-x-1">
-            <span>© 2024 ArtesanHub. Hecho con</span>
+            <span>© 2025 ManArt. Hecho con el</span>
             <Heart className="w-4 h-4 text-red-500 fill-current" />
             <span>en Colombia</span>
           </p>
