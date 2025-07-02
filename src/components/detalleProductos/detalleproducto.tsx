@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import CardCarusel from "./cardCarusel";
 import ActivarBoton from "../../components/carrito/agregarCarrito";
-import { traerArchivo } from "../../api/detalleCategoria/taerArchivos"
+import { traerArchivo } from "../../api/GestionArchivos/taerArchivos"
 import ComparaAhora from "../../components/carrito/comparAhora";
 import {
     Carousel,

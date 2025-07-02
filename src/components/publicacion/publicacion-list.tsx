@@ -4,13 +4,13 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
 import { Edit, MoreHorizontal, Trash } from 'lucide-react'
-import { obtenerCategorias } from '../../api/detalleCategoria/listarCategorias'
-import { eliminarCategoria } from "../../api/detalleCategoria/eliminarCategoria"
+import { obtenerPublicaciones } from '../../api/publicacion/listarPublicacion'
+import { eliminarPublicacion } from "../../api/publicacion/eliminarPublicacion"
 import { eliminarArchivo } from "../../api/detalleCategoria/eliminarArchivo"
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { traerArchivo } from "../../api/GestionArchivos/taerArchivos"
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react'
 import {
   Dialog,
   DialogClose,
@@ -23,14 +23,10 @@ import {
 } from '@/components/ui/dialog'
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import {
   DropdownMenu,
@@ -47,122 +43,115 @@ import {
   PaginationNext,
 } from '@/components/ui/pagination'
 
-export default function CategoriaList() {
+export default function PublicacionList() {
   const searchParams = useSearchParams()
   const query = searchParams.get("query")?.toLowerCase() || ""
-  const [cart, setCart] = useState<any[]>([])
+  const [publicaciones, setPublicaciones] = useState<any[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [productToDelete, setProductToDelete] = useState<number | null>(null)
-  const [imagen, setimagen] = useState<Record<number, string>>({})
+  const [imagen, setImagen] = useState<Record<number, string>>({})
   const itemsPerPage = 8
 
   useEffect(() => {
-    async function fetchCategorias() {
+    async function fetchPublicaciones() {
       try {
-        const data = await obtenerCategorias()
-        setCart(data)
+        const data = await obtenerPublicaciones()
+        setPublicaciones(data)
       } catch (error) {
-        console.error("Error cargando categorías:", error)
+        console.error("Error cargando publicaciones:", error)
       }
     }
 
-    fetchCategorias()
+    fetchPublicaciones()
   }, [])
 
   useEffect(() => {
     async function cargarImagenes() {
       const nuevasImagenes: Record<number, string> = {}
 
-      for (const cat of cart) {
-        const entidad = "CategoriaProducto";
+      for (const pub of publicaciones) {
+        const entidad = "Publicacion";
         try {
-          const data = await traerArchivo(entidad, cat.idCategoria)
+          const data = await traerArchivo(entidad,pub.id)
 
           if (Array.isArray(data) && data.length > 0 && data[0].ruta) {
             const rutaNormalizada = data[0].ruta.replace(/\\/g, "/")
-            nuevasImagenes[cat.idCategoria] = `http://localhost:8080/${rutaNormalizada}`
+            nuevasImagenes[pub.id] = `http://localhost:8080/${rutaNormalizada}`
           } else {
-            console.warn(`No se encontró imagen para categoría ${cat.idCategoria}`)
+            console.warn(`No se encontró imagen para publicación ${pub.id}`)
           }
 
         } catch (error) {
-          console.error(`Error cargando imagen para categoría ${cat.idCategoria}:`, error)
+          console.error(`Error cargando imagen para publicación ${pub.id}:`, error)
         }
       }
 
-      setimagen(nuevasImagenes)
+      setImagen(nuevasImagenes)
     }
 
-    if (cart.length > 0) {
+    if (publicaciones.length > 0) {
       cargarImagenes()
     }
-  }, [cart])
+  }, [publicaciones])
 
-
-  const filteredCart = cart.filter(c =>
-    c.nombreCategoria.toLowerCase().includes(query)
+  const filteredPublicaciones = publicaciones.filter(p =>
+    p.titulo?.toLowerCase().includes(query)
   )
 
-  const totalPages = Math.ceil(filteredCart.length / itemsPerPage)
-  const paginated = filteredCart.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-  const [alertaExioto, setalertaExioto] = useState(false)
-  const [alertaMal, setalertaMal] = useState(false)
+  const totalPages = Math.ceil(filteredPublicaciones.length / itemsPerPage)
+  const paginated = filteredPublicaciones.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+
+  const [alertaExito, setAlertaExito] = useState(false)
+  const [alertaMal, setAlertaMal] = useState(false)
 
   const handleDeleteProduct = async (id: number) => {
-  try {
-    const entidad = "CategoriaProducto";
-    const respuesta = await traerArchivo(entidad, id);
-              if (Array.isArray(respuesta) && respuesta.length > 0 && respuesta[0].id) {
-                await eliminarArchivo(respuesta[0].id);
-              }
+    try {
+       const entidad = "Publicacion";
+          const respuesta = await traerArchivo(entidad, id);
+                    if (Array.isArray(respuesta) && respuesta.length > 0 && respuesta[0].id) {
+                      await eliminarArchivo(respuesta[0].id);
+                    }
+      const response = await eliminarPublicacion(id)
+      if (response?.status === 200 || response?.status === 201) {
+        setProductToDelete(null)
+        setAlertaExito(true)
+        setTimeout(() => setAlertaExito(false), 4000)
 
-    const response = await eliminarCategoria(id)
-
-    if (response?.status === 200 || response?.status === 201) {
-      setProductToDelete(null)
-      setalertaExioto(true)
-      setTimeout(() => setalertaExioto(false), 4000)
-
-      const categoriasActualizadas = await obtenerCategorias()
-      setCart(categoriasActualizadas)
-    } else {
-      setalertaMal(true)
-      setTimeout(() => setalertaMal(false), 4000)
+        const actualizadas = await obtenerPublicaciones()
+        setPublicaciones(actualizadas)
+      } else {
+        setAlertaMal(true)
+        setTimeout(() => setAlertaMal(false), 4000)
+      }
+    } catch (error) {
+      setAlertaMal(true)
+      setTimeout(() => setAlertaMal(false), 4000)
     }
-  } catch (error) {
-    setalertaMal(true)
-    setTimeout(() => setalertaMal(false), 4000)
   }
-}
-
-
-
 
   return (
     <div className="flex flex-col gap-6">
       {paginated.length === 0 ? (
         <div className="flex h-40 items-center justify-center rounded-lg border bg-card">
-          <p className="text-muted-foreground">No se encontraron categorías</p>
+          <p className="text-muted-foreground">No se encontraron publicaciones</p>
         </div>
       ) : (
         <>
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {paginated.map((cat) => (
-              <Card key={cat.idCategoria} className="overflow-hidden  ">
-                <div className="relative h-48 w-full ">
+            {paginated.map((pub) => (
+              <Card key={pub.id} className="overflow-hidden">
+                <div className="relative h-48 w-full">
                   <Image
-                    src={imagen[cat.idCategoria] || "/imagen-defecto.png"}
-                    alt={cat.nombreCategoria}
+                    src={imagen[pub.id] || "/imagen-defecto.png"}
+                    alt={pub.titulo}
                     fill
                     className="object-cover"
                   />
-
-
                 </div>
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-medium">{cat.nombreCategoria}</h3>
+                      <h3 className="font-medium">{pub.titulo}</h3>
                     </div>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -173,7 +162,7 @@ export default function CategoriaList() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem asChild>
-                          <a href={`/dashboard/detalleCategoria/${cat.idCategoria}`}>
+                          <a href={`/dashboard/publicacion/${pub.id}`}>
                             <Edit className="mr-2 h-4 w-4" />
                             Editar
                           </a>
@@ -183,7 +172,7 @@ export default function CategoriaList() {
                             <DropdownMenuItem
                               onSelect={(e) => {
                                 e.preventDefault()
-                                setProductToDelete(cat.idCategoria)
+                                setProductToDelete(pub.id)
                               }}
                             >
                               <Trash className="mr-2 h-4 w-4" />
@@ -194,7 +183,7 @@ export default function CategoriaList() {
                             <DialogHeader>
                               <DialogTitle>Confirmar eliminación</DialogTitle>
                               <DialogDescription>
-                                ¿Estás seguro de eliminar "{cat.nombreCategoria}"? Esta acción no se puede deshacer.
+                                ¿Estás seguro de eliminar "{pub.titulo}"? Esta acción no se puede deshacer.
                               </DialogDescription>
                             </DialogHeader>
                             <DialogFooter>
@@ -202,7 +191,7 @@ export default function CategoriaList() {
                                 <Button variant="outline">Cancelar</Button>
                               </DialogClose>
                               <DialogClose asChild>
-                                <Button variant="destructive" onClick={() => handleDeleteProduct(cat.idCategoria)}>
+                                <Button variant="destructive" onClick={() => handleDeleteProduct(pub.id)}>
                                   Eliminar
                                 </Button>
                               </DialogClose>
@@ -215,42 +204,6 @@ export default function CategoriaList() {
                 </CardContent>
               </Card>
             ))}
-            <div className='hidden'>
-              <AlertDialog open={alertaExioto} >
-                <AlertDialogTrigger asChild>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle className='flex justify-center'>
-                      <DotLottieReact
-                        src="https://lottie.host/9228f5fe-70c8-4c17-99fc-4f8bac3a9f51/TF4TVTn8fU.lottie"
-                        autoplay
-                      /></AlertDialogTitle>
-                    <AlertDialogDescription className='flex justify-center'>
-                      Se elimino exitizamente.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
-            <div className='hidden'>
-              <AlertDialog open={alertaMal} >
-                <AlertDialogTrigger asChild>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle className='flex justify-center'>
-                      <DotLottieReact
-                        src="https://lottie.host/9547debb-f307-484a-9239-5d4bde96ea0c/jR3hqsBEyh.lottie"
-                        autoplay
-                      /></AlertDialogTitle>
-                    <AlertDialogDescription className='flex justify-center'>
-                      Algo salio mal intetalo despues.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
           </div>
 
           {totalPages > 1 && (
@@ -293,6 +246,37 @@ export default function CategoriaList() {
           )}
         </>
       )}
+
+      {/* Alertas */}
+      <div className="hidden">
+        <AlertDialog open={alertaExito}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="flex justify-center">
+                <DotLottieReact src="https://lottie.host/9228f5fe-70c8-4c17-99fc-4f8bac3a9f51/TF4TVTn8fU.lottie" autoplay />
+              </AlertDialogTitle>
+              <AlertDialogDescription className="flex justify-center">
+                Se eliminó exitosamente.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
+
+      <div className="hidden">
+        <AlertDialog open={alertaMal}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="flex justify-center">
+                <DotLottieReact src="https://lottie.host/9547debb-f307-484a-9239-5d4bde96ea0c/jR3hqsBEyh.lottie" autoplay />
+              </AlertDialogTitle>
+              <AlertDialogDescription className="flex justify-center">
+                Algo salió mal, inténtalo más tarde.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
     </div>
   )
 }

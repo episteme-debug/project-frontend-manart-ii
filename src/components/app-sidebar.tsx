@@ -125,8 +125,8 @@ const data = {
       icon: Frame,
     },
     {
-      name: "Sales & Marketing",
-      url: "#",
+      name: "Publicacion",
+      url: "/dashboard/publicacion",
       icon: PieChart,
     },
     {

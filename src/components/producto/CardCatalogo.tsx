@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { filtarProducto } from "../../services/apis/producto/filtarProducto"
 import Image from "next/image"
-import { traerArchivo } from "../../api/detalleCategoria/taerArchivos"
+import { traerArchivo } from "../../api/GestionArchivos/taerArchivos"
 import { InputOTPSeparator } from "@/components/ui/input-otp";
 import {
   Card,

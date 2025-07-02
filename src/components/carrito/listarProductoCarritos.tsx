@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { eliminarproducto } from "../../services/apis/carrito/eliminarProducto";
 import { traerSubtotal } from "../../services/apis/carrito/traerSubtotaldeCarrito"
 import { actualizarCantidad } from "../../services/apis/carrito/actualizarCatidades"
-import { traerArchivo } from "../../api/detalleCategoria/taerArchivos"
+import { traerArchivo } from "../../api/GestionArchivos/taerArchivos"
 
 interface Productos {
   idCarrito: number;
@@ -82,7 +82,7 @@ function ListarProductoCarritos() {
   return (
     <section>
       <div className={`bg-white shadow-xl w-[100%] h-[200] mb-4 flex items-stretch justify-center ${visible ? 'block' : 'hidden'}`}>
-        <div className='self-center  '><h1 className='text-2xl'>Tu carrito esta vacio mira nuestro productos y empieza a agregar</h1> </div>
+        <div className='self-center  '><h1 className='text-2xl'>Tu carrito esta vacio mira nuestros productos y empieza a agregar</h1> </div>
       </div>
       <div className={`mb-6 ${visible ? 'hidden' : 'block'} `}>
         <div className="w-full flex">

@@ -3,7 +3,7 @@ import React from 'react'
 import Link from 'next/link'
 import { useState,useEffect } from 'react'
 import Image from "next/image";
-import { traerArchivo } from "../../api/detalleCategoria/taerArchivos"
+import { traerArchivo } from "../../api/GestionArchivos/taerArchivos"
 import {
   Card,
   CardContent,

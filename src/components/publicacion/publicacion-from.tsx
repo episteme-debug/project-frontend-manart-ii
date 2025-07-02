@@ -11,8 +11,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 
-import { crearCategoria } from "../../api/detalleCategoria/crearCategoria"
-import { actulizarCategoria } from "../../api/detalleCategoria/actulizarCategoria"
+import { crearPublicacion } from "../../api/publicacion/crearPublicacion"
+import { actulizarPublicacion } from "../../api/publicacion/actulizarPublicacion"
 import { subirArchivo } from "../../api/GestionArchivos/subirArchivo"
 import { traerimagen } from "../../api/GestionArchivos/traerimagen"
 import { traerArchivo } from "../../api/GestionArchivos/taerArchivos"
@@ -29,32 +29,30 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-type Categoria = {
-  idCategoria?: number
-  nombreCategoria: string
-  descripcionCategoria: string
-  estadoCategoria?: boolean
+type Publicaion = {
+  id?: number
+  titulo: string
+  contenido: string
   imagen?: string
 }
 
-const emptyCategoria: Categoria = {
-  nombreCategoria: "",
-  descripcionCategoria: "",
-  estadoCategoria: true,
+const emptyPublicacion: Publicaion = {
+  titulo: "",
+  contenido: ""
 }
 
-export function CategoriasForm({ categoria = emptyCategoria }: { categoria?: Categoria }) {
+export function PublicacionForm({ publicacion = emptyPublicacion }: { publicacion?: Publicaion }) {
   const router = useRouter()
   const [alertaExioto, setalertaExioto] = useState(false);
   const [alertaMal, setalertaMal] = useState(false)
-  const [formData, setFormData] = useState<Categoria>(categoria)
+  const [formData, setFormData] = useState<Publicaion>(publicacion)
   const [archivo, setArchivo] = useState<File | null>(null)
-  const [vistaPrevia, setVistaPrevia] = useState<string>(categoria?.imagen || "/imagen-defecto.png")
+  const [vistaPrevia, setVistaPrevia] = useState<string>(publicacion?.imagen || "/imagen-defecto.png")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const inputRef = useRef<HTMLInputElement | null>(null)
-  const isNueva = !categoria?.idCategoria
+  const isNueva = !publicacion?.id
 
-  const handleChange = (campo: keyof Categoria, valor: string | boolean) => {
+  const handleChange = (campo: keyof Publicaion, valor: string | boolean) => {
     setFormData((prev) => ({ ...prev, [campo]: valor }))
   }
 
@@ -71,18 +69,18 @@ export function CategoriasForm({ categoria = emptyCategoria }: { categoria?: Cat
     setIsSubmitting(true);
 
     try {
-      let idCategoria: number;
+      let id: number;
 
       if (isNueva) {
-        const respuesta = await crearCategoria(formData.nombreCategoria, formData.descripcionCategoria);
-        idCategoria = respuesta.data.idCategoria;
+        const respuesta = await crearPublicacion(formData.titulo, formData.contenido);
+        id = respuesta.data.id;
         console.log(respuesta.status)
         if (respuesta && (respuesta.status === 200 || respuesta.status === 201)) {
           setalertaExioto(true);
           if (true) {
             setTimeout(() => {
               setalertaExioto(false);
-            router.push("/dashboard/detalleCategoria");
+            router.push("/dashboard/publicacion");
             }, 4000);
           }
         } else {
@@ -93,18 +91,18 @@ export function CategoriasForm({ categoria = emptyCategoria }: { categoria?: Cat
             }, 4000);
           }
         }
-      } else if (categoria.idCategoria) {
-        const respuesta = await actulizarCategoria(
-          categoria.idCategoria,
-          formData.nombreCategoria,
-          formData.descripcionCategoria
+      } else if (publicacion.id) {
+        const respuesta = await actulizarPublicacion(
+          publicacion.id,
+          formData.titulo,
+          formData.contenido
         );
         if (respuesta && (respuesta.status === 200 || respuesta.status === 201)) {
           setalertaExioto(true);
           if (true) {
             setTimeout(() => {
               setalertaExioto(false);
-            router.push("/dashboard/detalleCategoria");
+            router.push("/dashboard/publicacion");
             }, 4000);
           }
         } else {
@@ -115,16 +113,15 @@ export function CategoriasForm({ categoria = emptyCategoria }: { categoria?: Cat
             }, 4000);
           }
         }
-        idCategoria = categoria.idCategoria;
+        id = publicacion.id;
       } else {
         throw new Error("No se proporcionó ID para actualizar.");
       }
-
       // Si está editando y hay archivo nuevo, eliminar el anterior
       if (!isNueva && archivo) {
-        const entidad = "CategoriaProducto";
+        const entidad = "Publicacion";
         try {
-          const respuesta = await traerArchivo(entidad, idCategoria);
+          const respuesta = await traerArchivo(entidad, id);
           if (Array.isArray(respuesta) && respuesta.length > 0 && respuesta[0].id) {
             await eliminarArchivo(respuesta[0].id);
           }
@@ -135,10 +132,10 @@ export function CategoriasForm({ categoria = emptyCategoria }: { categoria?: Cat
 
       // Subir imagen nueva
       if (archivo) {
-        const entidad = "CategoriaProducto";
+        const entidad = "Publicacion";
         const formDataArchivo = new FormData();
         formDataArchivo.append("archivos", archivo);
-        await subirArchivo(entidad, idCategoria, formDataArchivo);
+        await subirArchivo(entidad, id, formDataArchivo);
       }
 
     } catch (error) {
@@ -156,9 +153,9 @@ export function CategoriasForm({ categoria = emptyCategoria }: { categoria?: Cat
   };
   useEffect(() => {
     async function cargarImagen() {
-      if (!categoria.idCategoria) return
-      const entidad ="CategoriaProducto";
-      const data = await traerimagen(entidad,categoria.idCategoria)
+      if (!publicacion.id) return
+      const entidad = "Publicacion";
+      const data = await traerimagen(entidad,publicacion.id)
 
       if (Array.isArray(data) && data.length > 0 && data[0].ruta) {
         const rutaNormalizada = data[0].ruta.replace(/\\/g, "/")
@@ -168,7 +165,7 @@ export function CategoriasForm({ categoria = emptyCategoria }: { categoria?: Cat
     }
 
     cargarImagen()
-  }, [categoria.idCategoria])
+  }, [publicacion.id])
 
 
   return (
@@ -198,23 +195,23 @@ export function CategoriasForm({ categoria = emptyCategoria }: { categoria?: Cat
 
         <div className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="nombreCategoria">Nombre de la Categoría</Label>
+            <Label htmlFor="nombrePublicacion">Nombre de la Publicacion</Label>
             <Input
-              id="nombreCategoria"
-              value={formData.nombreCategoria}
-              onChange={(e) => handleChange("nombreCategoria", e.target.value)}
-              placeholder="Ej: Collares"
+              id="nombrePublicacion"
+              value={formData.titulo}
+              onChange={(e) => handleChange("titulo", e.target.value)}
+              placeholder="Ej: Evento"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="descripcionCategoria">Descripción</Label>
+            <Label htmlFor="contenido">Contendo</Label>
             <Textarea
-              id="descripcionCategoria"
-              value={formData.descripcionCategoria}
-              onChange={(e) => handleChange("descripcionCategoria", e.target.value)}
-              placeholder="Describe la categoría"
+              id="contenido"
+              value={formData.contenido}
+              onChange={(e) => handleChange("contenido", e.target.value)}
+              placeholder="Contenido publicacion"
               rows={4}
               required
             />
@@ -223,11 +220,11 @@ export function CategoriasForm({ categoria = emptyCategoria }: { categoria?: Cat
       </div>
 
       <div className="flex justify-end gap-4">
-        <Button type="button" variant="outline" onClick={() => router.push("/dashboard/detalleCategoria")}>
+        <Button type="button" variant="outline" onClick={() => router.push("/dashboard/publicacion")}>
           Cancelar
         </Button>
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Guardando..." : isNueva ? "Crear Categoría" : "Guardar Cambios"}
+          {isSubmitting ? "Guardando..." : isNueva ? "Crear Publicacion" : "Guardar Cambios"}
         </Button>
       </div>
 

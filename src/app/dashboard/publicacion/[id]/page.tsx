@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
 import { useParams } from 'next/navigation';
-import { CategoriasForm } from "@/components/detalleCategoria/categoria-from"
+import { PublicacionForm } from "@/components/publicacion/publicacion-from"
 import { Toaster } from "@/components/ui/toaster"
-import { obtenerPorId } from "../../../../api/detalleCategoria/obtenerPorId"
+import { obtenerPorId } from "../../../../api/publicacion/obtenerPorId"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -17,18 +17,17 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 
-type Categoria = {
-  idCategoria?: number
-  nombreCategoria: string
-  descripcionCategoria: string
-  estadoCategoria?: boolean
+type Publicaion = {
+  id?: number
+  titulo: string
+  contenido: string
   imagen?: string
 }
 
 export default function EditCategoriaPage() {
   const params = useParams();
   const id = params.id as string;
-  const [categoria, setCategoria] = useState<Categoria | null>(null)
+  const [publicacion, setpublicacion] = useState<Publicaion | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -38,10 +37,10 @@ export default function EditCategoriaPage() {
     const obtenerCategoria = async () => {
       try {
         const response = await obtenerPorId(idNumero)
-        setCategoria(response.data)
+        setpublicacion(response.data)
       } catch (error) {
         console.error("Error al obtener la categoría:", error)
-        setCategoria(null)
+        setpublicacion(null)
       } finally {
         setLoading(false)
       }
@@ -63,11 +62,11 @@ export default function EditCategoriaPage() {
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
-                <BreadcrumbLink href="/dashboard/categorias">Categorías</BreadcrumbLink>
+                <BreadcrumbLink href="/dashboard/publicacion">Publicacion</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>Editar Categoría</BreadcrumbPage>
+                <BreadcrumbPage>Editar Publicacion</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -76,14 +75,14 @@ export default function EditCategoriaPage() {
 
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
         <div className="rounded-lg border bg-card p-6 shadow-sm">
-          <h1 className="mb-6 text-2xl font-bold">Editar Categoría</h1>
+          <h1 className="mb-6 text-2xl font-bold">Editar Publicacion</h1>
 
           {loading ? (
             <p className="text-sm text-muted-foreground">Cargando datos...</p>
-          ) : categoria ? (
-            <CategoriasForm categoria={categoria} />
+          ) : publicacion ? (
+            <PublicacionForm publicacion={publicacion} />
           ) : (
-            <p className="text-sm text-destructive">No se encontró la categoría.</p>
+            <p className="text-sm text-destructive">No se encontró la Publicacion.</p>
           )}
         </div>
       </div>
