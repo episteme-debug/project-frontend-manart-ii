@@ -488,7 +488,7 @@ export default function CardCatalogo({
 
                       <div className="p-6 space-y-4">
                         <div>
-                          <h3 className="font-bold text-lg text-gray-800 group-hover:text-blue-600 transition-colors line-clamp-2">
+                          <h3 className="font-bold text-lg text-gray-800 group-hover:text-[#9D0B0B] transition-colors line-clamp-2">
                             {producto.nombreProducto}
                           </h3>
                           <p className="text-sm text-gray-500">por Artesano</p>
@@ -506,7 +506,7 @@ export default function CardCatalogo({
 
                         <div className="flex justify-between items-center">
                           <div className="space-y-1">
-                            <span className="text-2xl font-bold text-blue-600">${producto.precioProducto.toLocaleString()}</span>
+                            <span className="text-2xl font-bold text-[#010668]">${producto.precioProducto.toLocaleString()}</span>
                             <p className="text-xs text-gray-500">COP</p>
                           </div>
                         </div>
@@ -544,7 +544,7 @@ export default function CardCatalogo({
                     <div className="p-6 space-y-4">
                       <div>
                         <Link
-                          className="font-bold text-lg text-gray-800 hover:text-blue-600 transition-colors line-clamp-2 block"
+                          className="font-bold text-lg text-gray-800 hover:text-[#9D0B0B] transition-colors line-clamp-2 block"
                           href={`catalogo/detalleproducto/${post.idProducto}`}
                         >
                           {post.nombreProducto}
@@ -564,7 +564,7 @@ export default function CardCatalogo({
 
                       <div className="flex justify-between items-center">
                         <div className="space-y-1">
-                          <span className="text-2xl font-bold text-blue-600">${post.precioProducto.toLocaleString()}</span>
+                          <span className="text-2xl font-bold text-[#010668]">${post.precioProducto.toLocaleString()}</span>
                           <p className="text-xs text-gray-500">COP</p>
                         </div>
                       </div>

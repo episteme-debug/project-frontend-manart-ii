@@ -185,7 +185,7 @@ export default function DetalleProductoCliente({ producto, posts }: DetalleProdu
 
                                 <div className="flex items-center gap-2 text-gray-600">
                                     <User className="w-4 h-4" />
-                                    <span>Por: <span className="font-medium text-blue-600">Artesano Especialista</span></span>
+                                    <span>Por: <span className="font-medium text-[#9D0B0B]">Artesano Especialista</span></span>
                                 </div>
                             </div>
 
@@ -193,7 +193,7 @@ export default function DetalleProductoCliente({ producto, posts }: DetalleProdu
                             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-2xl border border-blue-100">
                                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                                     <div>
-                                        <span className="text-3xl lg:text-4xl font-bold text-blue-600">
+                                        <span className="text-3xl lg:text-4xl font-bold text-[#010668]">
                                             ${producto.precioProducto.toLocaleString()}
                                         </span>
                                         <span className="text-lg text-gray-600 ml-2">COP</span>
@@ -219,9 +219,9 @@ export default function DetalleProductoCliente({ producto, posts }: DetalleProdu
                                 <ComprarAhora idProducto={producto.idProducto} />
                                 <ActivarBoton idProducto={producto.idProducto} />
                             </div>
-
-                            {/* Información de envío y garantías */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+{/* 
+                            Información de envío y garantías */}
+                            {/*<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <Card className="border-green-200 bg-green-50">
                                     <CardContent className="p-4 flex items-center gap-3">
                                         <Truck className="w-8 h-8 text-green-600" />
@@ -241,7 +241,7 @@ export default function DetalleProductoCliente({ producto, posts }: DetalleProdu
                                         </div>
                                     </CardContent>
                                 </Card>
-                            </div>
+                            </div> */}
 
                             {/* Métodos de pago */}
                             <Card className="bg-gray-50">

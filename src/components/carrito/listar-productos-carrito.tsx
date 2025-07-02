@@ -88,18 +88,18 @@ function ListarProductoCarritos() {
   }
 
   return (
-    <section className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <section className="min-h-screen bg-[#ffffff]">
       <div className="container mx-auto px-4 py-6 lg:py-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-4">
-            <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-800">
+            <Link href={"/catalogo"}  className="text-gray-600 hover:text-gray-800">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Continuar comprando
-            </Button>
+            </Link>
           </div>
           <h1 className="text-3xl lg:text-4xl font-bold text-gray-800 flex items-center gap-3">
-            <ShoppingCart className="w-8 h-8 text-blue-600" />
+            <ShoppingCart className="w-8 h-8 text-[#010668]" />
             Mi Carrito
           </h1>
         </div>
@@ -127,7 +127,6 @@ function ListarProductoCarritos() {
         <div className={`${visible ? 'hidden' : 'block'}`}>
           <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
             
-            {/* Lista de productos */}
             <div className="xl:col-span-3">
               <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
                 <CardHeader className="border-b border-gray-200">
@@ -169,7 +168,7 @@ function ListarProductoCarritos() {
 
                               {/* Precio total */}
                               <div className="lg:text-right">
-                                <p className="text-2xl font-bold text-blue-600">
+                                <p className="text-2xl font-bold text-[#010668]">
                                   ${producto.subtotal.toLocaleString()}
                                 </p>
                                 <p className="text-sm text-gray-500">COP</p>
@@ -202,7 +201,6 @@ function ListarProductoCarritos() {
                                 </div>
                               </div>
 
-                              {/* Botón eliminar */}
                               <Button
                                 variant="ghost"
                                 size="sm"
@@ -222,18 +220,15 @@ function ListarProductoCarritos() {
               </Card>
             </div>
 
-            {/* Resumen de compra */}
             <div className="xl:col-span-1">
               <div className="sticky top-6 space-y-6">
                 
-                {/* Tarjeta de resumen */}
                 <Card className="border-0 shadow-2xl bg-white/90 backdrop-blur-sm overflow-hidden">
-                  <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+                  <CardHeader className="bg-gradient-to-r from-[#ffbd2e] to-[#ffe79d] text-white">
                     <CardTitle className="text-xl font-semibold">Resumen de compra</CardTitle>
                   </CardHeader>
                   <CardContent className="p-6 space-y-6">
                     
-                    {/* Desglose de precios */}
                     <div className="space-y-4">
                       <div className="flex justify-between items-center py-2">
                         <span className="text-gray-600">Subtotal:</span>
@@ -252,7 +247,7 @@ function ListarProductoCarritos() {
                       <div className="border-t border-gray-200 pt-4">
                         <div className="flex justify-between items-center py-2">
                           <span className="text-lg font-semibold text-gray-800">Total:</span>
-                          <span className="text-2xl font-bold text-blue-600">
+                          <span className="text-2xl font-bold text-[#010668]">
                             {subtotal !== null ? `$${subtotal.toLocaleString()}` : "Cargando..."}
                           </span>
                         </div>
@@ -260,13 +255,12 @@ function ListarProductoCarritos() {
                       </div>
                     </div>
 
-                    {/* Botón de compra */}
                     <div className="space-y-3">
                       {!datosPayU && (
                         <Button
                           onClick={handleContinuarCompra}
                           disabled={cargando || productos.length === 0}
-                          className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 disabled:transform-none disabled:opacity-50"
+                          className="w-full bg-gradient-to-r  from-[#ffbd2e] to-[#ffe79d] hover:from-[#ff2e2e] hover:to-[#ff9d9d] text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 disabled:transform-none disabled:opacity-50"
                         >
                           {cargando ? (
                             <div className="flex items-center gap-2">
@@ -287,8 +281,7 @@ function ListarProductoCarritos() {
                   </CardContent>
                 </Card>
 
-                {/* Beneficios */}
-                <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+               {/*  <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
                   <CardContent className="p-4 space-y-4">
                     <div className="flex items-center gap-3 text-sm">
                       <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
@@ -309,8 +302,8 @@ function ListarProductoCarritos() {
                         <p className="text-gray-600">30 días de devolución</p>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
+                  </CardContent> 
+                </Card>*/}
               </div>
             </div>
           </div>
