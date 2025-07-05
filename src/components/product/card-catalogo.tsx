@@ -16,7 +16,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { ArchivoMultimediaRespuesta } from "@/interfaces/ArchivoMultimediaInterfaz";
-import { Star, Heart, Filter, X, ChevronDown, ChevronUp, ShoppingCart, Eye, Tag, MapPin, Percent, DollarSign } from "lucide-react"
+import { Star, Heart, Filter, X, ChevronDown, ChevronUp, Eye, Tag, MapPin, Percent, DollarSign } from "lucide-react"
 import { ProductoRespuesta } from "@/interfaces/ProductoInterfaz";
 
 interface Categoria {
