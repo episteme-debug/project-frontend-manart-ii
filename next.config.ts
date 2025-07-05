@@ -1,6 +1,68 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Optimizaciones de rendimiento
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '30mb'
+    },
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
+    turbo: {
+      rules: {
+        '*.svg': {
+          loaders: ['@svgr/webpack'],
+          as: '*.js',
+        },
+      },
+    },
+  },
+  
+  // Optimización de imágenes
+  images: {
+    formats: ['image/webp', 'image/avif'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 60,
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+  },
+
+  // Compresión y optimización
+  compress: true,
+  
+  // Headers de caché
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+        ],
+      },
+      {
+        source: '/static/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+    ];
+  },
+
+  // Rewrites para API
   async rewrites() {
     return [
       {
@@ -9,12 +71,28 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
+  // Webpack optimizations
+  webpack: (config, { dev, isServer }) => {
+    // Optimizaciones solo para producción
+    if (!dev && !isServer) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendors',
+              chunks: 'all',
+            },
+          },
+        },
+      };
+    }
+
+    return config;
+  },
 };
 
-module.exports = {
-  experimental: {
-    serverActions: {
-      bodySizeLimit: '30mb'
-    }
-  }
-}
+export default nextConfig;

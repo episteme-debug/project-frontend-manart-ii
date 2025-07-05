@@ -1,55 +1,77 @@
-import CardCatalogo from '@/components/product/card-catalogo'
-import { ObtenerProductos } from '@/api/Producto';
+"use client";
+
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { use } from 'react';
+import CardCatalogo from '@/components/product/card-catalogo';
+import { useProductos } from '@/contexts/ProductoContexto';
 import { TraerCategorias } from '@/api/CategoriaProducto';
 import { TraerPromociones } from '@/api/Promocion';
 import { RagodePrecios } from '@/api/Producto';
 
-/* interface Post {
-  idProducto: number;
-  nombreProducto: string;
-  descripcionProducto: string;
-  precioProducto: number;
-  stockProducto: number;
-}
-
-interface Categoria {
-  idCategoria: number;
-  nombreCategoria: string;
-  descripcionCategoria: string;
-  estadoCategoria: boolean;
-  archivoMultimedia: any[];
-}
-
-interface Promocion {
-  idPromocion: number;
-  nombrePromocion: string;
-  porcentajeDescuentoPromocion: number;
-  estadoPromocion: boolean;
-}
-
- interface Rango {
-  precioMinimo: number;
-  precioMaximo: number;
-} */
-
 interface Props {
-  searchParams?: {
+  searchParams?: Promise<{
     page?: string;
-  };
+    search?: string;
+  }>;
 }
 
-export default async function CatalogoProducto({ searchParams }: Props) {
-  const page = parseInt(searchParams?.page || '1', 10);
+export default function CatalogoProducto({ searchParams }: Props) {
+  const resolvedSearchParams = searchParams ? use(searchParams) : { page: '1' };
+  const page = parseInt(resolvedSearchParams?.page || '1', 10);
   const limit = 15;
+  const searchParamsHook = useSearchParams();
+  const searchFromURL = searchParamsHook.get('search');
 
-  const posts = await ObtenerProductos();
-  const categorias = await TraerCategorias();
-  const promociones = await TraerPromociones();
-  const Rango = await RagodePrecios();
+  const { productos, productosFiltrados, setTerminoBusqueda, isLoading } = useProductos();
 
-  const totalPages = Math.ceil(posts.length / limit);
+  // Sincronizar búsqueda desde URL con el contexto
+  useEffect(() => {
+    if (searchFromURL) {
+      setTerminoBusqueda(searchFromURL);
+    }
+  }, [searchFromURL, setTerminoBusqueda]);
+
+  // Usar productos filtrados si hay búsqueda, sino usar todos los productos
+  const postsToShow = searchFromURL ? productosFiltrados : productos;
+
+  const totalPages = Math.ceil(postsToShow.length / limit);
   const startIndex = (page - 1) * limit;
-  const currentPosts = posts.slice(startIndex, startIndex + limit);
+  const currentPosts = postsToShow.slice(startIndex, startIndex + limit);
+
+  // Cargar categorías y promociones (esto se puede optimizar más adelante)
+  const [categorias, setCategorias] = useState<any[]>([]);
+  const [promociones, setPromociones] = useState<any[]>([]);
+  const [rango, setRango] = useState({ precioMinimo: 0, precioMaximo: 0 });
+
+  useEffect(() => {
+    const cargarDatos = async () => {
+      try {
+        const [cats, proms, rang] = await Promise.all([
+          TraerCategorias(),
+          TraerPromociones(),
+          RagodePrecios()
+        ]);
+        setCategorias(cats);
+        setPromociones(proms);
+        setRango(rang);
+      } catch (error) {
+        console.error('Error cargando datos del catálogo:', error);
+      }
+    };
+    cargarDatos();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Cargando productos...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <CardCatalogo
@@ -58,7 +80,7 @@ export default async function CatalogoProducto({ searchParams }: Props) {
       totalPages={totalPages}
       categorias={categorias}
       promociones={promociones}
-      rango={Rango}
+      rango={rango}
     />
   );
 }

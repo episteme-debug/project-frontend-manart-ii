@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
+import { ProductoProvider } from "@/contexts/ProductoContexto";
+import { CarritoProvider } from "@/contexts/CarritoContext";
 
 const geistSans = Inter({
   variable: "--font-geist-sans",
@@ -25,7 +27,11 @@ export default function RootLayout({
   return (
     <html  lang="es" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-          {children}
+        <ProductoProvider>
+          <CarritoProvider>
+            {children}
+          </CarritoProvider>
+        </ProductoProvider>
       </body>
     </html>
   );

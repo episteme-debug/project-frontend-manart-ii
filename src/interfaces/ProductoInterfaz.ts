@@ -9,6 +9,7 @@ export interface ProductoRespuesta {
     stockProducto: number,
     precioProducto: number,
     idUsuario: number,
+    nombreUsuario: string,
     listaArchivos: ArchivoMultimediaRespuesta[],
     listaCategorias: string[],
 }

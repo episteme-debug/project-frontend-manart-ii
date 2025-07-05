@@ -6,6 +6,7 @@ export interface Productos {
   cantidad: number;
   precioUnitario: number;
   subtotal: number;
+  imagenProducto: string;
 }
 
 import axios from "axios";

@@ -169,17 +169,9 @@ export async function ObtenerProductosRelacionados(id:string) {
   }
 }
 
-interface Post {
-  idProducto: number;
-  nombreProducto: string;
-  descripcionProducto: string;
-  precioProducto: number;
-  stockProducto: number;
-}
-
 export async function ObtenerPorId(id:string) {
      try {
-    const res = await axios.get<Post>(
+    const res = await axios.get<ProductoRespuesta>(
       `http://localhost:8080/api/producto/public/obtenerporid/${id}`
     );
     return res.data;

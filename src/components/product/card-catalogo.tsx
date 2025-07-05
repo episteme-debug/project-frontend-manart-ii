@@ -16,7 +16,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { ArchivoMultimediaRespuesta } from "@/interfaces/ArchivoMultimediaInterfaz";
-import { Star, Heart, Filter, X, ChevronDown, ChevronUp } from "lucide-react"
+import { Star, Heart, Filter, X, ChevronDown, ChevronUp, ShoppingCart, Eye, Tag, MapPin, Percent, DollarSign } from "lucide-react"
 import { ProductoRespuesta } from "@/interfaces/ProductoInterfaz";
 
 interface Categoria {
@@ -95,53 +95,36 @@ export default function CardCatalogo({
   const [precioMax, setprecioMax] = useState<number | null>(null);
   const [region, setregion] = useState<string | null>(null)
 
-  const productosPorPagina = 15;
+  const productosPorPagina = 12;
   const [paginaFiltro, setPaginaFiltro] = useState(1);
   const [totalPaginasFiltro, setTotalPaginasFiltro] = useState(1);
-
-  useEffect(() => {
-    const cargarTodasImagenes = async () => {
-      const nuevasImagenes: { [id: number]: string } = {};
-
-      for (const producto of productos) {
-        try {
-          const entidad = "Producto";
-          const data = await TraerArchivo(entidad, producto.idProducto);
-          if (Array.isArray(data) && data.length > 0 && data[0].ruta) {
-            const rutaNormalizada = data[0].ruta.replace(/\\/g, "/")
-            const urlCompleta = `http://localhost:8080/${rutaNormalizada}`
-            nuevasImagenes[producto.idProducto] = urlCompleta;
-          }
-        } catch (error) {
-          console.error(`Error al cargar imagen de producto ${producto.idProducto}:`, error);
-        }
-      }
-
-      setImagenesProductos(nuevasImagenes);
-    };
-
-    if (!mostrarTodos) {
-      cargarTodasImagenes();
-    }
-  }, [productos]);
 
   useEffect(() => {
     const cargarImagenesDePosts = async () => {
       const nuevasImagenes: { [id: number]: string } = {};
 
-      for (const post of posts) {
+      // Cargar imágenes en paralelo para mejor rendimiento
+      const promesas = posts.map(async (post) => {
         try {
           const entidad = "Producto";
           const data = await TraerArchivo(entidad, post.idProducto);
           if (Array.isArray(data) && data.length > 0 && data[0].ruta) {
             const rutaNormalizada = data[0].ruta.replace(/\\/g, "/");
             const urlCompleta = `http://localhost:8080/${rutaNormalizada}`;
-            nuevasImagenes[post.idProducto] = urlCompleta;
+            return { id: post.idProducto, url: urlCompleta };
           }
         } catch (error) {
           console.error(`Error al cargar imagen del producto ${post.idProducto}:`, error);
         }
-      }
+        return null;
+      });
+
+      const resultados = await Promise.all(promesas);
+      resultados.forEach(resultado => {
+        if (resultado) {
+          nuevasImagenes[resultado.id] = resultado.url;
+        }
+      });
 
       setImagenesProductos(nuevasImagenes);
     };
@@ -218,33 +201,45 @@ export default function CardCatalogo({
     { value: "INSULAR", label: "Región Insular" }
   ];
 
-  return (
-    <section className="min-h-screen bg-gradient-to-br from-[#fdf8ef] via-[#fcf5eb] to-[#fcf4e8]">
-      <div className="container mx-auto px-4 py-6 lg:py-10">
+  const getCardStyle = (index: number) => {
+    const styles = [
+      "bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200",
+      "bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200",
+      "bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200",
+      "bg-gradient-to-br from-rose-50 to-pink-50 border-rose-200",
+      "bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200",
+      "bg-gradient-to-br from-lime-50 to-green-50 border-lime-200"
+    ];
+    return styles[index % styles.length];
+  };
 
+  return (
+    <section className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 overflow-x-hidden w-full">
+      <div className="container mx-auto px-4 py-6 lg:py-10 h-full">
         <div className="flex justify-between items-center mb-6 lg:hidden">
           <h1 className="text-2xl font-bold text-gray-800">Catálogo</h1>
           <Button
             onClick={() => setMostrarFiltrosMobile(!mostrarFiltrosMobile)}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+            className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 shadow-lg"
           >
             <Filter className="w-4 h-4" />
             Filtros
           </Button>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-6">
-
+        <div className="flex flex-col lg:flex-row gap-6 h-full">
+          {/* Sidebar de filtros rediseñado */}
           <aside className={`
-            lg:w-80 lg:block bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden
+            lg:w-80 lg:flex-shrink-0 lg:block bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden
             ${mostrarFiltrosMobile ? 'block' : 'hidden lg:block'}
             ${mostrarFiltrosMobile ? 'fixed inset-x-4 top-20 z-50 max-h-[calc(100vh-6rem)] overflow-y-auto' : ''}
           `}>
             <div className="p-6">
-
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
-                  <Filter className="w-5 h-5 text-[#010668]" />
+                  <div className="p-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
+                    <Filter className="w-5 h-5 text-white" />
+                  </div>
                   <h2 className="text-xl font-bold text-gray-800">Filtros</h2>
                 </div>
                 {hayFiltrosActivos && (
@@ -252,7 +247,7 @@ export default function CardCatalogo({
                     onClick={limpiarTodosFiltros}
                     variant="outline"
                     size="sm"
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
                   >
                     Limpiar
                   </Button>
@@ -270,37 +265,40 @@ export default function CardCatalogo({
               </div>
 
               {hayFiltrosActivos && (
-                <div className="mb-6 p-4 bg-amber-50 rounded-xl border border-amber-200">
-                  <h3 className="text-sm font-semibold text-amber-800 mb-3">Filtros Aplicados</h3>
+                <div className="mb-8 p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl border border-amber-200 shadow-lg">
+                  <h3 className="text-sm font-semibold text-amber-800 mb-3 flex items-center gap-2">
+                    <Tag className="w-4 h-4" />
+                    Filtros Aplicados
+                  </h3>
                   <div className="flex flex-wrap gap-2">
                     {nombreCategoria && (
-                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-200 text-amber-800 rounded-full text-sm">
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-amber-200 to-orange-200 text-amber-800 rounded-full text-sm font-medium shadow-sm">
                         {nombreCategoria}
-                        <button onClick={() => setnombreCategoria(null)} className="hover:bg-amber-300 rounded-full p-0.5">
+                        <button onClick={() => setnombreCategoria(null)} className="hover:bg-amber-300 rounded-full p-0.5 transition-colors">
                           <X className="w-3 h-3" />
                         </button>
                       </span>
                     )}
                     {porcentajeDescuento && (
-                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-200 text-amber-800 rounded-full text-sm">
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-amber-200 to-orange-200 text-amber-800 rounded-full text-sm font-medium shadow-sm">
                         {porcentajeDescuento}% descuento
-                        <button onClick={() => setporcentajeDescuento(null)} className="hover:bg-amber-300 rounded-full p-0.5">
+                        <button onClick={() => setporcentajeDescuento(null)} className="hover:bg-amber-300 rounded-full p-0.5 transition-colors">
                           <X className="w-3 h-3" />
                         </button>
                       </span>
                     )}
                     {precioMin && precioMax && (
-                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-200 text-amber-800 rounded-full text-sm">
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-amber-200 to-orange-200 text-amber-800 rounded-full text-sm font-medium shadow-sm">
                         ${precioMin.toLocaleString()} - ${precioMax.toLocaleString()}
-                        <button onClick={() => { setprecioMin(null); setprecioMax(null); }} className="hover:bg-amber-300 rounded-full p-0.5">
+                        <button onClick={() => { setprecioMin(null); setprecioMax(null); }} className="hover:bg-amber-300 rounded-full p-0.5 transition-colors">
                           <X className="w-3 h-3" />
                         </button>
                       </span>
                     )}
                     {region && (
-                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-200 text-amber-800 rounded-full text-sm">
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-amber-200 to-orange-200 text-amber-800 rounded-full text-sm font-medium shadow-sm">
                         {regiones.find(r => r.value === region)?.label}
-                        <button onClick={() => setregion(null)} className="hover:bg-amber-300 rounded-full p-0.5">
+                        <button onClick={() => setregion(null)} className="hover:bg-amber-300 rounded-full p-0.5 transition-colors">
                           <X className="w-3 h-3" />
                         </button>
                       </span>
@@ -309,16 +307,22 @@ export default function CardCatalogo({
                 </div>
               )}
 
-              <div className="mb-6">
+              {/* Categorías */}
+              <div className="mb-8">
                 <button
                   onClick={() => toggleSeccion('categorias')}
-                  className="flex items-center justify-between w-full p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
+                  className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-emerald-50 to-teal-50 hover:from-emerald-100 hover:to-teal-100 rounded-2xl transition-all duration-300 border border-emerald-100"
                 >
-                  <h3 className="text-lg font-semibold text-gray-800">Categorías</h3>
-                  {seccionesAbiertas.categorias ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-emerald-500 rounded-lg">
+                      <Tag className="w-4 h-4 text-white" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-800">Categorías</h3>
+                  </div>
+                  {seccionesAbiertas.categorias ? <ChevronUp className="w-5 h-5 text-emerald-600" /> : <ChevronDown className="w-5 h-5 text-emerald-600" />}
                 </button>
                 {seccionesAbiertas.categorias && (
-                  <div className="mt-3 space-y-2 max-h-48 overflow-y-auto">
+                  <div className="mt-4 space-y-2 max-h-48 overflow-y-auto">
                     {categorias.map((categoria) => (
                       <Button
                         key={categoria.idCategoria}
@@ -330,9 +334,9 @@ export default function CardCatalogo({
                           setMostrarFiltrosMobile(false);
                         }}
                         variant={nombreCategoria === categoria.nombreCategoria ? "default" : "outline"}
-                        className={`w-full justify-start text-left h-auto py-3 px-4 ${nombreCategoria === categoria.nombreCategoria
-                            ? "bg-blue-600 text-white hover:bg-blue-700"
-                            : "hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
+                        className={`w-full justify-start text-left h-auto py-3 px-4 rounded-xl transition-all duration-300 ${nombreCategoria === categoria.nombreCategoria
+                          ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-700 hover:to-teal-700 shadow-lg"
+                          : "hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300 border-emerald-100"
                           }`}
                       >
                         {categoria.nombreCategoria}
@@ -342,16 +346,22 @@ export default function CardCatalogo({
                 )}
               </div>
 
-              <div className="mb-6">
+              {/* Precios */}
+              <div className="mb-8">
                 <button
                   onClick={() => toggleSeccion('precios')}
-                  className="flex items-center justify-between w-full p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
+                  className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 rounded-2xl transition-all duration-300 border border-amber-100"
                 >
-                  <h3 className="text-lg font-semibold text-gray-800">Rango de Precios</h3>
-                  {seccionesAbiertas.precios ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-amber-500 rounded-lg">
+                      <DollarSign className="w-4 h-4 text-white" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-800">Rango de Precios</h3>
+                  </div>
+                  {seccionesAbiertas.precios ? <ChevronUp className="w-5 h-5 text-amber-600" /> : <ChevronDown className="w-5 h-5 text-amber-600" />}
                 </button>
                 {seccionesAbiertas.precios && (
-                  <div className="mt-3 space-y-2">
+                  <div className="mt-4 space-y-2">
                     {rangosPrecio.map((rango_precio, index) => (
                       <Button
                         key={index}
@@ -364,9 +374,9 @@ export default function CardCatalogo({
                           setMostrarFiltrosMobile(false);
                         }}
                         variant={precioMin === rango_precio.min && precioMax === rango_precio.max ? "default" : "outline"}
-                        className={`w-full justify-start text-left py-3 px-4 ${precioMin === rango_precio.min && precioMax === rango_precio.max
-                            ? "bg-[#010668] text-white hover:bg-[#45507f7a]"
-                            : "hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
+                        className={`w-full justify-start text-left py-3 px-4 rounded-xl transition-all duration-300 ${precioMin === rango_precio.min && precioMax === rango_precio.max
+                          ? "bg-gradient-to-r from-amber-600 to-orange-600 text-white hover:from-amber-700 hover:to-orange-700 shadow-lg"
+                          : "hover:bg-amber-50 hover:text-amber-700 hover:border-amber-300 border-amber-100"
                           }`}
                       >
                         ${rango_precio.label}
@@ -376,18 +386,24 @@ export default function CardCatalogo({
                 )}
               </div>
 
-              <div className="mb-6">
+              {/* Descuentos */}
+              <div className="mb-8">
                 <button
                   onClick={() => toggleSeccion('descuentos')}
-                  className="flex items-center justify-between w-full p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
+                  className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-purple-50 to-indigo-50 hover:from-purple-100 hover:to-indigo-100 rounded-2xl transition-all duration-300 border border-purple-100"
                 >
-                  <h3 className="text-lg font-semibold text-gray-800">Descuentos</h3>
-                  {seccionesAbiertas.descuentos ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-purple-500 rounded-lg">
+                      <Percent className="w-4 h-4 text-white" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-800">Descuentos</h3>
+                  </div>
+                  {seccionesAbiertas.descuentos ? <ChevronUp className="w-5 h-5 text-purple-600" /> : <ChevronDown className="w-5 h-5 text-purple-600" />}
                 </button>
                 {seccionesAbiertas.descuentos && (
-                  <div className="mt-3 space-y-3">
+                  <div className="mt-4 space-y-3">
                     {promociones.map((promocion) => (
-                      <label key={promocion.idPromocion} className="flex items-center space-x-3 cursor-pointer group">
+                      <label key={promocion.idPromocion} className="flex items-center space-x-3 cursor-pointer group p-3 rounded-xl hover:bg-purple-50 transition-colors">
                         <input
                           type="radio"
                           name="promocion"
@@ -400,9 +416,9 @@ export default function CardCatalogo({
                             cambiarVisibilidadSeccion(false);
                             setMostrarFiltrosMobile(false);
                           }}
-                          className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                          className="w-4 h-4 text-purple-600 border-purple-300 focus:ring-purple-500"
                         />
-                        <span className="text-gray-700 group-hover:text-blue-600 transition-colors">
+                        <span className="text-gray-700 group-hover:text-purple-600 transition-colors font-medium">
                           {promocion.nombrePromocion} ({promocion.porcentajeDescuentoPromocion}%)
                         </span>
                       </label>
@@ -411,18 +427,24 @@ export default function CardCatalogo({
                 )}
               </div>
 
-              <div className="mb-6">
+              {/* Regiones */}
+              <div className="mb-8">
                 <button
                   onClick={() => toggleSeccion('regiones')}
-                  className="flex items-center justify-between w-full p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors"
+                  className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-cyan-50 to-blue-50 hover:from-cyan-100 hover:to-blue-100 rounded-2xl transition-all duration-300 border border-cyan-100"
                 >
-                  <h3 className="text-lg font-semibold text-gray-800">Regiones</h3>
-                  {seccionesAbiertas.regiones ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-cyan-500 rounded-lg">
+                      <MapPin className="w-4 h-4 text-white" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-800">Regiones</h3>
+                  </div>
+                  {seccionesAbiertas.regiones ? <ChevronUp className="w-5 h-5 text-cyan-600" /> : <ChevronDown className="w-5 h-5 text-cyan-600" />}
                 </button>
                 {seccionesAbiertas.regiones && (
-                  <div className="mt-3 space-y-3 max-h-48 overflow-y-auto">
+                  <div className="mt-4 space-y-3 max-h-48 overflow-y-auto">
                     {regiones.map((regionItem) => (
-                      <label key={regionItem.value} className="flex items-center space-x-3 cursor-pointer group">
+                      <label key={regionItem.value} className="flex items-center space-x-3 cursor-pointer group p-3 rounded-xl hover:bg-cyan-50 transition-colors">
                         <input
                           type="radio"
                           name="region"
@@ -435,9 +457,9 @@ export default function CardCatalogo({
                             cambiarVisibilidadSeccion(false);
                             setMostrarFiltrosMobile(false);
                           }}
-                          className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                          className="w-4 h-4 text-cyan-600 border-cyan-300 focus:ring-cyan-500"
                         />
-                        <span className="text-gray-700 group-hover:text-blue-600 transition-colors">
+                        <span className="text-gray-700 group-hover:text-cyan-600 transition-colors font-medium">
                           {regionItem.label}
                         </span>
                       </label>
@@ -448,6 +470,7 @@ export default function CardCatalogo({
             </div>
           </aside>
 
+          {/* Overlay para mobile */}
           {mostrarFiltrosMobile && (
             <div
               className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
@@ -455,125 +478,187 @@ export default function CardCatalogo({
             />
           )}
 
-          <main className="flex-1">
-
-            <div className={`${mostrarSeccionFiltros ? "hidden" : "block"}`}>
+          {/* Main content con tamaño fijo */}
+          <main className="flex-1 h-full overflow-y-auto min-w-0 w-full lg:min-w-[calc(100%-20rem)] lg:max-w-[calc(100%-20rem)]">
+            {/* Contenido filtrado */}
+            <div className={`${mostrarSeccionFiltros ? "hidden" : "block"} min-h-[600px]`}>
               {productosPaginados.length === 0 ? (
-                <div className="text-center py-20">
+                <div className="text-center py-20 min-h-[400px] flex flex-col justify-center">
                   <div className="text-gray-400 text-6xl mb-4">🔍</div>
                   <h3 className="text-xl font-semibold text-gray-600 mb-2">No se encontraron productos</h3>
                   <p className="text-gray-500">Intenta ajustar tus filtros de búsqueda</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
-                  {productosPaginados.map((producto, index) => (
-                    <div
-                      key={producto.idProducto}
-                      className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-blue-200"
-                    >
-                      <div className="relative aspect-square overflow-hidden bg-gray-50">
-                        <Image
-                          src={"/images/ImagenProductoPorDefecto.jpg"}
-                          alt={producto.nombreProducto}
-                          fill
-                          className="object-cover transition-transform duration-300 group-hover:scale-110"
-                        />
-                        <button className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white">
-                          <Heart className="w-5 h-5 text-gray-600 hover:text-red-500" />
-                        </button>
-                        <div className="absolute bottom-4 left-4 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                          Nuevo
-                        </div>
-                      </div>
+                  {productosPaginados.map((producto, index) => {
+                    console.log(producto)
+                    const cardStyle = getCardStyle(index);
+                    return (
+                      <div
+                        key={producto.idProducto}
+                        className={`group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border h-full transform hover:-translate-y-2 ${cardStyle}`}
+                      >
+                        <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+                          <Image
+                            src={
+                              producto.listaArchivos && producto.listaArchivos.length > 0
+                                ? `/static/${producto.listaArchivos[0].ruta.replace(/^\/+/, "")}`
+                                : "/images/ImagenProductoPorDefecto.jpg"
+                            }
+                            alt={producto.nombreProducto}
+                            fill
+                            className="object-cover transition-all duration-500 group-hover:scale-110"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            loading="lazy"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-                      <div className="p-6 space-y-4">
-                        <div>
-                          <h3 className="font-bold text-lg text-gray-800 group-hover:text-[#9D0B0B] transition-colors line-clamp-2">
-                            {producto.nombreProducto}
-                          </h3>
-                          <p className="text-sm text-gray-500">por Artesano</p>
+                          {/* Botones de acción */}
+                          <div className="absolute top-4 right-4 flex flex-col gap-2">
+                            <button className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg">
+                              <Heart className="w-5 h-5 text-gray-600 hover:text-red-500" />
+                            </button>
+                            <Link
+                              href={`/catalogo/detalleproducto/${producto.idProducto}`}
+                              className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0"
+                            >
+                              <Eye className="w-5 h-5 text-gray-600 hover:text-emerald-600" />
+                            </Link>
+                          </div>
+
                         </div>
 
-                        <div className="flex items-center space-x-1">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`w-4 h-4 ${i < 4 ? "text-yellow-400 fill-current" : "text-gray-300"}`}
-                            />
-                          ))}
-                          <span className="text-sm text-gray-600 ml-2">4.0</span>
-                        </div>
+                        <div className="p-6 space-y-4">
+                          <div className="space-y-2">
+                            <Link
+                              href={`/catalogo/detalleproducto/${producto.idProducto}`}
+                              className="font-bold text-lg text-gray-800 group-hover:text-emerald-700 transition-colors line-clamp-2 leading-tight"
+                            >
+                              {producto.nombreProducto}
+                            </Link>
+                            <div className="flex items-center gap-2">
+                              <div className="w-6 h-6 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center">
+                                <span className="text-white text-xs font-bold">A</span>
+                              </div>
+                              <p className="text-sm text-gray-500">por {producto.nombreUsuario}</p>
+                            </div>
+                          </div>
 
-                        <div className="flex justify-between items-center">
-                          <div className="space-y-1">
-                            <span className="text-2xl font-bold text-[#010668]">${producto.precioProducto.toLocaleString()}</span>
-                            <p className="text-xs text-gray-500">COP</p>
+                          <div className="flex items-center space-x-1">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className={`w-4 h-4 ${i < 4 ? "text-amber-400 fill-current" : "text-gray-300"}`}
+                              />
+                            ))}
+                            <span className="text-sm text-gray-600 ml-2">(4.0)</span>
+                          </div>
+
+                          <div className="flex justify-between items-center pt-2">
+                            <div className="space-y-1">
+                              <div className="flex items-baseline gap-1">
+                                <span className="text-2xl font-bold text-emerald-700">${producto.precioProducto.toLocaleString()}</span>
+                                <span className="text-xs text-gray-500">COP</span>
+                              </div>
+                            </div>
+{/*                             <button className="bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300 transform hover:scale-105 flex items-center gap-1.5 shadow-lg cursor-pointer">
+                              <ShoppingCart className="w-3 h-3" />
+                              Agregar
+                            </button> */}
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
 
-            <div className={`${mostrarTodos ? "block" : "hidden"}`}>
+            {/* Contenido principal */}
+            <div className={`${mostrarTodos ? "block" : "hidden"} min-h-[600px]`}>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
-                {posts.map((post) => (
-                  <div
-                    key={post.idProducto}
-                    className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-blue-200"
-                  >
-                    <div className="relative aspect-square overflow-hidden bg-gray-50">
-                      <Image
-                        src={
-                          post.listaArchivos.length > 0
-                            ? `/static/${post.listaArchivos[0].ruta.replace(/^\/+/, "")}`
-                            : "/images/ImagenProductoPorDefecto.jpg"
-                        }
-                        alt={post.nombreProducto}
-                        fill
-                        className="object-cover transition-transform duration-300 group-hover:scale-110"
-                        priority
-                      />
-                      <button className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white">
-                        <Heart className="w-5 h-5 text-gray-600 hover:text-red-500" />
-                      </button>
-                    </div>
+                {posts.map((post, index) => {
+                  const cardStyle = getCardStyle(index);
+                  return (
+                    <div
+                      key={post.idProducto}
+                      className={`group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border h-full transform hover:-translate-y-2 ${cardStyle}`}
+                    >
+                      <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+                        <Image
+                          src={
+                            post.listaArchivos && post.listaArchivos.length > 0
+                              ? `/static/${post.listaArchivos[0].ruta.replace(/^\/+/, "")}`
+                              : "/images/ImagenProductoPorDefecto.jpg"
+                          }
+                          alt={post.nombreProducto}
+                          fill
+                          className="object-cover transition-all duration-500 group-hover:scale-110"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-                    <div className="p-6 space-y-4">
-                      <div>
-                        <Link
-                          className="font-bold text-lg text-gray-800 hover:text-[#9D0B0B] transition-colors line-clamp-2 block"
-                          href={`catalogo/detalleproducto/${post.idProducto}`}
-                        >
-                          {post.nombreProducto}
-                        </Link>
-                        <p className="text-sm text-gray-500">por Artesano</p>
+                        {/* Botones de acción */}
+                        <div className="absolute top-4 right-4 flex flex-col gap-2">
+                          <button className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg">
+                            <Heart className="w-5 h-5 text-gray-600 hover:text-red-500" />
+                          </button>
+                          <Link
+                            href={`catalogo/detalleproducto/${post.idProducto}`}
+                            className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0"
+                          >
+                            <Eye className="w-5 h-5 text-gray-600 hover:text-emerald-600" />
+                          </Link>
+                        </div>
                       </div>
 
-                      <div className="flex items-center space-x-1">
-                        {stars.map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-4 h-4 ${i < 4 ? "text-yellow-400 fill-current" : "text-gray-300"}`}
-                          />
-                        ))}
-                        <span className="text-sm text-gray-600 ml-2">4.0</span>
-                      </div>
+                      <div className="p-6 space-y-4">
+                        <div className="space-y-2">
+                          <Link
+                            className="font-bold text-lg text-gray-800 hover:text-emerald-700 transition-colors line-clamp-2 leading-tight block"
+                            href={`catalogo/detalleproducto/${post.idProducto}`}
+                          >
+                            {post.nombreProducto}
+                          </Link>
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center">
+                              <span className="text-white text-xs font-bold">{post.nombreUsuario.charAt(0)}</span>
+                            </div>
+                            <p className="text-sm text-gray-500">por {post.nombreUsuario}</p>
+                          </div>
+                        </div>
 
-                      <div className="flex justify-between items-center">
-                        <div className="space-y-1">
-                          <span className="text-2xl font-bold text-[#010668]">${post.precioProducto.toLocaleString()}</span>
-                          <p className="text-xs text-gray-500">COP</p>
+                        <div className="flex items-center space-x-1">
+                          {stars.map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`w-4 h-4 ${i < 4 ? "text-amber-400 fill-current" : "text-gray-300"}`}
+                            />
+                          ))}
+                          <span className="text-sm text-gray-600 ml-2">(4.0)</span>
+                        </div>
+
+                        <div className="flex justify-between items-center pt-2">
+                          <div className="space-y-1">
+                            <div className="flex items-baseline gap-1">
+                              <span className="text-2xl font-bold text-emerald-700">${post.precioProducto.toLocaleString()}</span>
+                              <span className="text-xs text-gray-500">COP</span>
+                            </div>
+                          </div>
+{/*                           <button className="bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300 transform hover:scale-105 flex items-center gap-1.5 shadow-lg cursor-pointer">
+                            <ShoppingCart className="w-3 h-3" />
+                            Agregar
+                          </button> */}
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
+            {/* Paginación */}
             <div className="mt-12">
               {(mostrarTodos && totalPages > 1) && (
                 <div className="flex justify-center">
@@ -645,7 +730,7 @@ export default function CardCatalogo({
             </div>
           </main>
         </div>
-       </div> 
+      </div>
     </section>
   );
 }

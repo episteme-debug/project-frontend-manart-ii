@@ -12,6 +12,7 @@ import { generarPago } from '@/api/Pedido';
 import FormularioPago from '../FormularioPago';
 import { ShoppingCart, Trash2, Plus, Minus, Package, ArrowLeft, CreditCard, Truck, Shield } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useCarrito } from '@/contexts/CarritoContext';
 
 interface Productos {
   idCarrito: number;
@@ -21,6 +22,7 @@ interface Productos {
   cantidad: number;
   precioUnitario: number;
   subtotal: number;
+  imagenProducto: string;
 }
 
 function ListarProductoCarritos() {
@@ -30,6 +32,8 @@ function ListarProductoCarritos() {
   const [visible, setvisible] = useState(true);
   const [datosPayU, setDatosPayU] = useState(null);
   const [cargando, setCargando] = useState(false);
+
+  const { actualizarCarrito } = useCarrito();
 
   function inhabilitar(estado: boolean) {
     setvisible(estado)
@@ -54,6 +58,9 @@ function ListarProductoCarritos() {
     await eliminarproducto(idItem);
     const productosActualizados = await listarproductos();
     setProductos(productosActualizados);
+    
+    // Actualizar el contexto del carrito
+    await actualizarCarrito();
   };
 
   const handleContinuarCompra = async () => {
@@ -73,6 +80,9 @@ function ListarProductoCarritos() {
       await ActualizarCantidad(idItem, nuevaCantidad);
       const productosActualizados = await listarproductos();
       setProductos(productosActualizados);
+      
+      // Actualizar el contexto del carrito
+      await actualizarCarrito();
     }
   };
 
@@ -92,12 +102,6 @@ function ListarProductoCarritos() {
       <div className="container mx-auto px-4 py-6 lg:py-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center gap-4 mb-4">
-            <Link href={"/catalogo"}  className="text-gray-600 hover:text-gray-800">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Continuar comprando
-            </Link>
-          </div>
           <h1 className="text-3xl lg:text-4xl font-bold text-gray-800 flex items-center gap-3">
             <ShoppingCart className="w-8 h-8 text-[#010668]" />
             Mi Carrito
@@ -115,10 +119,9 @@ function ListarProductoCarritos() {
                 <h2 className="text-2xl font-semibold text-gray-800">Tu carrito está vacío</h2>
                 <p className="text-gray-600">Descubre nuestros productos y empieza a agregar artículos increíbles</p>
               </div>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl">
-                <Package className="w-4 h-4 mr-2" />
+              <Link href={"/catalogo"} className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 rounded-xl">
                 Ver productos
-              </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>
@@ -137,6 +140,7 @@ function ListarProductoCarritos() {
                 <CardContent className="p-0">
                   <div className="space-y-1">
                     {productos.map((producto, index) => (
+                      console.log(producto),
                       <div key={producto.idItem} className={`p-4 lg:p-6 transition-colors hover:bg-gray-50 ${index !== productos.length - 1 ? 'border-b border-gray-100' : ''}`}>
                         <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
                           
@@ -144,7 +148,7 @@ function ListarProductoCarritos() {
                           <div className="w-full lg:w-32 h-48 lg:h-32 flex-shrink-0">
                             <div className="relative w-full h-full bg-gray-100 rounded-xl overflow-hidden">
                               <Image
-                                src="/logo.png"
+                                src={`/static/${producto.imagenProducto}`}
                                 alt={producto.nombreProducto}
                                 fill
                                 className="object-cover"
