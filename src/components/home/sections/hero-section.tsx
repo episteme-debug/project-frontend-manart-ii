@@ -1,11 +1,5 @@
-import { Heart, MapPin, Palette } from "lucide-react"
+import { Heart } from "lucide-react"
 import { Dancing_Script } from "next/font/google"
-
-const culturalElements = [
-  { icon: Heart, label: "Hecho con Amor", description: "Cada pieza cuenta una historia" },
-  { icon: MapPin, label: "Tradición Ancestral", description: "Legado de nuestros ancestros" },
-  { icon: Palette, label: "Arte Vivo", description: "Colores de nuestra tierra" },
-]
 
 const dancing_script = Dancing_Script({
   variable: '--font-dancing-script',

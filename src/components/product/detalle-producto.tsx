@@ -1,13 +1,9 @@
 "use client";
-import { useState, useEffect } from "react";
-import React from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { Filter, X, ChevronDown, ChevronUp, ShoppingCart, Eye, Tag, Percent, DollarSign, ChevronLeft, ChevronRight } from "lucide-react"
-import CardCarousel from "./card-carousel";
-import ActivarBoton from "../carrito/agregar-carrito";
 import { TraerArchivos } from "@/api/ArchivoMultimedia";
-import ComprarAhora from "../carrito/comprar-ahora";
+import {
+    Card,
+    CardContent
+} from "@/components/ui/card";
 import {
     Carousel,
     CarouselContent,
@@ -15,16 +11,13 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@/components/ui/carousel";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-import { Star, Heart, Truck, Shield, CreditCard, MapPin, User, Package } from "lucide-react";
 import { ProductoRespuesta } from "@/interfaces/ProductoInterfaz";
+import { Eye, Heart, Package, Star, User } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import ActivarBoton from "../carrito/agregar-carrito";
+import ComprarAhora from "../carrito/comprar-ahora";
 
 const stars = Array(5).fill(0);
 
@@ -35,7 +28,13 @@ interface DetalleProductoClienteProps {
 
 export default function DetalleProductoCliente({ producto, posts }: DetalleProductoClienteProps) {
     const [imagenesProductos, setImagenesProductos] = useState<{ [id: number]: string }>({});
-    const [imagenPrincipal, setImagenPrincipal] = useState(`/static/${producto.listaArchivos[0].ruta.replace(/^\/+/, "")}`);
+    const [imagenPrincipal, setImagenPrincipal] = useState(() => {
+        // Verificar si hay archivos disponibles
+        if (producto.listaArchivos && producto.listaArchivos.length > 0 && producto.listaArchivos[0].ruta) {
+            return `/static/${producto.listaArchivos[0].ruta.replace(/^\/+/, "")}`;
+        }
+        return "/images/ImagenProductoPorDefecto.jpg";
+    });
     const [isFavorite, setIsFavorite] = useState(false);
 
     const getCardStyle = (index: number) => {
@@ -60,9 +59,12 @@ export default function DetalleProductoCliente({ producto, posts }: DetalleProdu
                     const data = await TraerArchivos(entidad, producto.idProducto);
                     if (Array.isArray(data) && data.length > 0 && data[0].ruta) {
                         const rutaNormalizada = data[0].ruta.replace(/\\/g, "/");
-                        const urlCompleta = `/static/${post.listaArchivos[0].ruta.replace(/^\/+/, "")}`;
-                        nuevasImagenes[producto.idProducto] = urlCompleta;
-                        setImagenPrincipal(urlCompleta);
+                        // Verificar si post.listaArchivos existe y tiene elementos
+                        if (post.listaArchivos && post.listaArchivos.length > 0 && post.listaArchivos[0].ruta) {
+                            const urlCompleta = `/static/${post.listaArchivos[0].ruta.replace(/^\/+/, "")}`;
+                            nuevasImagenes[producto.idProducto] = urlCompleta;
+                            setImagenPrincipal(urlCompleta);
+                        }
                     }
                 } catch (error) {
                     console.error(`Error al cargar imagen del producto ${post.idProducto}:`, error);
@@ -71,12 +73,12 @@ export default function DetalleProductoCliente({ producto, posts }: DetalleProdu
             setImagenesProductos(nuevasImagenes);
         };
         cargarImagenesDePosts();
-    }, [posts]);
+    }, [posts, producto.idProducto]);
 
 
-    const imagenesCarousel = producto.listaArchivos.length > 0
+    const imagenesCarousel = producto.listaArchivos && producto.listaArchivos.length > 0
         ? producto.listaArchivos.map(archivo =>
-            `/static/${archivo.ruta.replace(/^\/+/, "")}`
+            archivo.ruta ? `/static/${archivo.ruta.replace(/^\/+/, "")}` : "/images/ImagenProductoPorDefecto.jpg"
         )
         : ["/images/ImagenProductoPorDefecto.jpg"];
 

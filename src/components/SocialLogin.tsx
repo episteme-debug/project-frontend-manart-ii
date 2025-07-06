@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 
 export default function SocialLogin() {
   return (
@@ -15,7 +14,7 @@ export default function SocialLogin() {
       <button
         data-test="login-with-google-button"
         className="w-full flex items-center justify-center gap-3 py-3 px-6 rounded-lg border-2 border-gray-200 bg-white text-gray-700 hover:border-[#114E93] hover:shadow-lg transition-all duration-300 font-medium"
-        onClick={() => window.open("http://localhost:8080/oauth2/authorization/google", "_blank")}
+        onClick={() => window.location.href = "http://localhost:8080/oauth2/authorization/google"}
       >
         <svg className="w-5 h-5" viewBox="0 0 24 24">
           <path

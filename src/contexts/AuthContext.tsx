@@ -1,8 +1,8 @@
 "use client"
 
-import { createContext, useContext, useState, ReactNode } from 'react'
-import { useRouter } from 'next/navigation'
 import { logoutCliente } from '@/api/auth-client'
+import { useRouter } from 'next/navigation'
+import { createContext, ReactNode, useContext, useState } from 'react'
 
 interface User {
   id: number

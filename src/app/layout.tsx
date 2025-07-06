@@ -1,11 +1,11 @@
+import { AuthWrapper } from "@/components/AuthWrapper";
+import { Toaster } from "@/components/ui/toaster";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { CarritoProvider } from "@/contexts/CarritoContext";
+import { ProductoProvider } from "@/contexts/ProductoContexto";
 import type { Metadata } from "next";
 import { Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
-import { ProductoProvider } from "@/contexts/ProductoContexto";
-import { CarritoProvider } from "@/contexts/CarritoContext";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { AuthWrapper } from "@/components/AuthWrapper";
-import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = Inter({
   variable: "--font-geist-sans",
