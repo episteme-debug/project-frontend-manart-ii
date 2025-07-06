@@ -1,6 +1,6 @@
 "use client";
-import React from "react";
 import useRegister from "@/api/useRegister";
+import React from "react";
 
 export default function RegisterForm() {
   const [mostrarContrasena, setMostrarContrasena] = React.useState(false);

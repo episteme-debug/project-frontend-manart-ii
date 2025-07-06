@@ -1,9 +1,9 @@
 'use client';
 import { useLogin } from '@/api/login';
-import SocialOptions from './SocialLogin';
-import { useState } from 'react';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
+import SocialOptions from './SocialLogin';
 
 export default function FormularioLogin() {
     const [mostrarContrasena, setMostrarContrasena] = useState(false);
@@ -21,25 +21,25 @@ export default function FormularioLogin() {
     }
 
     return (
-        <div className="flex flex-col justify-center h-full bg-gradient-to-br from-gray-50 to-gray-100 p-8 rounded-lg shadow-xl border border-gray-200">
+        <div className="flex flex-col justify-center h-full bg-gradient-to-br from-[#FFFCEC] to-[#FFF9DC] p-8 rounded-lg shadow-xl border border-yellow-200">
             <div className="w-full max-w-md mx-auto">
                 <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold mb-2 text-gray-900">
+                    <h2 className="text-3xl font-bold mb-2 text-amber-900">
                         Bienvenido de vuelta
                     </h2>
-                    <p className="text-gray-600">
+                    <p className="text-amber-700">
                         Inicia sesión para continuar explorando nuestra artesanía
                     </p>
                 </div>
 
                 <form onSubmit={manejarEnvio} className="space-y-6">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-amber-800 mb-2">
                             Usuario
                         </label>
                         <input
                             type="text"
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#114E93] focus:border-[#114E93] transition-colors"
+                            className="w-full px-4 py-3 border border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors bg-white/80"
                             value={usuario}
                             onChange={(e) => setUsuario(e.target.value)}
                             required
@@ -49,13 +49,13 @@ export default function FormularioLogin() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-amber-800 mb-2">
                             Contraseña
                         </label>
                         <div className="relative">
                             <input
                                 type={mostrarContrasena ? 'text' : 'password'}
-                                className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#114E93] focus:border-[#114E93] transition-colors"
+                                className="w-full px-4 py-3 pr-12 border border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors bg-white/80"
                                 value={contrasena}
                                 onChange={(e) => setContrasena(e.target.value)}
                                 required
@@ -65,7 +65,7 @@ export default function FormularioLogin() {
                             <button
                                 type='button'
                                 onClick={AlternarVisibilidad}
-                                className='absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-gray-600 transition-colors'
+                                className='absolute inset-y-0 right-0 flex items-center px-3 text-amber-500 hover:text-amber-700 transition-colors'
                                 disabled={isLoading}
                             >
                                 {mostrarContrasena ? (
@@ -80,13 +80,13 @@ export default function FormularioLogin() {
                     <div className="flex items-center justify-between text-sm">
                         <Link 
                             href="/registro" 
-                            className="text-[#114E93] hover:text-[#0D3A7A] transition-colors font-medium"
+                            className="text-amber-700 hover:text-amber-900 transition-colors font-medium"
                         >
                             ¿No tienes cuenta?
                         </Link>
                         <Link 
                             href="/recuperar" 
-                            className="text-[#114E93] hover:text-[#0D3A7A] transition-colors font-medium"
+                            className="text-amber-700 hover:text-amber-900 transition-colors font-medium"
                         >
                             ¿Olvidaste tu contraseña?
                         </Link>
@@ -95,7 +95,7 @@ export default function FormularioLogin() {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full bg-gradient-to-r from-[#114E93] to-[#0D3A7A] hover:from-[#0D3A7A] hover:to-[#092B61] text-white py-3 px-6 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
+                        className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:bg-gradient-to-r hover:from-white hover:to-gray-50 hover:text-amber-600 hover:border-2 hover:border-amber-500 text-white py-3 px-6 rounded-lg font-medium transition-all duration-500 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                         {isLoading ? (
                             <>
