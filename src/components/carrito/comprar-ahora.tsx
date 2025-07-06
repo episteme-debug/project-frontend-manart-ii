@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Zap, ArrowRight } from "lucide-react";
 import { useCarrito } from '@/contexts/CarritoContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 import { useState, useCallback } from 'react';
 
 type id = {
@@ -14,10 +16,18 @@ type id = {
 export default function ComprarAhora({ idProducto }: id) {
   const router = useRouter();
   const { actualizarCarrito } = useCarrito();
+  const { isAuthenticated, showAuthRequired } = useAuth();
+  const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
 
   const agregarCarrito = useCallback(async () => {
     if (isProcessing) return; // Evitar múltiples clics
+    
+    // Verificar si el usuario está autenticado
+    if (!isAuthenticated) {
+      showAuthRequired("purchase");
+      return;
+    }
     
     setIsProcessing(true);
     
@@ -45,13 +55,26 @@ export default function ComprarAhora({ idProducto }: id) {
       // Actualizar el contexto del carrito después de agregar el producto
       await actualizarCarrito();
       
+      // Mostrar toast de confirmación
+      toast({
+        title: "¡Producto agregado!",
+        description: "El producto se ha agregado a tu carrito y estás siendo redirigido.",
+        variant: "default",
+      });
+      
     } catch (error) {
       console.log('Error al enviar datos', error);
-      // No mostrar alert aquí para no interrumpir la navegación
+      
+      // Mostrar toast de error
+      toast({
+        title: "Error",
+        description: "No se pudo procesar la compra. Inténtalo de nuevo.",
+        variant: "destructive",
+      });
     } finally {
       setIsProcessing(false);
     }
-  }, [idProducto, router, actualizarCarrito, isProcessing]);
+  }, [idProducto, router, actualizarCarrito, isProcessing, toast]);
 
   return (
     <Button 

@@ -8,6 +8,7 @@ import { useProductos } from '@/contexts/ProductoContexto';
 import { TraerCategorias } from '@/api/CategoriaProducto';
 import { TraerPromociones } from '@/api/Promocion';
 import { RagodePrecios } from '@/api/Producto';
+import { Breadcrumb } from '@/components/ui/breadcrumb';
 
 interface Props {
   searchParams?: Promise<{
@@ -74,13 +75,23 @@ export default function CatalogoProducto({ searchParams }: Props) {
   }
 
   return (
-    <CardCatalogo
-      posts={currentPosts}
-      page={page}
-      totalPages={totalPages}
-      categorias={categorias}
-      promociones={promociones}
-      rango={rango}
-    />
+    <>
+      <div className="container mx-auto px-4 py-6">
+        <Breadcrumb 
+          items={[
+            { label: "Catálogo", isCurrent: true }
+          ]} 
+          className="mb-6"
+        />
+      </div>
+      <CardCatalogo
+        posts={currentPosts}
+        page={page}
+        totalPages={totalPages}
+        categorias={categorias}
+        promociones={promociones}
+        rango={rango}
+      />
+    </>
   );
 }

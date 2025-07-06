@@ -15,16 +15,21 @@ const dancing_script = Dancing_Script({
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Clean white background */}
+      <div className="absolute inset-0 bg-white"></div>
       
-      <div className="container mx-auto px-4 relative z-10 py-20">
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-50/30 via-white/20 to-gray-50/30"></div>
+      
+      <div className="container mx-auto px-10 relative z-10 py-25">
         <div className="grid lg:grid-cols-12 gap-12 items-center min-h-[80vh]">
           
           {/* Left Content - 7 columns */}
           <div className="lg:col-span-7 space-y-6">
             
             {/* Badge with more padding */}
-            <div className="inline-flex items-center space-x-3 bg-gray-100 backdrop-blur-sm rounded-full px-8 py-4 border border-gray-200 shadow-sm">
+            <div className="inline-flex items-center space-x-3 bg-gray-100 backdrop-blur-sm rounded-lg px-8 py-4 border-2 border-gray-200 shadow-sm">
               <div className="w-4 h-1 bg-[#F5AE20] rounded-full"></div>
               <div className="w-4 h-1 bg-[#1B2BA0] rounded-full"></div>
               <div className="w-4 h-1 bg-[#850E05] rounded-full"></div>
@@ -61,40 +66,27 @@ export function HeroSection() {
             <div className="flex flex-col sm:flex-row gap-4">
               <button 
                 type="button" 
-                className="group bg-[#F5AE20] hover:bg-[#F5AE20]/90 text-white font-semibold rounded-lg px-8 py-4 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                className="text-white bg-gradient-to-r from-[#114E93] via-[#0D3A7A] to-[#092B61] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-[#114E93]/30 dark:focus:ring-[#114E93]/50 font-medium rounded-md text-sm px-5 py-2.5 text-center transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl border border-[#114E93]"
               >
                 <span className="flex items-center justify-center space-x-2">
                   <span>Descubrir Tesoros</span>
-                  <Heart className="w-5 h-5 group-hover:animate-pulse" />
+                  <Heart className="w-4 h-4" />
                 </span>
               </button>
               
               <button 
                 type="button" 
-                className="bg-transparent border-2 border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-800 font-semibold rounded-lg px-8 py-4 transition-all duration-300 hover:bg-gray-50"
+                className="text-[#114E93] bg-white border-2 border-[#114E93] hover:border-[#0D3A7A] hover:bg-[#114E93]/10 focus:ring-4 focus:outline-none focus:ring-[#114E93]/30 dark:focus:ring-[#114E93]/50 font-medium rounded-md text-sm px-5 py-2.5 text-center transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
                 Conocer Artesanos
               </button>
-            </div>
-
-            {/* Cultural Elements */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6">
-              {culturalElements.map((element, index) => (
-                <div key={index} className="text-center group cursor-pointer">
-                  <div className="w-14 h-14 bg-gray-100 border border-gray-200 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-gray-200 transition-all duration-300 shadow-sm">
-                    <element.icon className="w-6 h-6 text-[#F5AE20]" />
-                  </div>
-                  <h3 className="font-semibold text-sm text-gray-800 mb-2">{element.label}</h3>
-                  <p className="text-xs text-gray-600 leading-relaxed">{element.description}</p>
-                </div>
-              ))}
             </div>
           </div>
 
           {/* Right Content - Video - 5 columns */}
           <div className="lg:col-span-5">
             <div className="relative">
-              <div className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] rounded-2xl overflow-hidden shadow-2xl border border-gray-200">
+              <div className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] rounded-lg overflow-hidden shadow-2xl border-2 border-gray-200">
                 <video 
                   className="w-full h-full object-cover"
                   autoPlay

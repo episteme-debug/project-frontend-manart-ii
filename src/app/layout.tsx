@@ -3,6 +3,9 @@ import { Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { ProductoProvider } from "@/contexts/ProductoContexto";
 import { CarritoProvider } from "@/contexts/CarritoContext";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { AuthWrapper } from "@/components/AuthWrapper";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = Inter({
   variable: "--font-geist-sans",
@@ -27,11 +30,16 @@ export default function RootLayout({
   return (
     <html  lang="es" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ProductoProvider>
-          <CarritoProvider>
-            {children}
-          </CarritoProvider>
-        </ProductoProvider>
+        <AuthProvider>
+          <ProductoProvider>
+            <CarritoProvider>
+              <AuthWrapper>
+                {children}
+              </AuthWrapper>
+              <Toaster />
+            </CarritoProvider>
+          </ProductoProvider>
+        </AuthProvider>
       </body>
     </html>
   );

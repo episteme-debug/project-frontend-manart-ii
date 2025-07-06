@@ -1,11 +1,13 @@
 import axios from "axios";
+
 interface Productos {
   idProducto: number;
   nombreProducto: string;
   descripcionProducto: string;
   precioProducto: number;
-    stockProducto: number;
+  stockProducto: number;
 }
+
 export async function getPrimerosCinco(): Promise<Productos[]> {
   try {
     const response = await axios.get<Productos[]>(

@@ -203,12 +203,10 @@ export default function CardCatalogo({
 
   const getCardStyle = (index: number) => {
     const styles = [
-      "bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200",
-      "bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200",
-      "bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200",
-      "bg-gradient-to-br from-rose-50 to-pink-50 border-rose-200",
-      "bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200",
-      "bg-gradient-to-br from-lime-50 to-green-50 border-lime-200"
+      "hover:shadow-[#114E93]/20",
+      "hover:shadow-blue-100/50", 
+      "hover:shadow-purple-100/50",
+      "hover:shadow-orange-100/50"
     ];
     return styles[index % styles.length];
   };
@@ -220,7 +218,7 @@ export default function CardCatalogo({
           <h1 className="text-2xl font-bold text-gray-800">Catálogo</h1>
           <Button
             onClick={() => setMostrarFiltrosMobile(!mostrarFiltrosMobile)}
-            className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 shadow-lg"
+            className="flex items-center gap-2 bg-gradient-to-r from-[#114E93] to-[#0D3A7A] hover:from-[#0D3A7A] hover:to-[#092B61] shadow-lg"
           >
             <Filter className="w-4 h-4" />
             Filtros
@@ -230,14 +228,14 @@ export default function CardCatalogo({
         <div className="flex flex-col lg:flex-row gap-6 h-full">
           {/* Sidebar de filtros rediseñado */}
           <aside className={`
-            lg:w-80 lg:flex-shrink-0 lg:block bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden
+            lg:w-80 lg:flex-shrink-0 lg:block bg-white/80 backdrop-blur-sm rounded-lg shadow-2xl border border-white/20 overflow-hidden
             ${mostrarFiltrosMobile ? 'block' : 'hidden lg:block'}
             ${mostrarFiltrosMobile ? 'fixed inset-x-4 top-20 z-50 max-h-[calc(100vh-6rem)] overflow-y-auto' : ''}
           `}>
             <div className="p-6">
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
+                  <div className="p-2 bg-gradient-to-r from-[#114E93] to-[#0D3A7A] rounded-xl">
                     <Filter className="w-5 h-5 text-white" />
                   </div>
                   <h2 className="text-xl font-bold text-gray-800">Filtros</h2>
@@ -265,40 +263,40 @@ export default function CardCatalogo({
               </div>
 
               {hayFiltrosActivos && (
-                <div className="mb-8 p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl border border-amber-200 shadow-lg">
+                <div className="mb-8 p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg border border-amber-200 shadow-lg">
                   <h3 className="text-sm font-semibold text-amber-800 mb-3 flex items-center gap-2">
                     <Tag className="w-4 h-4" />
                     Filtros Aplicados
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {nombreCategoria && (
-                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-amber-200 to-orange-200 text-amber-800 rounded-full text-sm font-medium shadow-sm">
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-amber-200 to-orange-200 text-amber-800 rounded-md text-sm font-medium shadow-sm">
                         {nombreCategoria}
-                        <button onClick={() => setnombreCategoria(null)} className="hover:bg-amber-300 rounded-full p-0.5 transition-colors">
+                        <button onClick={() => setnombreCategoria(null)} className="hover:bg-amber-300 rounded-md p-0.5 transition-colors">
                           <X className="w-3 h-3" />
                         </button>
                       </span>
                     )}
                     {porcentajeDescuento && (
-                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-amber-200 to-orange-200 text-amber-800 rounded-full text-sm font-medium shadow-sm">
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-amber-200 to-orange-200 text-amber-800 rounded-md text-sm font-medium shadow-sm">
                         {porcentajeDescuento}% descuento
-                        <button onClick={() => setporcentajeDescuento(null)} className="hover:bg-amber-300 rounded-full p-0.5 transition-colors">
+                        <button onClick={() => setporcentajeDescuento(null)} className="hover:bg-amber-300 rounded-md p-0.5 transition-colors">
                           <X className="w-3 h-3" />
                         </button>
                       </span>
                     )}
                     {precioMin && precioMax && (
-                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-amber-200 to-orange-200 text-amber-800 rounded-full text-sm font-medium shadow-sm">
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-amber-200 to-orange-200 text-amber-800 rounded-md text-sm font-medium shadow-sm">
                         ${precioMin.toLocaleString()} - ${precioMax.toLocaleString()}
-                        <button onClick={() => { setprecioMin(null); setprecioMax(null); }} className="hover:bg-amber-300 rounded-full p-0.5 transition-colors">
+                        <button onClick={() => { setprecioMin(null); setprecioMax(null); }} className="hover:bg-amber-300 rounded-md p-0.5 transition-colors">
                           <X className="w-3 h-3" />
                         </button>
                       </span>
                     )}
                     {region && (
-                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-amber-200 to-orange-200 text-amber-800 rounded-full text-sm font-medium shadow-sm">
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-amber-200 to-orange-200 text-amber-800 rounded-md text-sm font-medium shadow-sm">
                         {regiones.find(r => r.value === region)?.label}
-                        <button onClick={() => setregion(null)} className="hover:bg-amber-300 rounded-full p-0.5 transition-colors">
+                        <button onClick={() => setregion(null)} className="hover:bg-amber-300 rounded-md p-0.5 transition-colors">
                           <X className="w-3 h-3" />
                         </button>
                       </span>
@@ -311,15 +309,15 @@ export default function CardCatalogo({
               <div className="mb-8">
                 <button
                   onClick={() => toggleSeccion('categorias')}
-                  className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-emerald-50 to-teal-50 hover:from-emerald-100 hover:to-teal-100 rounded-2xl transition-all duration-300 border border-emerald-100"
+                  className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-[#114E93]/10 to-[#0D3A7A]/10 hover:from-[#114E93]/20 hover:to-[#0D3A7A]/20 rounded-lg transition-all duration-300 border border-[#114E93]/20"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-emerald-500 rounded-lg">
+                    <div className="p-2 bg-[#114E93] rounded-lg">
                       <Tag className="w-4 h-4 text-white" />
                     </div>
                     <h3 className="text-lg font-semibold text-gray-800">Categorías</h3>
                   </div>
-                  {seccionesAbiertas.categorias ? <ChevronUp className="w-5 h-5 text-emerald-600" /> : <ChevronDown className="w-5 h-5 text-emerald-600" />}
+                  {seccionesAbiertas.categorias ? <ChevronUp className="w-5 h-5 text-[#114E93]" /> : <ChevronDown className="w-5 h-5 text-[#114E93]" />}
                 </button>
                 {seccionesAbiertas.categorias && (
                   <div className="mt-4 space-y-2 max-h-48 overflow-y-auto">
@@ -334,9 +332,9 @@ export default function CardCatalogo({
                           setMostrarFiltrosMobile(false);
                         }}
                         variant={nombreCategoria === categoria.nombreCategoria ? "default" : "outline"}
-                        className={`w-full justify-start text-left h-auto py-3 px-4 rounded-xl transition-all duration-300 ${nombreCategoria === categoria.nombreCategoria
-                          ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-700 hover:to-teal-700 shadow-lg"
-                          : "hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300 border-emerald-100"
+                        className={`w-full justify-start text-left h-auto py-3 px-4 rounded-lg transition-all duration-300 ${nombreCategoria === categoria.nombreCategoria
+                          ? "bg-gradient-to-r from-[#114E93] to-[#0D3A7A] text-white hover:from-[#0D3A7A] hover:to-[#092B61] shadow-lg"
+                          : "hover:bg-[#114E93]/10 hover:text-[#114E93] hover:border-[#114E93]/30 border-[#114E93]/20"
                           }`}
                       >
                         {categoria.nombreCategoria}
@@ -350,7 +348,7 @@ export default function CardCatalogo({
               <div className="mb-8">
                 <button
                   onClick={() => toggleSeccion('precios')}
-                  className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 rounded-2xl transition-all duration-300 border border-amber-100"
+                  className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 rounded-lg transition-all duration-300 border border-amber-100"
                 >
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-amber-500 rounded-lg">
@@ -374,7 +372,7 @@ export default function CardCatalogo({
                           setMostrarFiltrosMobile(false);
                         }}
                         variant={precioMin === rango_precio.min && precioMax === rango_precio.max ? "default" : "outline"}
-                        className={`w-full justify-start text-left py-3 px-4 rounded-xl transition-all duration-300 ${precioMin === rango_precio.min && precioMax === rango_precio.max
+                        className={`w-full justify-start text-left py-3 px-4 rounded-lg transition-all duration-300 ${precioMin === rango_precio.min && precioMax === rango_precio.max
                           ? "bg-gradient-to-r from-amber-600 to-orange-600 text-white hover:from-amber-700 hover:to-orange-700 shadow-lg"
                           : "hover:bg-amber-50 hover:text-amber-700 hover:border-amber-300 border-amber-100"
                           }`}
@@ -390,7 +388,7 @@ export default function CardCatalogo({
               <div className="mb-8">
                 <button
                   onClick={() => toggleSeccion('descuentos')}
-                  className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-purple-50 to-indigo-50 hover:from-purple-100 hover:to-indigo-100 rounded-2xl transition-all duration-300 border border-purple-100"
+                  className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-purple-50 to-indigo-50 hover:from-purple-100 hover:to-indigo-100 rounded-lg transition-all duration-300 border border-purple-100"
                 >
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-purple-500 rounded-lg">
@@ -403,7 +401,7 @@ export default function CardCatalogo({
                 {seccionesAbiertas.descuentos && (
                   <div className="mt-4 space-y-3">
                     {promociones.map((promocion) => (
-                      <label key={promocion.idPromocion} className="flex items-center space-x-3 cursor-pointer group p-3 rounded-xl hover:bg-purple-50 transition-colors">
+                      <label key={promocion.idPromocion} className="flex items-center space-x-3 cursor-pointer group p-3 rounded-lg hover:bg-purple-50 transition-colors">
                         <input
                           type="radio"
                           name="promocion"
@@ -431,7 +429,7 @@ export default function CardCatalogo({
               <div className="mb-8">
                 <button
                   onClick={() => toggleSeccion('regiones')}
-                  className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-cyan-50 to-blue-50 hover:from-cyan-100 hover:to-blue-100 rounded-2xl transition-all duration-300 border border-cyan-100"
+                  className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-cyan-50 to-blue-50 hover:from-cyan-100 hover:to-blue-100 rounded-lg transition-all duration-300 border border-cyan-100"
                 >
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-cyan-500 rounded-lg">
@@ -444,7 +442,7 @@ export default function CardCatalogo({
                 {seccionesAbiertas.regiones && (
                   <div className="mt-4 space-y-3 max-h-48 overflow-y-auto">
                     {regiones.map((regionItem) => (
-                      <label key={regionItem.value} className="flex items-center space-x-3 cursor-pointer group p-3 rounded-xl hover:bg-cyan-50 transition-colors">
+                      <label key={regionItem.value} className="flex items-center space-x-3 cursor-pointer group p-3 rounded-lg hover:bg-cyan-50 transition-colors">
                         <input
                           type="radio"
                           name="region"
@@ -496,7 +494,7 @@ export default function CardCatalogo({
                     return (
                       <div
                         key={producto.idProducto}
-                        className={`group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border h-full transform hover:-translate-y-2 ${cardStyle}`}
+                        className={`group bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border-2 border-gray-200 h-full transform hover:-translate-y-2 ${cardStyle}`}
                       >
                         <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
                           <Image
@@ -515,14 +513,14 @@ export default function CardCatalogo({
 
                           {/* Botones de acción */}
                           <div className="absolute top-4 right-4 flex flex-col gap-2">
-                            <button className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg">
+                            <button className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg">
                               <Heart className="w-5 h-5 text-gray-600 hover:text-red-500" />
                             </button>
                             <Link
                               href={`/catalogo/detalleproducto/${producto.idProducto}`}
-                              className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0"
+                              className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 border border-gray-200"
                             >
-                              <Eye className="w-5 h-5 text-gray-600 hover:text-emerald-600" />
+                              <Eye className="w-5 h-5 text-gray-600 hover:text-[#114E93]" />
                             </Link>
                           </div>
 
@@ -532,12 +530,12 @@ export default function CardCatalogo({
                           <div className="space-y-2">
                             <Link
                               href={`/catalogo/detalleproducto/${producto.idProducto}`}
-                              className="font-bold text-lg text-gray-800 group-hover:text-emerald-700 transition-colors line-clamp-2 leading-tight"
+                              className="font-bold text-lg text-gray-800 group-hover:text-[#114E93] transition-colors line-clamp-2 leading-tight block"
                             >
                               {producto.nombreProducto}
                             </Link>
                             <div className="flex items-center gap-2">
-                              <div className="w-6 h-6 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center">
+                              <div className="w-6 h-6 bg-gradient-to-r from-[#114E93] to-[#0D3A7A] rounded-md flex items-center justify-center">
                                 <span className="text-white text-xs font-bold">A</span>
                               </div>
                               <p className="text-sm text-gray-500">por {producto.nombreUsuario}</p>
@@ -557,7 +555,7 @@ export default function CardCatalogo({
                           <div className="flex justify-between items-center pt-2">
                             <div className="space-y-1">
                               <div className="flex items-baseline gap-1">
-                                <span className="text-2xl font-bold text-emerald-700">${producto.precioProducto.toLocaleString()}</span>
+                                <span className="text-2xl font-bold text-[#114E93]">${producto.precioProducto.toLocaleString()}</span>
                                 <span className="text-xs text-gray-500">COP</span>
                               </div>
                             </div>
@@ -582,7 +580,7 @@ export default function CardCatalogo({
                   return (
                     <div
                       key={post.idProducto}
-                      className={`group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border h-full transform hover:-translate-y-2 ${cardStyle}`}
+                      className={`group bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border-2 border-gray-200 h-full transform hover:-translate-y-2 ${cardStyle}`}
                     >
                       <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
                         <Image
@@ -601,14 +599,14 @@ export default function CardCatalogo({
 
                         {/* Botones de acción */}
                         <div className="absolute top-4 right-4 flex flex-col gap-2">
-                          <button className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg">
+                          <button className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg">
                             <Heart className="w-5 h-5 text-gray-600 hover:text-red-500" />
                           </button>
                           <Link
                             href={`catalogo/detalleproducto/${post.idProducto}`}
-                            className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0"
+                            className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 border border-gray-200"
                           >
-                            <Eye className="w-5 h-5 text-gray-600 hover:text-emerald-600" />
+                            <Eye className="w-5 h-5 text-gray-600 hover:text-[#114E93]" />
                           </Link>
                         </div>
                       </div>
@@ -616,13 +614,13 @@ export default function CardCatalogo({
                       <div className="p-6 space-y-4">
                         <div className="space-y-2">
                           <Link
-                            className="font-bold text-lg text-gray-800 hover:text-emerald-700 transition-colors line-clamp-2 leading-tight block"
+                            className="font-bold text-lg text-gray-800 group-hover:text-[#114E93] transition-colors line-clamp-2 leading-tight block"
                             href={`catalogo/detalleproducto/${post.idProducto}`}
                           >
                             {post.nombreProducto}
                           </Link>
                           <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center">
+                            <div className="w-6 h-6 bg-gradient-to-r from-[#114E93] to-[#0D3A7A] rounded-md flex items-center justify-center">
                               <span className="text-white text-xs font-bold">{post.nombreUsuario.charAt(0)}</span>
                             </div>
                             <p className="text-sm text-gray-500">por {post.nombreUsuario}</p>
@@ -642,7 +640,7 @@ export default function CardCatalogo({
                         <div className="flex justify-between items-center pt-2">
                           <div className="space-y-1">
                             <div className="flex items-baseline gap-1">
-                              <span className="text-2xl font-bold text-emerald-700">${post.precioProducto.toLocaleString()}</span>
+                              <span className="text-2xl font-bold text-[#114E93]">${post.precioProducto.toLocaleString()}</span>
                               <span className="text-xs text-gray-500">COP</span>
                             </div>
                           </div>

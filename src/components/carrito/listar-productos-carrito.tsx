@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import Link from 'next/link';
-import { listarproductos } from '../../services/apis/carrito/listarProductosCarrito';
 import { Button } from "@/components/ui/button";
 import { eliminarproducto } from "../../services/apis/carrito/eliminarProducto";
 import { traerSubtotal } from "../../services/apis/carrito/traerSubtotaldeCarrito"
@@ -13,6 +12,8 @@ import FormularioPago from '../FormularioPago';
 import { ShoppingCart, Trash2, Plus, Minus, Package, ArrowLeft, CreditCard, Truck, Shield } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCarrito } from '@/contexts/CarritoContext';
+import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface Productos {
   idCarrito: number;
@@ -26,22 +27,18 @@ interface Productos {
 }
 
 function ListarProductoCarritos() {
-  const [productos, setProductos] = useState<Productos[]>([]);
-  const [loading, setLoading] = useState(true);
   const [subtotal, setSubtotal] = useState<number | null>(null);
   const [visible, setvisible] = useState(true);
   const [datosPayU, setDatosPayU] = useState(null);
   const [cargando, setCargando] = useState(false);
 
-  const { actualizarCarrito } = useCarrito();
+  const { productos, isLoading, error, actualizarCarrito } = useCarrito();
+  const { isAuthenticated } = useAuth();
+  const { toast } = useToast();
 
   function inhabilitar(estado: boolean) {
     setvisible(estado)
   }
-
-  useEffect(() => {
-    listarproductos().then((data) => setProductos(data)).finally(() => setLoading(false));
-  }, []);
 
   useEffect(() => {
     if (productos.length > 0) {
@@ -55,12 +52,28 @@ function ListarProductoCarritos() {
   }, [productos]);
 
   const handleEliminar = async (idItem: number) => {
-    await eliminarproducto(idItem);
-    const productosActualizados = await listarproductos();
-    setProductos(productosActualizados);
-    
-    // Actualizar el contexto del carrito
-    await actualizarCarrito();
+    try {
+      await eliminarproducto(idItem);
+      
+      // Actualizar el contexto del carrito
+      await actualizarCarrito();
+      
+      // Mostrar toast de confirmación
+      toast({
+        title: "Producto eliminado",
+        description: "El producto se ha eliminado exitosamente del carrito.",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Error al eliminar producto:", error);
+      
+      // Mostrar toast de error
+      toast({
+        title: "Error",
+        description: "No se pudo eliminar el producto. Inténtalo de nuevo.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleContinuarCompra = async () => {
@@ -77,22 +90,82 @@ function ListarProductoCarritos() {
 
   const handleCantidadChange = async (idItem: number, nuevaCantidad: number) => {
     if (nuevaCantidad >= 1) {
-      await ActualizarCantidad(idItem, nuevaCantidad);
-      const productosActualizados = await listarproductos();
-      setProductos(productosActualizados);
-      
-      // Actualizar el contexto del carrito
-      await actualizarCarrito();
+      try {
+        await ActualizarCantidad(idItem, nuevaCantidad);
+        
+        // Actualizar el contexto del carrito
+        await actualizarCarrito();
+        
+        // Mostrar toast de confirmación
+        toast({
+          title: "Cantidad actualizada",
+          description: `La cantidad se ha actualizado a ${nuevaCantidad} unidades.`,
+          variant: "default",
+        });
+      } catch (error) {
+        console.error("Error al actualizar cantidad:", error);
+        
+        // Mostrar toast de error
+        toast({
+          title: "Error",
+          description: "No se pudo actualizar la cantidad. Inténtalo de nuevo.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
-  if (loading) {
+  // Si no hay sesión, mostrar mensaje de autenticación
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
+        <Card className="max-w-md mx-auto text-center p-8">
+          <CardContent className="space-y-6">
+            <div className="w-24 h-24 mx-auto bg-gray-100 rounded-full flex items-center justify-center">
+              <ShoppingCart className="w-12 h-12 text-gray-400" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-2xl font-semibold text-gray-800">Inicia sesión</h2>
+              <p className="text-gray-600">Necesitas iniciar sesión para ver tu carrito</p>
+            </div>
+            <Link href="/login" className="bg-[#114E93] hover:bg-[#0D3A7A] text-white px-8 py-3 rounded-xl inline-block">
+              Iniciar sesión
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto"></div>
           <p className="text-lg text-gray-600">Cargando productos...</p>
         </div>
+      </div>
+    );
+  }
+
+  // Si hay error, mostrar mensaje
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
+        <Card className="max-w-md mx-auto text-center p-8">
+          <CardContent className="space-y-6">
+            <div className="w-24 h-24 mx-auto bg-red-100 rounded-full flex items-center justify-center">
+              <ShoppingCart className="w-12 h-12 text-red-400" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-2xl font-semibold text-gray-800">Error</h2>
+              <p className="text-gray-600">{error}</p>
+            </div>
+            <Button onClick={() => actualizarCarrito()} className="bg-[#114E93] hover:bg-[#0D3A7A]">
+              Reintentar
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
