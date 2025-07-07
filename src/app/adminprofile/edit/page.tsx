@@ -1,18 +1,24 @@
 'use client';
+
 import { AppSidebar } from "@/components/app-sidebar";
 import { useEffect, useState, ChangeEvent, FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
+import axios from 'axios';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Usuario } from "@/types/usuario";
 
 export default function EditAdminProfilePage() {
+  // Obtiene el router para navegación programática
   const router = useRouter();
+  // Lee el parámetro 'id' de la URL (identificador numérico del usuario)
   const searchParams = useSearchParams();
-  const alias = searchParams.get("alias")!; // ① forzamos non-null
+  const idParam = searchParams.get("id");
 
+  // Estado que mantiene los datos del formulario
   const [form, setForm] = useState<Usuario>({
+    idUsuario: 0,
     alias: "",
     nombreUsuario: "",
     apellidoUsuario: "",
@@ -22,63 +28,74 @@ export default function EditAdminProfilePage() {
     hashContrasenaUsuario: "",
     rolUsuario: "",
   } as Usuario);
+
+  // Estados auxiliares: carga y mensajes
   const [loading, setLoading] = useState(true);
   const [mensaje, setMensaje] = useState("");
 
-  // 2️⃣ handleChange genérico
-  function handleChange(
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) {
-    const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value } as Usuario));
-  }
-
-  // 1️⃣ Carga inicial
+  /**
+   * Este efecto carga la información del usuario al montar el componente.
+   * Llama al endpoint GET /private/obtenerporid/{id} en Spring Boot.
+   */
   useEffect(() => {
-    async function load() {
+    if (!idParam) {
+      setMensaje("No se proporcionó el ID de usuario.");
+      setLoading(false);
+      return;
+    }
+
+    async function loadUsuario() {
       try {
-        const res = await fetch(
-          http://localhost:8080/api/usuario/public/alias/${encodeURIComponent(alias)},
-          {
-            method: "GET",
-            credentials: "include",
-            cache: "no-store",
-          }
-        );
-        if (!res.ok) throw new Error(await res.text());
-        const data = (await res.json()) as Usuario;
-        setForm(data);
-      } catch (error) {
-        console.error("Error cargando datos:"+ error);
-        setMensaje("No se pudieron cargar los datos.");
+        const url = `http://localhost:8080/api/usuario/private/obtenerporid/${idParam}`;
+        const response = await axios.get<Usuario>(url, { withCredentials: true });
+        setForm(response.data);
+      } catch (error: any) {
+        console.error("Error cargando datos:", error);
+        setMensaje("No se pudieron cargar los datos del usuario.");
       } finally {
         setLoading(false);
       }
     }
-    load();
-  }, [alias]);
 
-  // 3️⃣ Envío del formulario
+    loadUsuario();
+  }, [idParam]);
+
+  /**
+   * Manejador genérico para cambios en inputs y selects.
+   */
+  function handleChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value } as Usuario));
+  }
+
+  /**
+   * Envía los datos actualizados al backend via PATCH.
+   * Endpoint: PATCH /private/actualizardatos/{idUsuario}
+   */
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setMensaje("");
+
     try {
-      const res = await fetch("/api/usuario", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      if (!res.ok) throw new Error(await res.text());
-      setMensaje("Perfil actualizado correctamente");
-      // ① alias es string, no null, así que encodesafe
-      router.push(/adminprofile?alias=${encodeURIComponent(alias)});
-    } catch (error) {
-      console.error("Error actualizando perfil:"+ error);
-      setMensaje("Error al actualizar: " + error);
+      const url = `http://localhost:8080/api/usuario/private/actualizardatos/${idParam}`;
+      await axios.patch<Usuario>(url, {
+        nombre: form.nombreUsuario,
+        apellido: form.apellidoUsuario,
+        email: form.emailUsuario,
+        telefono: form.telefonoUsuario,
+        numeroDocumento: form.numeroDocumentoUsuario,
+      }, { withCredentials: true });
+
+      setMensaje("Perfil actualizado correctamente.");
+      // Redirige a la vista de perfil tras éxito
+      router.push(`/adminprofile?id=${idParam}`);
+    } catch (error: any) {
+      console.error("Error actualizando perfil:", error);
+      setMensaje(`Error al actualizar: ${error.response?.data || error.message}`);
     }
   }
 
-  // 4️⃣ Spinner mientras carga
+  // Mientras se cargan datos, muestra spinner básico
   if (loading) {
     return (
       <div className="flex h-screen">
@@ -92,6 +109,7 @@ export default function EditAdminProfilePage() {
     );
   }
 
+  // Render principal con el formulario de edición
   return (
     <div className="flex h-screen bg-gray-100">
       <aside className="w-64 bg-white border-r">
@@ -110,11 +128,12 @@ export default function EditAdminProfilePage() {
               height={64}
               className="rounded-full border"
             />
-            <p className="font-medium">{form.alias}</p>
+            {/* Muestra el alias como identificador visual */}
+            <p className="font-medium">@{form.alias}</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Nombre */}
+            {/* Campos de texto controlados por estado */}
             <div>
               <label htmlFor="nombreUsuario" className="block font-medium">
                 Nombre
@@ -123,12 +142,11 @@ export default function EditAdminProfilePage() {
                 id="nombreUsuario"
                 name="nombreUsuario"
                 value={form.nombreUsuario}
-                onChange={handleChange} // ② conectamos aquí
+                onChange={handleChange}
                 required
               />
             </div>
 
-            {/* Apellido */}
             <div>
               <label htmlFor="apellidoUsuario" className="block font-medium">
                 Apellido
@@ -142,7 +160,7 @@ export default function EditAdminProfilePage() {
               />
             </div>
 
-            {/* Email y Teléfono */}
+            {/* Email y teléfono lado a lado */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="emailUsuario" className="block font-medium">
@@ -157,6 +175,7 @@ export default function EditAdminProfilePage() {
                   required
                 />
               </div>
+
               <div>
                 <label htmlFor="telefonoUsuario" className="block font-medium">
                   Teléfono
@@ -171,13 +190,10 @@ export default function EditAdminProfilePage() {
               </div>
             </div>
 
-            {/* Documento y Rol */}
+            {/* Documento y rol */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label
-                  htmlFor="numeroDocumentoUsuario"
-                  className="block font-medium"
-                >
+                <label htmlFor="numeroDocumentoUsuario" className="block font-medium">
                   Documento
                 </label>
                 <Input
@@ -197,8 +213,9 @@ export default function EditAdminProfilePage() {
                   name="rolUsuario"
                   className="mt-1 block w-full border rounded px-2 py-1"
                   value={form.rolUsuario}
-                  onChange={handleChange}
+                  disabled
                 >
+                  {/* Rol no editable en este formulario */}
                   <option value="ADMIN">Admin</option>
                   <option value="COMPRADOR">Comprador</option>
                   <option value="VENDEDOR">Vendedor</option>
@@ -206,12 +223,9 @@ export default function EditAdminProfilePage() {
               </div>
             </div>
 
-            {/* Nueva contraseña */}
+            {/* Contraseña opcional: si queda vacía, no se envía al backend */}
             <div>
-              <label
-                htmlFor="hashContrasenaUsuario"
-                className="block font-medium"
-              >
+              <label htmlFor="hashContrasenaUsuario" className="block font-medium">
                 Nueva contraseña
               </label>
               <Input
@@ -222,21 +236,20 @@ export default function EditAdminProfilePage() {
                 onChange={handleChange}
               />
               <p className="text-sm text-gray-500 mt-1">
-                Déjalo vacío si no quieres cambiar.
+                Déjalo vacío si no quieres cambiar la contraseña.
               </p>
             </div>
 
+            {/* Botón de envío */}
             <div className="pt-4">
               <Button type="submit" className="w-full">
                 Guardar cambios
               </Button>
             </div>
 
+            {/* Mensaje de éxito o error */}
             {mensaje && (
-              <p
-                className={`mt-2 ${mensaje.startsWith("Error") ? "text-red-600" : "text-green-600"
-                  }`}
-              >
+              <p className={`mt-2 ${mensaje.startsWith("Error") ? "text-red-600" : "text-green-600"}`}>
                 {mensaje}
               </p>
             )}
