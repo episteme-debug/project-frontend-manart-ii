@@ -1,4 +1,5 @@
 export interface Usuario {
+  idUsuario: number;
   alias: string;
   nombreUsuario: string;
   apellidoUsuario: string;

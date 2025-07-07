@@ -1,5 +1,4 @@
 'use client';
-import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { useEffect, useState, ChangeEvent, FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -39,7 +38,7 @@ export default function EditAdminProfilePage() {
     async function load() {
       try {
         const res = await fetch(
-          `http://localhost:8080/api/usuario/public/alias/${encodeURIComponent(alias)}`,
+          http://localhost:8080/api/usuario/public/alias/${encodeURIComponent(alias)},
           {
             method: "GET",
             credentials: "include",
@@ -49,8 +48,8 @@ export default function EditAdminProfilePage() {
         if (!res.ok) throw new Error(await res.text());
         const data = (await res.json()) as Usuario;
         setForm(data);
-      } catch (err: any) {
-        console.error("Error cargando datos:", err);
+      } catch (error) {
+        console.error("Error cargando datos:"+ error);
         setMensaje("No se pudieron cargar los datos.");
       } finally {
         setLoading(false);
@@ -72,10 +71,10 @@ export default function EditAdminProfilePage() {
       if (!res.ok) throw new Error(await res.text());
       setMensaje("Perfil actualizado correctamente");
       // ① alias es string, no null, así que encodesafe
-      router.push(`/adminprofile?alias=${encodeURIComponent(alias)}`);
-    } catch (err: any) {
-      console.error("Error actualizando perfil:", err);
-      setMensaje("Error al actualizar: " + err.message);
+      router.push(/adminprofile?alias=${encodeURIComponent(alias)});
+    } catch (error) {
+      console.error("Error actualizando perfil:"+ error);
+      setMensaje("Error al actualizar: " + error);
     }
   }
 
