@@ -80,19 +80,19 @@ export default function ComprarAhora({ idProducto }: id) {
     <Button 
       onClick={agregarCarrito}
       disabled={isProcessing}
-      className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-bold py-4 px-6 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border-0 group disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+      className="w-full bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 text-amber-800 font-medium py-3 px-6 rounded-xl shadow-sm hover:shadow-md transform hover:scale-[1.02] transition-all duration-300 border border-amber-200 hover:border-amber-300 group disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
     >
-      <div className="flex items-center justify-center gap-3">
+      <div className="flex items-center justify-center gap-2">
         {isProcessing ? (
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-amber-600"></div>
         ) : (
-          <Zap className="w-6 h-6 group-hover:animate-pulse" />
+          <Zap className="w-4 h-4 text-amber-600" />
         )}
-        <span className="text-lg">
+        <span className="text-base">
           {isProcessing ? 'Procesando...' : 'Comprar Ahora'}
         </span>
         {!isProcessing && (
-          <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+          <ArrowRight className="w-4 h-4 text-amber-600 group-hover:translate-x-0.5 transition-transform duration-300" />
         )}
       </div>
     </Button>

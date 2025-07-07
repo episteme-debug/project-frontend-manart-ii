@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react"
 import Link from "next/link"
-import { Search, ShoppingCart, Heart, User, Menu, X, LogIn, UserPlus, LogOut, Settings } from "lucide-react"
+import { Search, ShoppingCart, Star, User, Menu, X, LogIn, UserPlus, LogOut, Settings } from "lucide-react"
 import Image from "next/image"
 import { ChevronDown, Package, MapPin } from 'lucide-react';
 import { useProductos } from '@/contexts/ProductoContexto';
@@ -66,7 +66,7 @@ export function Header() {
 
   return (
     <>
-      <header className="fixed top-0 w-full z-50 glass py-3 border-b-2 border-[#114E93] !border-b-[#114E93]">
+      <header className="fixed top-0 w-full z-50 glass py-3 border-b-2 border-amber-600 !border-b-amber-600">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
@@ -82,12 +82,12 @@ export function Header() {
             </Link>
 
             <nav className="hidden lg:flex items-center space-x-8">
-              <Link href="/home" className="text-sm font-medium text-gray-700 hover:text-[#114E93] transition-smooth">
+              <Link href="/home" className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-smooth">
                 Inicio
               </Link>
               <Link
                 href="/sobre-nosotros"
-                className="text-sm font-medium text-gray-700 hover:text-[#114E93] transition-smooth"
+                className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-smooth"
               >
                 Sobre Nosotros
               </Link>
@@ -96,7 +96,7 @@ export function Header() {
                 <button
                   onClick={() => setIsOpen(!isOpen)}
                   onBlur={() => setTimeout(() => setIsOpen(false), 150)}
-                  className="flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-[#114E93] transition-smooth"
+                  className="flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-amber-600 transition-smooth"
                 >
                   Catálogo de Productos
                   <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
@@ -106,7 +106,7 @@ export function Header() {
                   <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border py-2 z-50">
                     <Link
                       href="/catalogo/"
-                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:text-[#114E93] hover:bg-[#114E93]/10"
+                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:text-amber-600 hover:bg-amber-50"
                       prefetch={true}
                     >
                       <Package className="w-4 h-4" />
@@ -117,7 +117,7 @@ export function Header() {
 
                     <Link
                       href="/catalogo/regiones"
-                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:text-[#114E93] hover:bg-[#114E93]/10"
+                      className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:text-amber-600 hover:bg-amber-50"
                       prefetch={true}
                     >
                       <MapPin className="w-4 h-4" />
@@ -127,7 +127,7 @@ export function Header() {
                 )}
               </div>
 
-              <Link href="/blog" className="text-sm font-medium text-gray-700 hover:text-[#114E93] transition-smooth">
+              <Link href="/blog" className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-smooth">
                 Blog Artesanales
               </Link>
             </nav>
@@ -141,7 +141,7 @@ export function Header() {
                     placeholder="Buscar artesanías..."
                     value={terminoBusqueda}
                     onChange={(e) => setTerminoBusqueda(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 glass border-0 rounded-lg transition-smooth focus:outline-none focus:ring-2 focus:ring-[#114E93]"
+                    className="w-full pl-10 pr-4 py-2 glass border-0 rounded-lg transition-smooth focus:outline-none focus:ring-2 focus:ring-amber-500"
                     disabled={isNavigating}
                   />
                 </form>
@@ -151,7 +151,7 @@ export function Header() {
                   <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl border border-gray-200 max-h-96 overflow-y-auto z-50">
                     {isLoading ? (
                       <div className="p-4 text-center text-gray-500">
-                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#114E93] mx-auto"></div>
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-amber-600 mx-auto"></div>
                         <p className="mt-2">Buscando...</p>
                       </div>
                     ) : resultadosLimitados.length > 0 ? (
@@ -183,7 +183,7 @@ export function Header() {
                             <button
                               onClick={handleSearchSubmit}
                               disabled={isNavigating}
-                              className="w-full text-center text-[#114E93] hover:text-[#0D3A7A] font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                              className="w-full text-center text-amber-600 hover:text-amber-700 font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                               Ver todos los resultados ({productosFiltrados.length})
                             </button>
@@ -203,13 +203,13 @@ export function Header() {
             </div>
 
             <div className="flex items-center space-x-2">
-              <button className="relative p-2 hover:bg-[#114E93]/10 rounded-lg transition-smooth">
-                <Heart className="w-5 h-5" />
+              <button className="relative p-2 hover:bg-amber-100 rounded-lg transition-smooth">
+                <Star className="w-5 h-5" />
               </button>
 
               <Link
                 href={"/carrito"}
-                className="relative p-2 hover:bg-[#114E93]/10 rounded-lg transition-smooth"
+                className="relative p-2 hover:bg-amber-100 rounded-lg transition-smooth"
                 prefetch={true}
               >
                 <ShoppingCart className="w-5 h-5" />
@@ -224,7 +224,7 @@ export function Header() {
               <div className="relative" ref={userMenuRef}>
                 <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="p-2 hover:bg-[#114E93]/10 rounded-lg transition-smooth flex items-center gap-2"
+                  className="p-2 hover:bg-amber-100 rounded-lg transition-smooth flex items-center gap-2"
                 >
                   <User className="w-5 h-5" />
                   {user && (
@@ -245,7 +245,7 @@ export function Header() {
                         
                         <Link
                           href="/dashboard"
-                          className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:text-[#114E93] hover:bg-[#114E93]/10"
+                          className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:text-amber-600 hover:bg-amber-50"
                           prefetch={true}
                         >
                           <Settings className="w-4 h-4" />
@@ -266,7 +266,7 @@ export function Header() {
                       <>
                         <Link
                           href="/login"
-                          className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:text-[#114E93] hover:bg-[#114E93]/10"
+                          className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:text-amber-600 hover:bg-amber-50"
                           prefetch={true}
                         >
                           <LogIn className="w-4 h-4" />
@@ -277,7 +277,7 @@ export function Header() {
 
                         <Link
                           href="/registro"
-                          className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:text-[#114E93] hover:bg-[#114E93]/10"
+                          className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:text-amber-600 hover:bg-amber-50"
                           prefetch={true}
                         >
                           <UserPlus className="w-4 h-4" />
@@ -291,7 +291,7 @@ export function Header() {
 
               {/* Mobile Menu Button */}
               <button
-                className="lg:hidden p-2 hover:bg-[#114E93]/10 rounded-lg transition-smooth"
+                className="lg:hidden p-2 hover:bg-amber-100 rounded-lg transition-smooth"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               >
                 {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -315,20 +315,20 @@ export function Header() {
                   />
                 </div>
                 <nav className="space-y-2">
-                  <Link href="/home" className="block py-2 text-black hover:text-[#114E93] transition-smooth" prefetch={true}>
+                  <Link href="/home" className="block py-2 text-black hover:text-amber-600 transition-smooth" prefetch={true}>
                     Inicio
                   </Link>
                   <Link
                     href="/sobre-nosotros"
-                    className="block py-2 text-gray-700 hover:text-[#114E93] transition-smooth"
+                    className="block py-2 text-gray-700 hover:text-amber-600 transition-smooth"
                     prefetch={true}
                   >
                     Sobre Nosotros
                   </Link>
-                  <Link href="/catalogo" className="block py-2 text-gray-700 hover:text-[#114E93] transition-smooth" prefetch={true}>
+                  <Link href="/catalogo" className="block py-2 text-gray-700 hover:text-amber-600 transition-smooth" prefetch={true}>
                     Catálogo de Productos
                   </Link>
-                  <Link href="/blog" className="block py-2 text-gray-700 hover:text-[#114E93] transition-smooth" prefetch={true}>
+                  <Link href="/blog" className="block py-2 text-gray-700 hover:text-amber-600 transition-smooth" prefetch={true}>
                     Blog Artesanales
                   </Link>
                 </nav>
@@ -343,7 +343,7 @@ export function Header() {
                         <p className="text-xs text-gray-500">{user.email}</p>
                       </div>
                       <div className="space-y-2">
-                        <Link href="/dashboard" className="flex items-center gap-3 py-2 text-gray-700 hover:text-[#114E93] transition-smooth" prefetch={true}>
+                        <Link href="/dashboard" className="flex items-center gap-3 py-2 text-gray-700 hover:text-amber-600 transition-smooth" prefetch={true}>
                           <Settings className="w-4 h-4" />
                           Mi Cuenta
                         </Link>
@@ -358,14 +358,14 @@ export function Header() {
                     </>
                   ) : (
                     <div className="space-y-2">
-                      <Link href="/login" className="flex items-center gap-3 py-2 text-gray-700 hover:text-[#114E93] transition-smooth" prefetch={true}>
-                        <LogIn className="w-4 h-4" />
-                        Iniciar Sesión
-                      </Link>
-                      <Link href="/registro" className="flex items-center gap-3 py-2 text-gray-700 hover:text-[#114E93] transition-smooth" prefetch={true}>
-                        <UserPlus className="w-4 h-4" />
-                        Registrarse
-                      </Link>
+                                              <Link href="/login" className="flex items-center gap-3 py-2 text-gray-700 hover:text-amber-600 transition-smooth" prefetch={true}>
+                          <LogIn className="w-4 h-4" />
+                          Iniciar Sesión
+                        </Link>
+                        <Link href="/registro" className="flex items-center gap-3 py-2 text-gray-700 hover:text-amber-600 transition-smooth" prefetch={true}>
+                          <UserPlus className="w-4 h-4" />
+                          Registrarse
+                        </Link>
                     </div>
                   )}
                 </div>

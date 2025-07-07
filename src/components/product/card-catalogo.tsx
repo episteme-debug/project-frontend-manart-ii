@@ -16,7 +16,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { ArchivoMultimediaRespuesta } from "@/interfaces/ArchivoMultimediaInterfaz";
-import { Star, Heart, Filter, X, ChevronDown, ChevronUp, Eye, Tag, MapPin, Percent, DollarSign } from "lucide-react"
+import { Star, Filter, X, ChevronDown, ChevronUp, Eye, Tag, MapPin, Percent, DollarSign } from "lucide-react"
 import { ProductoRespuesta } from "@/interfaces/ProductoInterfaz";
 
 interface Categoria {
@@ -203,22 +203,22 @@ export default function CardCatalogo({
 
   const getCardStyle = (index: number) => {
     const styles = [
-      "hover:shadow-[#114E93]/20",
-      "hover:shadow-blue-100/50", 
-      "hover:shadow-purple-100/50",
-      "hover:shadow-orange-100/50"
+      "hover:shadow-amber-200/50",
+      "hover:shadow-orange-200/50", 
+      "hover:shadow-yellow-200/50",
+      "hover:shadow-amber-300/50"
     ];
     return styles[index % styles.length];
   };
 
   return (
-    <section className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 overflow-x-hidden w-full">
+    <section className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 overflow-x-hidden w-full">
       <div className="container mx-auto px-4 py-6 lg:py-10 h-full">
         <div className="flex justify-between items-center mb-6 lg:hidden">
           <h1 className="text-2xl font-bold text-gray-800">Catálogo</h1>
           <Button
             onClick={() => setMostrarFiltrosMobile(!mostrarFiltrosMobile)}
-            className="flex items-center gap-2 bg-gradient-to-r from-[#114E93] to-[#0D3A7A] hover:from-[#0D3A7A] hover:to-[#092B61] shadow-lg"
+            className="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 shadow-lg"
           >
             <Filter className="w-4 h-4" />
             Filtros
@@ -235,8 +235,8 @@ export default function CardCatalogo({
             <div className="p-6">
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-gradient-to-r from-[#114E93] to-[#0D3A7A] rounded-xl">
-                    <Filter className="w-5 h-5 text-white" />
+                  <div className="p-2 bg-gradient-to-r from-slate-100 to-gray-100 rounded-full border border-gray-200">
+                    <Filter className="w-5 h-5 text-gray-600" />
                   </div>
                   <h2 className="text-xl font-bold text-gray-800">Filtros</h2>
                 </div>
@@ -309,15 +309,15 @@ export default function CardCatalogo({
               <div className="mb-8">
                 <button
                   onClick={() => toggleSeccion('categorias')}
-                  className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-[#114E93]/10 to-[#0D3A7A]/10 hover:from-[#114E93]/20 hover:to-[#0D3A7A]/20 rounded-lg transition-all duration-300 border border-[#114E93]/20"
+                  className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 rounded-lg transition-all duration-300 border border-amber-200"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-[#114E93] rounded-lg">
-                      <Tag className="w-4 h-4 text-white" />
+                    <div className="p-2 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-full border border-emerald-200">
+                      <Tag className="w-4 h-4 text-emerald-600" />
                     </div>
                     <h3 className="text-lg font-semibold text-gray-800">Categorías</h3>
                   </div>
-                  {seccionesAbiertas.categorias ? <ChevronUp className="w-5 h-5 text-[#114E93]" /> : <ChevronDown className="w-5 h-5 text-[#114E93]" />}
+                  {seccionesAbiertas.categorias ? <ChevronUp className="w-5 h-5 text-amber-600" /> : <ChevronDown className="w-5 h-5 text-amber-600" />}
                 </button>
                 {seccionesAbiertas.categorias && (
                   <div className="mt-4 space-y-2 max-h-48 overflow-y-auto">
@@ -333,8 +333,8 @@ export default function CardCatalogo({
                         }}
                         variant={nombreCategoria === categoria.nombreCategoria ? "default" : "outline"}
                         className={`w-full justify-start text-left h-auto py-3 px-4 rounded-lg transition-all duration-300 ${nombreCategoria === categoria.nombreCategoria
-                          ? "bg-gradient-to-r from-[#114E93] to-[#0D3A7A] text-white hover:from-[#0D3A7A] hover:to-[#092B61] shadow-lg"
-                          : "hover:bg-[#114E93]/10 hover:text-[#114E93] hover:border-[#114E93]/30 border-[#114E93]/20"
+                          ? "bg-gradient-to-r from-amber-500 to-orange-600 text-white hover:from-amber-600 hover:to-orange-700 shadow-lg"
+                          : "hover:bg-amber-50 hover:text-amber-700 hover:border-amber-300 border-amber-200"
                           }`}
                       >
                         {categoria.nombreCategoria}
@@ -351,8 +351,8 @@ export default function CardCatalogo({
                   className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 rounded-lg transition-all duration-300 border border-amber-100"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-amber-500 rounded-lg">
-                      <DollarSign className="w-4 h-4 text-white" />
+                    <div className="p-2 bg-gradient-to-r from-amber-50 to-orange-50 rounded-full border border-amber-200">
+                      <DollarSign className="w-4 h-4 text-amber-600" />
                     </div>
                     <h3 className="text-lg font-semibold text-gray-800">Rango de Precios</h3>
                   </div>
@@ -391,8 +391,8 @@ export default function CardCatalogo({
                   className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-purple-50 to-indigo-50 hover:from-purple-100 hover:to-indigo-100 rounded-lg transition-all duration-300 border border-purple-100"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-purple-500 rounded-lg">
-                      <Percent className="w-4 h-4 text-white" />
+                    <div className="p-2 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-full border border-purple-200">
+                      <Percent className="w-4 h-4 text-purple-600" />
                     </div>
                     <h3 className="text-lg font-semibold text-gray-800">Descuentos</h3>
                   </div>
@@ -432,8 +432,8 @@ export default function CardCatalogo({
                   className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-cyan-50 to-blue-50 hover:from-cyan-100 hover:to-blue-100 rounded-lg transition-all duration-300 border border-cyan-100"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-cyan-500 rounded-lg">
-                      <MapPin className="w-4 h-4 text-white" />
+                    <div className="p-2 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-full border border-cyan-200">
+                      <MapPin className="w-4 h-4 text-cyan-600" />
                     </div>
                     <h3 className="text-lg font-semibold text-gray-800">Regiones</h3>
                   </div>
@@ -511,32 +511,34 @@ export default function CardCatalogo({
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-                          {/* Botones de acción */}
-                          <div className="absolute top-4 right-4 flex flex-col gap-2">
-                            <button className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg">
-                              <Heart className="w-5 h-5 text-gray-600 hover:text-red-500" />
-                            </button>
-                            <Link
-                              href={`/catalogo/detalleproducto/${producto.idProducto}`}
-                              className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 border border-gray-200"
-                            >
-                              <Eye className="w-5 h-5 text-gray-600 hover:text-[#114E93]" />
-                            </Link>
-                          </div>
+                                                  {/* Botones de acción */}
+                        <div className="absolute top-4 left-4">
+                          <button className="w-10 h-10 bg-gradient-to-r from-slate-100 to-gray-100 rounded-full border border-gray-200 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg">
+                            <Star className="w-5 h-5 text-gray-600 hover:text-amber-500 fill-current" />
+                          </button>
+                        </div>
+                        <div className="absolute top-4 right-4">
+                          <Link
+                            href={`/catalogo/detalleproducto/${producto.idProducto}`}
+                            className="w-10 h-10 bg-gradient-to-r from-slate-100 to-gray-100 rounded-full border border-gray-200 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0"
+                          >
+                            <Eye className="w-5 h-5 text-gray-600 hover:text-[#114E93]" />
+                          </Link>
+                        </div>
 
                         </div>
 
                         <div className="p-6 space-y-4">
                           <div className="space-y-2">
-                            <Link
-                              href={`/catalogo/detalleproducto/${producto.idProducto}`}
-                              className="font-bold text-lg text-gray-800 group-hover:text-[#114E93] transition-colors line-clamp-2 leading-tight block"
-                            >
-                              {producto.nombreProducto}
-                            </Link>
+                                                      <Link
+                            href={`/catalogo/detalleproducto/${producto.idProducto}`}
+                            className="font-bold text-lg text-gray-800 group-hover:text-amber-600 transition-colors line-clamp-2 leading-tight block"
+                          >
+                            {producto.nombreProducto}
+                          </Link>
                             <div className="flex items-center gap-2">
-                              <div className="w-6 h-6 bg-gradient-to-r from-[#114E93] to-[#0D3A7A] rounded-md flex items-center justify-center">
-                                <span className="text-white text-xs font-bold">A</span>
+                              <div className="w-6 h-6 bg-gradient-to-r from-slate-100 to-gray-100 rounded-full border border-gray-200 flex items-center justify-center">
+                                <span className="text-gray-600 text-xs font-medium">{producto.nombreUsuario.charAt(0)}</span>
                               </div>
                               <p className="text-sm text-gray-500">por {producto.nombreUsuario}</p>
                             </div>
@@ -555,7 +557,7 @@ export default function CardCatalogo({
                           <div className="flex justify-between items-center pt-2">
                             <div className="space-y-1">
                               <div className="flex items-baseline gap-1">
-                                <span className="text-2xl font-bold text-[#114E93]">${producto.precioProducto.toLocaleString()}</span>
+                                <span className="text-2xl font-bold text-amber-700">${producto.precioProducto.toLocaleString()}</span>
                                 <span className="text-xs text-gray-500">COP</span>
                               </div>
                             </div>
@@ -598,13 +600,15 @@ export default function CardCatalogo({
                         <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                         {/* Botones de acción */}
-                        <div className="absolute top-4 right-4 flex flex-col gap-2">
-                          <button className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg">
-                            <Heart className="w-5 h-5 text-gray-600 hover:text-red-500" />
+                        <div className="absolute top-4 left-4">
+                          <button className="w-10 h-10 bg-gradient-to-r from-slate-100 to-gray-100 rounded-full border border-gray-200 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg">
+                            <Star className="w-5 h-5 text-gray-600 hover:text-amber-500 fill-current" />
                           </button>
+                        </div>
+                        <div className="absolute top-4 right-4">
                           <Link
                             href={`catalogo/detalleproducto/${post.idProducto}`}
-                            className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 border border-gray-200"
+                            className="w-10 h-10 bg-gradient-to-r from-slate-100 to-gray-100 rounded-full border border-gray-200 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0"
                           >
                             <Eye className="w-5 h-5 text-gray-600 hover:text-[#114E93]" />
                           </Link>
@@ -613,15 +617,15 @@ export default function CardCatalogo({
 
                       <div className="p-6 space-y-4">
                         <div className="space-y-2">
-                          <Link
-                            className="font-bold text-lg text-gray-800 group-hover:text-[#114E93] transition-colors line-clamp-2 leading-tight block"
-                            href={`catalogo/detalleproducto/${post.idProducto}`}
-                          >
-                            {post.nombreProducto}
-                          </Link>
+                                                      <Link
+                              className="font-bold text-lg text-gray-800 group-hover:text-amber-600 transition-colors line-clamp-2 leading-tight block"
+                              href={`catalogo/detalleproducto/${post.idProducto}`}
+                            >
+                              {post.nombreProducto}
+                            </Link>
                           <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 bg-gradient-to-r from-[#114E93] to-[#0D3A7A] rounded-md flex items-center justify-center">
-                              <span className="text-white text-xs font-bold">{post.nombreUsuario.charAt(0)}</span>
+                            <div className="w-6 h-6 bg-gradient-to-r from-slate-100 to-gray-100 rounded-full border border-gray-200 flex items-center justify-center">
+                              <span className="text-gray-600 text-xs font-medium">{post.nombreUsuario.charAt(0)}</span>
                             </div>
                             <p className="text-sm text-gray-500">por {post.nombreUsuario}</p>
                           </div>
@@ -640,7 +644,7 @@ export default function CardCatalogo({
                         <div className="flex justify-between items-center pt-2">
                           <div className="space-y-1">
                             <div className="flex items-baseline gap-1">
-                              <span className="text-2xl font-bold text-[#114E93]">${post.precioProducto.toLocaleString()}</span>
+                              <span className="text-2xl font-bold text-amber-700">${post.precioProducto.toLocaleString()}</span>
                               <span className="text-xs text-gray-500">COP</span>
                             </div>
                           </div>

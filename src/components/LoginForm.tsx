@@ -85,7 +85,7 @@ export default function FormularioLogin() {
                             ¿No tienes cuenta?
                         </Link>
                         <Link 
-                            href="/recuperar" 
+                            href="/cambiar-password" 
                             className="text-amber-700 hover:text-amber-900 transition-colors font-medium"
                         >
                             ¿Olvidaste tu contraseña?

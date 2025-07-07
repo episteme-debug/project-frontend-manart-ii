@@ -37,10 +37,10 @@ export function PatrimonioSection() {
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-16">
-          <div className="inline-block px-6 py-2 bg-[#114E93]/20 rounded-lg text-[#114E93] font-semibold text-sm mb-4 border border-[#114E93]">
+          <div className="inline-block px-6 py-2 bg-amber-100 rounded-lg text-amber-700 font-semibold text-sm mb-4 border border-amber-300">
             Raíces que nos Definen
           </div>
-          <h2 className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#114E93] via-[#0D3A7A] to-amber-600 mb-6 leading-tight font-s">
+          <h2 className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-orange-600 to-yellow-600 mb-6 leading-tight font-s">
             Patrimonio Vivo de Colombia
           </h2>
           <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
@@ -54,17 +54,17 @@ export function PatrimonioSection() {
           {patrimonioStats.map((stat, index) => (
             <div
               key={index}
-              className="group bg-white/80 backdrop-blur-sm rounded-lg p-8 shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 border-2 border-gray-200 hover:border-[#114E93]"
+              className="group bg-white/80 backdrop-blur-sm rounded-lg p-8 shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 border-2 border-gray-200 hover:border-amber-500"
             >
               <div className="relative mb-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-[#114E93] to-[#0D3A7A] rounded-lg flex items-center justify-center mx-auto shadow-lg group-hover:shadow-[#114E93]/50 group-hover:scale-110 transition-all duration-300">
+                <div className="w-20 h-20 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center mx-auto shadow-lg group-hover:shadow-amber-500/50 group-hover:scale-110 transition-all duration-300">
                   <stat.icon className="w-10 h-10 text-white" />
                 </div>
                 <div className="absolute -top-2 -right-2 w-6 h-6 bg-amber-400 rounded-md animate-pulse"></div>
               </div>
 
               <div className="text-center">
-                <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#114E93] to-[#0D3A7A] mb-2">
+                <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-orange-700 mb-2">
                   {stat.value}
                 </div>
                 <div className="font-bold text-gray-800 text-lg mb-3">
@@ -75,13 +75,13 @@ export function PatrimonioSection() {
                 </div>
               </div>
 
-              <div className="absolute inset-0 bg-gradient-to-br from-[#114E93]/0 to-[#0D3A7A]/0 group-hover:from-[#114E93]/5 group-hover:to-[#0D3A7A]/5 rounded-lg transition-all duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 to-orange-600/0 group-hover:from-amber-500/5 group-hover:to-orange-600/5 rounded-lg transition-all duration-300"></div>
             </div>
           ))}
         </div>
 
         <div className="text-center mt-16">
-          <div className="inline-flex items-center gap-3 bg-gradient-to-r from-[#114E93] to-[#0D3A7A] text-white px-8 py-4 rounded-lg font-bold text-lg shadow-xl hover:shadow-[#114E93]/50 transform hover:scale-105 transition-all duration-300 cursor-pointer border border-[#114E93]">
+          <div className="inline-flex items-center gap-3 bg-gradient-to-r from-amber-500 to-orange-600 text-white px-8 py-4 rounded-lg font-bold text-lg shadow-xl hover:shadow-amber-500/50 transform hover:scale-105 transition-all duration-300 cursor-pointer border border-amber-500">
             <Heart className="w-6 h-6 animate-pulse" />
             Protejamos Nuestra Herencia Cultural
           </div>

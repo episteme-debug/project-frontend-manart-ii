@@ -31,3 +31,40 @@ export async function obtenerUsuarioPorId(): Promise<UsuarioRespuesta | null> {
     return null
   }
 }
+
+export async function enviarCorreo(email: string) {
+  try {
+    const response = await axios.post(
+      `http://localhost:8080/api/recuperar/recuperacion-contrasena/${email}`,
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    );
+    console.log("El correo fue enviado con éxito");
+  } catch (error) {
+    console.error("Algo salió mal", error);
+  }
+}
+
+export default async function actualizarContrasena(nuevaContrasena: string ,token:string) {
+  try {
+    const params = new URLSearchParams();
+    params.append("token",token);
+    params.append("nuevaContrasena", nuevaContrasena);
+
+    const response = await axios.post(
+      "http://localhost:8080/api/recuperar/actualizar-contrasena",
+      params,
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    );
+    console.log("El cambio fue exitoso");
+  } catch (error) {
+    console.error("Algo salió mal", error);
+  }
+}

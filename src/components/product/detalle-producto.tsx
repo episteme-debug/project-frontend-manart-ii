@@ -12,7 +12,7 @@ import {
     CarouselPrevious,
 } from "@/components/ui/carousel";
 import { ProductoRespuesta } from "@/interfaces/ProductoInterfaz";
-import { Eye, Heart, Package, Star, User } from "lucide-react";
+import { Eye, Star, Package, User, Info, FileText, Settings, Sparkles, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -83,7 +83,7 @@ export default function DetalleProductoCliente({ producto, posts }: DetalleProdu
         : ["/images/ImagenProductoPorDefecto.jpg"];
 
     return (
-        <section className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+        <section className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50">
             <div className="container mx-auto px-4 py-6 lg:py-10">
                 {/* Contenido principal */}
                 <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden border border-white/20">
@@ -131,9 +131,9 @@ export default function DetalleProductoCliente({ producto, posts }: DetalleProdu
                                         />
                                         <button
                                             onClick={() => setIsFavorite(!isFavorite)}
-                                            className="absolute top-6 right-6 w-14 h-14 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-xl hover:shadow-2xl"
+                                            className="absolute top-6 left-6 w-14 h-14 bg-gradient-to-r from-slate-100 to-gray-100 rounded-full border border-gray-200 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-xl hover:shadow-2xl"
                                         >
-                                            <Heart className={`w-7 h-7 transition-all duration-300 ${isFavorite ? 'text-red-500 fill-current scale-110' : 'text-gray-600 hover:text-red-400'}`} />
+                                            <Star className={`w-7 h-7 transition-all duration-300 ${isFavorite ? 'text-amber-500 fill-current scale-110' : 'text-gray-600 hover:text-amber-400'}`} />
                                         </button>
                                     </div>
                                 </div>
@@ -185,9 +185,9 @@ export default function DetalleProductoCliente({ producto, posts }: DetalleProdu
                                     <span className="text-gray-600 font-medium">(23 reseñas)</span>
                                 </div>
 
-                                <div className="flex items-center gap-3 text-gray-600 bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-2xl">
-                                    <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
-                                        <User className="w-5 h-5 text-white" />
+                                <div className="flex items-center gap-3 text-gray-600 bg-gradient-to-r from-amber-50 to-orange-50 p-4 rounded-2xl">
+                                    <div className="w-10 h-10 border-2 border-gray-400 rounded-full flex items-center justify-center">
+                                        <User className="w-5 h-5 text-gray-600" />
                                     </div>
                                     <span>Por: <span className="font-semibold text-[#9D0B0B]">{producto.nombreUsuario}</span></span>
                                 </div>
@@ -213,8 +213,8 @@ export default function DetalleProductoCliente({ producto, posts }: DetalleProdu
                             {/* Descripción */}
                             <div className="space-y-4">
                                 <h3 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
-                                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-                                        <span className="text-white text-sm font-bold">i</span>
+                                    <div className="w-8 h-8 border-2 border-gray-400 rounded-lg flex items-center justify-center">
+                                        <FileText className="w-4 h-4 text-gray-600" />
                                     </div>
                                     Descripción
                                 </h3>
@@ -236,22 +236,20 @@ export default function DetalleProductoCliente({ producto, posts }: DetalleProdu
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                             <div className="space-y-6">
                                 <h2 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center">
-                                        <span className="text-white text-lg font-bold">📋</span>
+                                    <div className="w-10 h-10 border-2 border-gray-400 rounded-xl flex items-center justify-center">
+                                        <FileText className="w-6 h-6 text-gray-600" />
                                     </div>
                                     Descripción detallada
                                 </h2>
                                 <p className="text-gray-600 leading-relaxed text-lg">
-                                    Descripción extendida del producto con todos los detalles técnicos,
-                                    materiales utilizados, proceso de elaboración y características especiales
-                                    que hacen único a este producto artesanal.
+                                    {producto.descripcionDetalladaProducto}
                                 </p>
                             </div>
 
                             <div className="space-y-6">
                                 <h2 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
-                                        <span className="text-white text-lg font-bold">⚙️</span>
+                                    <div className="w-10 h-10 border-2 border-gray-400 rounded-xl flex items-center justify-center">
+                                        <Settings className="w-6 h-6 text-gray-600" />
                                     </div>
                                     Especificaciones
                                 </h2>
@@ -278,8 +276,8 @@ export default function DetalleProductoCliente({ producto, posts }: DetalleProdu
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                             <div className="space-y-8">
                                 <h2 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-gradient-to-r from-amber-500 to-orange-600 rounded-xl flex items-center justify-center">
-                                        <Star className="w-5 h-5 text-white fill-current" />
+                                    <div className="w-10 h-10 border-2 border-gray-400 rounded-xl flex items-center justify-center">
+                                        <Star className="w-6 h-6 text-gray-600" />
                                     </div>
                                     Opiniones
                                 </h2>
@@ -331,8 +329,8 @@ export default function DetalleProductoCliente({ producto, posts }: DetalleProdu
                     <div className="border-t border-gray-200 p-8 lg:p-10 bg-gradient-to-r from-gray-50/50 to-slate-50/50">
                         <div className="space-y-8">
                             <h2 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
-                                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
-                                    <span className="text-white text-lg font-bold">💡</span>
+                                <div className="w-10 h-10 border-2 border-gray-400 rounded-xl flex items-center justify-center">
+                                    <Sparkles className="w-6 h-6 text-gray-600" />
                                 </div>
                                 También te podría interesar
                             </h2>
@@ -362,13 +360,15 @@ export default function DetalleProductoCliente({ producto, posts }: DetalleProdu
                                                         <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                                                         {/* Botones de acción */}
-                                                        <div className="absolute top-4 right-4 flex flex-col gap-2">
-                                                            <button className="w-12 h-12 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg">
-                                                                <Heart className="w-6 h-6 text-gray-600 hover:text-red-500" />
+                                                        <div className="absolute top-4 left-4">
+                                                            <button className="w-12 h-12 bg-gradient-to-r from-slate-100 to-gray-100 rounded-full border border-gray-200 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg">
+                                                                <Star className="w-6 h-6 text-gray-600 hover:text-amber-500 fill-current" />
                                                             </button>
+                                                        </div>
+                                                        <div className="absolute top-4 right-4">
                                                             <Link
                                                                 href={`/catalogo/detalleproducto/${post.idProducto}`}
-                                                                className="w-12 h-12 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0"
+                                                                className="w-12 h-12 bg-gradient-to-r from-slate-100 to-gray-100 rounded-full border border-gray-200 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0"
                                                             >
                                                                 <Eye className="w-6 h-6 text-gray-600 hover:text-emerald-600" />
                                                             </Link>
@@ -384,8 +384,8 @@ export default function DetalleProductoCliente({ producto, posts }: DetalleProdu
                                                                 {post.nombreProducto}
                                                             </Link>
                                                             <div className="flex items-center gap-2">
-                                                                <div className="w-8 h-8 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center">
-                                                                    <span className="text-white text-sm font-bold">A</span>
+                                                                <div className="w-8 h-8 border-2 border-gray-400 rounded-full flex items-center justify-center">
+                                                                    <User className="w-4 h-4 text-gray-600" />
                                                                 </div>
                                                                 <p className="text-sm text-gray-500">por Artesano</p>
                                                             </div>

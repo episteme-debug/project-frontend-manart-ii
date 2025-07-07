@@ -1,6 +1,6 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { Heart, ShoppingBag, Star } from "lucide-react"
+import { Star, ShoppingBag } from "lucide-react"
 
 const products = [
   {
@@ -79,8 +79,8 @@ export function ProductShowcase() {
                 <div className="absolute top-4 left-4 px-3 py-1 gradient-primary rounded-full text-white text-sm font-medium">
                   {product.badge}
                 </div>
-                <button className="absolute top-4 right-4 w-10 h-10 glass rounded-full flex items-center justify-center">
-                  <Heart className="w-5 h-5 text-slate-600" />
+                <button className="absolute top-4 left-4 w-10 h-10 bg-gradient-to-r from-slate-100 to-gray-100 rounded-full border border-gray-200 flex items-center justify-center">
+                  <Star className="w-5 h-5 text-gray-600 hover:text-amber-500 fill-current" />
                 </button>
               </div>
 

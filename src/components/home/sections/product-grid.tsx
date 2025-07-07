@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image";
-import { Star, Heart, Eye } from "lucide-react";
+import { Star, Eye } from "lucide-react";
 import { memo, useMemo, useEffect, useState } from "react";
 import Link from "next/link";
 import { ProductoRespuesta } from "@/interfaces/ProductoInterfaz";
@@ -31,10 +31,10 @@ StarRating.displayName = "StarRating";
 const ProductCard = memo(({ producto, index }: { producto: ProductoRespuesta; index: number }) => {
   const getCardStyle = (index: number) => {
     const styles = [
-      "hover:shadow-[#114E93]/20",
-      "hover:shadow-blue-100/50", 
-      "hover:shadow-purple-100/50",
-      "hover:shadow-orange-100/50"
+      "hover:shadow-amber-200/50",
+      "hover:shadow-orange-200/50", 
+      "hover:shadow-yellow-200/50",
+      "hover:shadow-amber-300/50"
     ];
     return styles[index % styles.length];
   };
@@ -48,7 +48,7 @@ const ProductCard = memo(({ producto, index }: { producto: ProductoRespuesta; in
         transform: 'translateY(20px)'
       }}
     >
-              <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 rounded-t-lg">
+              <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
         <Image
           src={
             producto.listaArchivos && producto.listaArchivos.length > 0
@@ -65,20 +65,22 @@ const ProductCard = memo(({ producto, index }: { producto: ProductoRespuesta; in
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
         {/* Botones de acción */}
-        <div className="absolute top-4 right-4 flex flex-col gap-2">
-          <button className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg border border-gray-200">
-            <Heart className="w-5 h-5 text-gray-600 hover:text-red-500" />
+        <div className="absolute top-4 left-4">
+          <button className="w-10 h-10 bg-gradient-to-r from-slate-100 to-gray-100 rounded-full border border-gray-200 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg">
+            <Star className="w-5 h-5 text-gray-600 hover:text-amber-500 fill-current" />
           </button>
+        </div>
+        <div className="absolute top-4 right-4">
           <Link
             href={`/catalogo/detalleproducto/${producto.idProducto}`}
-            className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 border border-gray-200"
+            className="w-10 h-10 bg-gradient-to-r from-slate-100 to-gray-100 rounded-full border border-gray-200 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:bg-white shadow-lg opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0"
           >
-            <Eye className="w-5 h-5 text-gray-600 hover:text-[#114E93]" />
+            <Eye className="w-5 h-5 text-gray-600 hover:text-amber-600" />
           </Link>
         </div>
 
         {/* Badge destacado */}
-        <div className="absolute bottom-4 left-4 bg-gradient-to-r from-[#114E93] to-[#0D3A7A] text-white px-3 py-1 rounded-md text-xs font-medium shadow-lg border border-[#114E93]">
+        <div className="absolute bottom-4 left-4 bg-gradient-to-r from-amber-500 to-orange-600 text-white px-3 py-1 rounded-md text-xs font-medium shadow-lg border border-amber-500">
           Destacado
         </div>
       </div>
@@ -87,13 +89,13 @@ const ProductCard = memo(({ producto, index }: { producto: ProductoRespuesta; in
         <div className="space-y-2">
                       <Link
               href={`/catalogo/detalleproducto/${producto.idProducto}`}
-              className="font-bold text-lg text-gray-800 group-hover:text-[#114E93] transition-colors line-clamp-2 leading-tight block"
+              className="font-bold text-lg text-gray-800 group-hover:text-amber-600 transition-colors line-clamp-2 leading-tight block"
             >
             {producto.nombreProducto}
           </Link>
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-gradient-to-r from-[#114E93] to-[#0D3A7A] rounded-md flex items-center justify-center">
-              <span className="text-white text-xs font-bold">
+            <div className="w-6 h-6 bg-gradient-to-r from-slate-100 to-gray-100 rounded-full border border-gray-200 flex items-center justify-center">
+              <span className="text-gray-600 text-xs font-medium">
                 {producto.nombreUsuario ? producto.nombreUsuario.charAt(0).toUpperCase() : 'A'}
               </span>
             </div>
@@ -106,7 +108,7 @@ const ProductCard = memo(({ producto, index }: { producto: ProductoRespuesta; in
         <div className="flex justify-between items-center pt-2">
           <div className="space-y-1">
             <div className="flex items-baseline gap-1">
-              <span className="text-2xl font-bold text-[#114E93]">
+              <span className="text-2xl font-bold text-amber-700">
                 ${producto.precioProducto.toLocaleString()}
               </span>
               <span className="text-xs text-gray-500">COP</span>
@@ -151,21 +153,21 @@ export function ProductGrid() {
 
   if (isLoading) {
     return (
-      <section className="py-8 sm:py-12 lg:py-16 bg-white min-h-screen">
+      <section className="py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 min-h-screen">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
           <header className="text-center mb-8 sm:mb-10 lg:mb-12">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-2 sm:mb-4 bg-gradient-to-r from-[#FB9301] to-[#eeb714] bg-clip-text text-transparent leading-tight">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-2 sm:mb-4 bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent leading-tight">
               Productos Destacados
             </h2>
-            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg lg:text-xl text-amber-700 max-w-2xl mx-auto">
               Artesanías auténticas hechas a mano
             </p>
           </header>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6">
             {[...Array(4)].map((_, index) => (
-              <div key={index} className="bg-white rounded-3xl shadow-lg animate-pulse">
-                <div className="aspect-square bg-gray-200 rounded-t-3xl"></div>
+              <div key={index} className="bg-white rounded-lg shadow-lg animate-pulse">
+                <div className="aspect-square bg-gray-200 rounded-t-lg"></div>
                 <div className="p-6 space-y-4">
                   <div className="h-6 bg-gray-200 rounded"></div>
                   <div className="h-4 bg-gray-200 rounded w-3/4"></div>
@@ -181,22 +183,22 @@ export function ProductGrid() {
 
   if (error) {
     return (
-      <section className="py-8 sm:py-12 lg:py-16 bg-white min-h-screen">
+      <section className="py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 min-h-screen">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
           <header className="text-center mb-8 sm:mb-10 lg:mb-12">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-2 sm:mb-4 bg-gradient-to-r from-[#FB9301] to-[#eeb714] bg-clip-text text-transparent leading-tight">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-2 sm:mb-4 bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent leading-tight">
               Productos Destacados
             </h2>
-            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg lg:text-xl text-amber-700 max-w-2xl mx-auto">
               Artesanías auténticas hechas a mano
             </p>
           </header>
           
           <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">{error}</p>
+            <p className="text-amber-700 text-lg">{error}</p>
             <button 
               onClick={() => window.location.reload()}
-              className="mt-4 px-6 py-2 bg-[#114E93] text-white rounded-lg hover:bg-[#0D3A7A] transition-colors"
+              className="mt-4 px-6 py-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-lg transition-all duration-300 shadow-lg"
             >
               Reintentar
             </button>
@@ -207,13 +209,13 @@ export function ProductGrid() {
   }
 
   return (
-    <section className="py-8 sm:py-12 lg:py-16 bg-white min-h-screen">
+    <section className="py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 min-h-screen">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         <header className="text-center mb-8 sm:mb-10 lg:mb-12">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-2 sm:mb-4 bg-gradient-to-r from-[#FB9301] to-[#eeb714] bg-clip-text text-transparent leading-tight">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-2 sm:mb-4 bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent leading-tight">
             Productos Destacados
           </h2>
-          <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg lg:text-xl text-amber-700 max-w-2xl mx-auto">
             Artesanías auténticas hechas a mano
           </p>
         </header>
@@ -228,7 +230,7 @@ export function ProductGrid() {
           <div className="text-center mt-12">
             <Link
               href="/catalogo"
-              className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-[#114E93] to-[#0D3A7A] hover:from-[#0D3A7A] hover:to-[#092B61] text-white rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-lg border border-[#114E93]"
+              className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-lg border border-amber-500"
             >
               Ver Todos los Productos
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

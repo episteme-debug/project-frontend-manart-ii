@@ -10,17 +10,14 @@ const dancing_script = Dancing_Script({
 export function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Clean white background */}
-      <div className="absolute inset-0 bg-white"></div>
-      
-      {/* Subtle gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-50/30 via-white/20 to-gray-50/30"></div>
+      {/* Background image without overlay to preserve original colors */}
+      <div className="absolute inset-0" style={{ backgroundImage: 'url(/static/web/fond.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }} ></div>
       
       <div className="container mx-auto px-10 relative z-10 py-25">
         <div className="grid lg:grid-cols-12 gap-12 items-center min-h-[80vh]">
           
-          {/* Left Content - 7 columns */}
-          <div className="lg:col-span-7 space-y-6">
+          {/* Left Content - 7 columns with semi-transparent white background */}
+          <div className="lg:col-span-7 space-y-6 bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-white/20">
             
             {/* Badge with more padding */}
             <div className="inline-flex items-center space-x-3 bg-gray-100 backdrop-blur-sm rounded-lg px-8 py-4 border-2 border-gray-200 shadow-sm">
@@ -60,7 +57,7 @@ export function HeroSection() {
             <div className="flex flex-col sm:flex-row gap-4">
               <button 
                 type="button" 
-                className="text-white bg-gradient-to-r from-[#114E93] via-[#0D3A7A] to-[#092B61] hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-[#114E93]/30 dark:focus:ring-[#114E93]/50 font-medium rounded-md text-sm px-5 py-2.5 text-center transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl border border-[#114E93]"
+                className="text-white bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 focus:ring-4 focus:outline-none focus:ring-amber-500/30 dark:focus:ring-amber-500/50 font-medium rounded-md text-sm px-5 py-2.5 text-center transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl border border-amber-500"
               >
                 <span className="flex items-center justify-center space-x-2">
                   <span>Descubrir Tesoros</span>
@@ -70,7 +67,7 @@ export function HeroSection() {
               
               <button 
                 type="button" 
-                className="text-[#114E93] bg-white border-2 border-[#114E93] hover:border-[#0D3A7A] hover:bg-[#114E93]/10 focus:ring-4 focus:outline-none focus:ring-[#114E93]/30 dark:focus:ring-[#114E93]/50 font-medium rounded-md text-sm px-5 py-2.5 text-center transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                className="text-amber-700 bg-white border-2 border-amber-500 hover:border-amber-600 hover:bg-amber-50 focus:ring-4 focus:outline-none focus:ring-amber-500/30 dark:focus:ring-amber-500/50 font-medium rounded-md text-sm px-5 py-2.5 text-center transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
                 Conocer Artesanos
               </button>

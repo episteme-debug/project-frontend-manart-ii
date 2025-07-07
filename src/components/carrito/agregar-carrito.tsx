@@ -74,15 +74,15 @@ export default function AgregarCarrito({ idProducto }: id) {
     <Button 
       onClick={agregarCarrito}
       disabled={isProcessing}
-      className="w-full font-bold py-4 px-6 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border-0 group disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white"
+      className="w-full font-medium py-3 px-6 rounded-xl shadow-sm hover:shadow-md transform hover:scale-[1.02] transition-all duration-300 border border-slate-200 hover:border-slate-300 group disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none bg-gradient-to-r from-slate-50 to-gray-50 hover:from-slate-100 hover:to-gray-100 text-slate-700"
     >
-      <div className="flex items-center justify-center gap-3">
+      <div className="flex items-center justify-center gap-2">
         {isProcessing ? (
-          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-slate-600"></div>
         ) : (
-          <ShoppingCart className="w-5 h-5 group-hover:animate-bounce" />
+          <ShoppingCart className="w-4 h-4 text-slate-600" />
         )}
-        <span className="text-lg">
+        <span className="text-base">
           {isProcessing ? 'Agregando...' : 'Agregar al Carrito'}
         </span>
       </div>

@@ -5,6 +5,7 @@ export interface ProductoRespuesta {
     idProducto: number,
     nombreProducto: string,
     descripcionProducto: string,
+    descripcionDetalladaProducto: string,
     regionProducto: string,
     stockProducto: number,
     precioProducto: number,
