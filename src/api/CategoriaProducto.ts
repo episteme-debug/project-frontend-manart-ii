@@ -37,7 +37,7 @@ export interface Categoria {
 export async function TraerCategorias(): Promise<Categoria[]> {
   try {
     const response = await axios.get(
-      "http://localhost:8080/api/categoriaproducto/public/listar",
+      `${baseURL}/public/listar`,
       {
         headers: { "Content-Type": "application/json" },
       }
@@ -46,5 +46,21 @@ export async function TraerCategorias(): Promise<Categoria[]> {
   } catch (error) {
     console.error("Error al traer las categorias", error);
     return [];
+  }
+}
+
+export async function eliminarCategoria(idItem: number) {
+  //
+  try {
+    const response = await axios.delete(
+      `${baseURL}/private/eliminarcategoria/${idItem}`,
+      {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      }
+    );
+    return response;
+  } catch (error) {
+    console.error("id dela categoria", error);
   }
 }

@@ -3,7 +3,6 @@
 import { cookies } from "next/headers"
 import axios from "axios"
 import { obtenerCookie } from "@/lib/ObtencionCookie"
-import { Ultra } from "next/font/google"
 
 const baseURL = "http://localhost:8080/api/archivomultimedia"
 
@@ -62,7 +61,7 @@ export async function EliminarArchivo(idArchivo: number) {
 
 }
 
-export async function TraerArchivos(entidad:String, id:number) {
+export async function TraerArchivos(entidad:string, id:number) {
     try{
         const response = await axios.get(`http://localhost:8080/api/archivomultimedia/private/listararchivos/${entidad}/${id}`,
              {
