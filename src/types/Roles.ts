@@ -1,0 +1,1 @@
+export type UsuarioEnum = "ADMIN" | "COMPRADOR" | "VENDEDOR" | "ORGANIZADOR";
