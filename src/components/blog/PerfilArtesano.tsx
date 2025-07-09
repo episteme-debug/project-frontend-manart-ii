@@ -1,25 +1,26 @@
 "use client"
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Award, Calendar, MapPin } from 'lucide-react'
+import { Award, Calendar, MapPin, User } from 'lucide-react'
+import { useAuth } from '@/contexts/AuthContext'
 
 export function PerfilArtesano() {
+  const { user } = useAuth()
+  
+  const nombreUsuario = user?.nombre || "Usuario ManArt"
+
   return (
     <Card className="bg-white/80 backdrop-blur-sm border-amber-200 shadow-lg">
       <CardContent className="p-6">
         {/* Información del usuario */}
         <div className="flex items-center space-x-4 mb-6">
-          <Avatar className="w-16 h-16 border-4 border-amber-300">
-            <AvatarImage src="/images/usuario.webp" alt="Usuario" />
-            <AvatarFallback className="bg-amber-100 text-amber-800 font-times text-xl">
-              U
-            </AvatarFallback>
-          </Avatar>
+          <div className="w-16 h-16 flex items-center justify-center rounded-full border-4 border-amber-300 bg-amber-50">
+            <User className="w-10 h-10 text-amber-600" />
+          </div>
           <div>
             <h3 className="font-times font-bold text-gray-900 text-xl">
-              Usuario ManArt
+              {nombreUsuario}
             </h3>
             <p className="text-amber-600 font-times text-sm">
               Artesano Colombiano

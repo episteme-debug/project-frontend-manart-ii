@@ -5,19 +5,33 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { Image, X } from 'lucide-react'
+import { Image, X, Images, User } from 'lucide-react'
 import { useRef, useState } from 'react'
 
 interface CrearPostProps {
   onCrear: (contenido: string, imagen?: string, tipo?: 'noticia' | 'evento' | 'cultural') => void
   onCancelar: () => void
+  post?: {
+    contenido: string
+    imagen?: string
+    tipo: 'noticia' | 'evento' | 'cultural'
+  }
 }
 
-export function CrearPost({ onCrear, onCancelar }: CrearPostProps) {
-  const [contenido, setContenido] = useState('')
-  const [tipo, setTipo] = useState<'noticia' | 'evento' | 'cultural'>('cultural')
-  const [imagen, setImagen] = useState<string>('')
+// Galería de imágenes de artesanías colombianas - IDs estáticos
+const imagenesArtesanias = Array.from({ length: 12 }, (_, i) => ({
+  id: `artesania-${i + 1}-${Date.now()}-${Math.floor(Math.random() * 1000000)}`,
+  nombre: "Imagen Artesanal",
+  url: "/static/cargascliente/categoriaproductos/imagen/descarga6.jpeg",
+  descripcion: "Artesanía colombiana"
+}))
+
+export function CrearPost({ onCrear, onCancelar, post }: CrearPostProps) {
+  const [contenido, setContenido] = useState(post?.contenido || '')
+  const [tipo, setTipo] = useState<'noticia' | 'evento' | 'cultural'>(post?.tipo || 'cultural')
+  const [imagen, setImagen] = useState<string>(post?.imagen || '')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showGallery, setShowGallery] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -46,6 +60,11 @@ export function CrearPost({ onCrear, onCancelar }: CrearPostProps) {
     }
   }
 
+  const selectGalleryImage = (imageUrl: string) => {
+    setImagen(imageUrl)
+    setShowGallery(false)
+  }
+
   const removeImage = () => {
     setImagen('')
     if (fileInputRef.current) {
@@ -59,12 +78,9 @@ export function CrearPost({ onCrear, onCancelar }: CrearPostProps) {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Header del post */}
           <div className="flex items-start space-x-3">
-            <Avatar className="w-12 h-12 border-2 border-amber-300">
-              <AvatarImage src="/images/usuario.webp" alt="Usuario" />
-              <AvatarFallback className="bg-amber-100 text-amber-800 font-times">
-                U
-              </AvatarFallback>
-            </Avatar>
+            <div className="w-12 h-12 flex items-center justify-center rounded-full border-2 border-amber-300 bg-amber-50">
+              <User className="w-7 h-7 text-amber-600" />
+            </div>
             <div className="flex-1">
               <div className="flex items-center space-x-2 mb-2">
                 <span className="font-times font-semibold text-gray-900">
@@ -123,9 +139,54 @@ export function CrearPost({ onCrear, onCancelar }: CrearPostProps) {
             </div>
           )}
 
+          {/* Galería de imágenes de artesanías */}
+          {showGallery && (
+            <div className="border border-amber-200 rounded-lg p-4 bg-amber-50">
+              <h3 className="font-times font-semibold text-gray-900 mb-3">Seleccionar imagen de artesanía</h3>
+              <div className="grid grid-cols-3 gap-3 max-h-64 overflow-y-auto">
+                {imagenesArtesanias.map((artesania) => (
+                  <div
+                    key={artesania.id}
+                    className="cursor-pointer group relative"
+                    onClick={() => selectGalleryImage(artesania.url)}
+                  >
+                    <img
+                      src={artesania.url}
+                      alt={artesania.nombre}
+                      className="w-full h-20 object-cover rounded-lg border-2 border-transparent group-hover:border-amber-400 transition-colors"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all rounded-lg flex items-center justify-center">
+                      <span className="text-white text-xs font-times opacity-0 group-hover:opacity-100 text-center px-1">
+                        {artesania.nombre}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowGallery(false)}
+                className="mt-3 border-amber-300 text-amber-600 hover:bg-amber-50 font-times"
+              >
+                Cerrar galería
+              </Button>
+            </div>
+          )}
+
           {/* Acciones */}
           <div className="flex items-center justify-between pt-4 border-t border-amber-200">
             <div className="flex items-center space-x-2">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowGallery(!showGallery)}
+                className="text-amber-600 hover:text-amber-700 hover:bg-amber-50 font-times"
+              >
+                <Images className="w-5 h-5 mr-2" />
+                Galería artesanal
+              </Button>
               <Button
                 type="button"
                 variant="ghost"
@@ -134,7 +195,7 @@ export function CrearPost({ onCrear, onCancelar }: CrearPostProps) {
                 className="text-amber-600 hover:text-amber-700 hover:bg-amber-50 font-times"
               >
                 <Image className="w-5 h-5 mr-2" />
-                Agregar imagen
+                Subir imagen
               </Button>
             </div>
 

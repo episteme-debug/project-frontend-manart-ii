@@ -3,6 +3,7 @@
 import {
     BookOpen,
     Home,
+    MessageSquare,
     SquareTerminal
 } from "lucide-react"
 import Image from "next/image"

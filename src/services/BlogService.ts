@@ -14,12 +14,22 @@ export interface Post {
   comentarios: number
 }
 
-// Datos de ejemplo para el blog
+// Generar IDs únicos de forma estática
+const generarIdsUnicos = (cantidad: number) => {
+  const ids = []
+  for (let i = 0; i < cantidad; i++) {
+    ids.push(Date.now().toString() + '-' + Math.floor(Math.random() * 1000000).toString())
+  }
+  return ids
+}
+
+const idsUnicos = generarIdsUnicos(5)
+
 const postsEjemplo: Post[] = [
   {
-    id: '1',
+    id: idsUnicos[0],
     contenido: '¡Nuevas técnicas de tejido wayuu! Descubrí cómo las artesanas de La Guajira mantienen viva esta tradición centenaria. El tejido wayuu no solo es arte, es historia tejida con hilos de identidad cultural.',
-    imagen: '/images/Mochilas_Wayuu.1.jpg',
+    imagen: '/static/cargascliente/categoriaproductos/imagen/descarga6.jpeg',
     tipo: 'cultural',
     fecha: '2025-01-15T10:30:00Z',
     autor: {
@@ -32,9 +42,9 @@ const postsEjemplo: Post[] = [
     comentarios: 8
   },
   {
-    id: '2',
+    id: idsUnicos[1],
     contenido: 'Evento especial: Feria Artesanal de Ráquira este fin de semana. Ven a conocer las mejores cerámicas del país y aprende técnicas ancestrales de los maestros artesanos.',
-    imagen: '/images/Cerámicas_de_Ráquira.1.jpg',
+    imagen: '/static/cargascliente/categoriaproductos/imagen/descarga6.jpeg',
     tipo: 'evento',
     fecha: '2025-01-14T15:45:00Z',
     autor: {
@@ -47,7 +57,7 @@ const postsEjemplo: Post[] = [
     comentarios: 15
   },
   {
-    id: '3',
+    id: idsUnicos[2],
     contenido: 'Noticia importante: El gobierno lanza programa de apoyo para artesanos indígenas. Incluye capacitación, financiamiento y promoción internacional de sus productos.',
     tipo: 'noticia',
     fecha: '2025-01-13T09:15:00Z',
@@ -61,9 +71,9 @@ const postsEjemplo: Post[] = [
     comentarios: 34
   },
   {
-    id: '4',
+    id: idsUnicos[3],
     contenido: 'El sombrero vueltiao, patrimonio cultural de Colombia. Cada trenza cuenta una historia, cada vuelta representa la sabiduría de los zenúes. ¡Orgullosos de nuestra herencia!',
-    imagen: '/images/Sombrero_Vueltiao.1.webp',
+    imagen: '/static/cargascliente/categoriaproductos/imagen/descarga6.jpeg',
     tipo: 'cultural',
     fecha: '2025-01-12T14:20:00Z',
     autor: {
@@ -76,9 +86,9 @@ const postsEjemplo: Post[] = [
     comentarios: 28
   },
   {
-    id: '5',
+    id: idsUnicos[4],
     contenido: 'Taller de bordado raizal en San Andrés. Aprende las técnicas tradicionales de las mujeres raizales y descubre la belleza de sus diseños únicos.',
-    imagen: '/images/Bordado_tradicional_raizal.1.png',
+    imagen: '/static/cargascliente/categoriaproductos/imagen/descarga6.jpeg',
     tipo: 'evento',
     fecha: '2025-01-11T11:00:00Z',
     autor: {
@@ -101,10 +111,11 @@ export class BlogService {
 
   static async crearPost(contenido: string, imagen?: string, tipo: 'noticia' | 'evento' | 'cultural' = 'cultural'): Promise<Post | null> {
     try {
+      const uniqueId = Date.now().toString() + '-' + Math.floor(Math.random() * 1000000).toString();
       const nuevoPost: Post = {
-        id: Date.now().toString(),
+        id: uniqueId,
         contenido,
-        imagen,
+        imagen: imagen || '/static/cargascliente/categoriaproductos/imagen/descarga6.jpeg',
         tipo,
         fecha: new Date().toISOString(),
         autor: {
@@ -138,6 +149,15 @@ export class BlogService {
     const post = postsEjemplo.find(p => p.id === postId)
     if (post) {
       post.compartidos++
+      return true
+    }
+    return false
+  }
+
+  static async eliminarPost(postId: string): Promise<boolean> {
+    const index = postsEjemplo.findIndex(p => p.id === postId)
+    if (index !== -1) {
+      postsEjemplo.splice(index, 1)
       return true
     }
     return false
