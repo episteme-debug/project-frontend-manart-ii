@@ -1,34 +1,27 @@
 "use client"
 
-import * as React from "react"
-import Image from "next/image"
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
 import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Home,
-  Map,
-  PieChart,
-  SquareTerminal,
+    BookOpen,
+    Home,
+    SquareTerminal
 } from "lucide-react"
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+import * as React from "react"
+import { useEffect, useState } from "react"
 
+import { ModeToggle } from "@/components/mode-toggle"
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
 import { TeamSwitcher } from "@/components/team-switcher"
-import { ModeToggle } from "@/components/mode-toggle"
-import { useAuth } from "@/contexts/AuthContext"
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarRail,
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarHeader,
+    SidebarRail,
 } from "@/components/ui/sidebar"
+import { useAuth } from "@/contexts/AuthContext"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, logout } = useAuth();
@@ -126,6 +119,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             url: "/dashboard/categorias/nuevo",
           },
         ],
+      },
+      {
+        title: "Blog Artesanal",
+        url: "/blog",
+        icon: MessageSquare,
+        items: [],
       },
     ],
   };

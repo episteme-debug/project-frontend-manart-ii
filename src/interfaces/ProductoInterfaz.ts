@@ -1,5 +1,4 @@
 import { ArchivoMultimediaRespuesta } from "./ArchivoMultimediaInterfaz"
-import { CategoriaProductoRespuesta } from "./CategoriaProductoInterfaz"
 
 export interface ProductoRespuesta {
     idProducto: number,

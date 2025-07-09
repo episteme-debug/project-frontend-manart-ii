@@ -28,6 +28,7 @@ const emptyProduct: ProductoRespuesta = {
   idUsuario: 0,
   nombreProducto: "",
   descripcionProducto: "",
+  descripcionDetalladaProducto: "",
   regionProducto: "",
   stockProducto: 0,
   precioProducto: 0,

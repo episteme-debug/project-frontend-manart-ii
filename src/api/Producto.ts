@@ -114,16 +114,6 @@ export async function filtrarProducto(
   }
 }
 
-
-interface Post {
-  idProducto: number;
-  nombreProducto: string;
-  descripcionProducto: string;
-  precioProducto: number;
-  stockProducto: number;
-  imagenProducto?: string;
-}
-
 export async function ObtenerProductos(): Promise<ProductoRespuesta[]> {
   try {
     const response = await axios.get<ProductoRespuesta[]>(
