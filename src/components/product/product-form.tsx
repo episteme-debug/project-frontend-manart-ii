@@ -58,6 +58,7 @@ export function ProductForm({ product = emptyProduct, idUsuario }: { product?: P
     idUsuario: idUsuario,
     nombreProducto: product.nombreProducto,
     descripcionProducto: product.descripcionProducto,
+    descripcionDetalladaProducto: product.descripcionDetalladaProducto || "",
     regionProducto: product.regionProducto,
     stockProducto: product.stockProducto,
     precioProducto: product.precioProducto,
@@ -139,6 +140,20 @@ export function ProductForm({ product = emptyProduct, idUsuario }: { product?: P
               rows={4}
               required
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="detailedDescription">Descripción Detallada</Label>
+            <Textarea
+              id="detailedDescription"
+              value={formData.descripcionDetalladaProducto}
+              onChange={(e) => handleChange("descripcionDetalladaProducto", e.target.value)}
+              placeholder="Describa detalladamente el producto, incluyendo técnicas artesanales, materiales, historia cultural, etc."
+              rows={6}
+            />
+            <p className="text-sm text-muted-foreground">
+              Cuente la historia detrás del producto, técnicas utilizadas, materiales y significado cultural
+            </p>
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2">

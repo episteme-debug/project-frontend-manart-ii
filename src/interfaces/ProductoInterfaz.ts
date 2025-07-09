@@ -18,6 +18,7 @@ export interface ProductoRespuesta {
 export interface ProductoCreacion {
     nombreProducto: string,
     descripcionProducto: string,
+    descripcionDetalladaProducto: string,
     regionProducto: string,
     stockProducto: number,
     precioProducto: number,

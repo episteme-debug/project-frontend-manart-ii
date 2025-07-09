@@ -11,6 +11,7 @@ const getProductById = (producto: ProductoRespuesta, idUsuario: number) => {
     idProducto: producto.idProducto,
     nombreProducto: producto.nombreProducto,
     descripcionProducto: producto.descripcionProducto,
+    descripcionDetalladaProducto: producto.descripcionDetalladaProducto,
     precioProducto: producto.precioProducto,
     stockProducto: producto.stockProducto,
     listaCategorias: producto.listaCategorias,

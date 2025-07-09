@@ -35,7 +35,7 @@ export default function ProductsPage() {
             </Breadcrumb>
           </div>
           <Button asChild>
-            <a href="/dashboard/detalleCategoria/nuevo">Agregar Categoria</a>
+            <a href="/dashboard/categorias/nuevo">Agregar Categoria</a>
           </Button>
         </div>
       </header>

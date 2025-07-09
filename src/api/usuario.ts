@@ -5,6 +5,8 @@ import { UsuarioRespuesta } from "@/interfaces/UsuarioInterfaz"
 import { obtenerCookie } from "@/lib/ObtencionCookie"
 import { cookies } from "next/headers"
 
+
+
 const baseURL = "http://localhost:8080/api/usuario"
 
 export async function obtenerUsuarioPorId(): Promise<UsuarioRespuesta | null> {
@@ -66,5 +68,30 @@ export default async function actualizarContrasena(nuevaContrasena: string ,toke
     console.log("El cambio fue exitoso");
   } catch (error) {
     console.error("Algo salió mal", error);
+  }
+}
+
+export async function actualizarDatosUsuario(datosActualizacion: any): Promise<UsuarioRespuesta | null> {
+  console.log("Datos a actualizar:", datosActualizacion);
+  try {
+    const user = await obtenerCookie()
+    if (!user) {
+      throw new Error("No autenticado")
+    }
+
+    const cookieStore = await cookies()
+    const token = cookieStore.get("token")?.value
+    const url = `${baseURL}/private/actualizardatos/${user.idUsuario}`
+
+    const respuesta = await axios.patch<UsuarioRespuesta>(url, datosActualizacion, {
+      headers: {
+        Cookie: `token=${token}`,
+      },
+    })
+
+    return respuesta.data
+  } catch (error) {
+    console.error("Error al actualizar el usuario", error)
+    return null
   }
 }

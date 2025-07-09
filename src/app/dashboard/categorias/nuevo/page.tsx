@@ -1,5 +1,5 @@
 import React from 'react'
-import CategoriasForm from '@/components/dashboard/categoria-form'
+import { CategoriasForm } from '@/components/dashboard/categoria-form'
 import {
   Breadcrumb,
   BreadcrumbItem,

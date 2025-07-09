@@ -58,6 +58,47 @@ export default function CategoriaList() {
       try {
         const data = await listarCategorias()
         setCart(data)
+        
+        // Inicializar todas las imágenes con placeholder inmediatamente
+        const imagenesIniciales: Record<number, string> = {}
+        data.forEach(cat => {
+          imagenesIniciales[cat.idCategoria] = "/imagen-defecto.png"
+        })
+        setimagen(imagenesIniciales)
+        
+        // Cargar imágenes reales de forma optimizada (máximo 3 en paralelo)
+        const cargarImagenesOptimizado = async () => {
+          const batchSize = 3 // Máximo 3 peticiones simultáneas
+          for (let i = 0; i < data.length; i += batchSize) {
+            const batch = data.slice(i, i + batchSize)
+            const promesas = batch.map(async (cat) => {
+              try {
+                const archivosData = await TraerArchivos("CategoriaProducto", cat.idCategoria)
+                if (Array.isArray(archivosData) && archivosData.length > 0 && archivosData[0].ruta) {
+                  const rutaNormalizada = archivosData[0].ruta.replace(/\\/g, "/")
+                  return { id: cat.idCategoria, ruta: `/static/${rutaNormalizada}` }
+                }
+                return null
+              } catch (error) {
+                return null
+              }
+            })
+            
+            const resultados = await Promise.all(promesas)
+            setimagen(prev => {
+              const nuevas = { ...prev }
+              resultados.forEach(resultado => {
+                if (resultado) {
+                  nuevas[resultado.id] = resultado.ruta
+                }
+              })
+              return nuevas
+            })
+          }
+        }
+        
+        // Ejecutar en background sin bloquear
+        cargarImagenesOptimizado()
       } catch (error) {
         console.error("Error cargando categorías:", error)
       }
@@ -65,36 +106,6 @@ export default function CategoriaList() {
 
     fetchCategorias()
   }, [])
-
-  useEffect(() => {
-    async function cargarImagenes() {
-      const nuevasImagenes: Record<number, string> = {}
-
-      for (const cat of cart) {
-        const entidad = "CategoriaProducto";
-        try {
-          const data = await TraerArchivos(entidad, cat.idCategoria)
-
-          if (Array.isArray(data) && data.length > 0 && data[0].ruta) {
-            const rutaNormalizada = data[0].ruta.replace(/\\/g, "/")
-            nuevasImagenes[cat.idCategoria] = `http://localhost:8080/${rutaNormalizada}`
-          } else {
-            console.warn(`No se encontró imagen para categoría ${cat.idCategoria}`)
-          }
-
-        } catch (error) {
-          console.error(`Error cargando imagen para categoría ${cat.idCategoria}:`, error)
-        }
-      }
-
-      setimagen(nuevasImagenes)
-    }
-
-    if (cart.length > 0) {
-      cargarImagenes()
-    }
-  }, [cart])
-
 
   const filteredCart = cart.filter(c =>
     c.nombreCategoria.toLowerCase().includes(query)
@@ -132,9 +143,6 @@ export default function CategoriaList() {
   }
 }
 
-
-
-
   return (
     <div className="flex flex-col gap-6">
       {paginated.length === 0 ? (
@@ -170,7 +178,7 @@ export default function CategoriaList() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem asChild>
-                          <a href={`/dashboard/detalleCategoria/${cat.idCategoria}`}>
+                          <a href={`/dashboard/categorias/${cat.idCategoria}`}>
                             <Edit className="mr-2 h-4 w-4" />
                             Editar
                           </a>

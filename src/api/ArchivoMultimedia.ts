@@ -61,16 +61,21 @@ export async function EliminarArchivo(idArchivo: number) {
 
 }
 
-export async function TraerArchivos(entidad:string, id:number) {
-    try{
-        const response = await axios.get(`http://localhost:8080/api/archivomultimedia/private/listararchivos/${entidad}/${id}`,
-             {
-          headers: { "Content-Type": "multipart/form-data" },
-          withCredentials: true,
-        }
-        )
-        return response.data;
-    }catch(error){
-        console.error("algo salio mal al trear las imagen",error)
-    }
+export async function TraerArchivos(entidad: string, id: number) {
+  try {
+    const user = await obtenerCookie()
+    if (!user) throw new Error("Usuario no autenticado")
+
+    const cookieStore = await cookies()
+    const token = cookieStore.get("token")?.value
+
+    const response = await axios.get(`http://localhost:8080/api/archivomultimedia/private/listararchivos/${entidad}/${id}`,
+      {
+        headers: { Cookie: `token=${token}` }
+      }
+    )
+    return response.data;
+  } catch (error) {
+    console.error("algo salio mal al trear las imagen", error)
+  }
 }

@@ -11,12 +11,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 
-import { crearCategoria } from "../../api/detalleCategoria/crearCategoria"
-import { actulizarCategoria } from "../../api/detalleCategoria/actulizarCategoria"
-import { subirArchivo } from "../../api/GestionArchivos/subirArchivo"
-import { traerimagen } from "../../api/GestionArchivos/traerimagen"
-import { traerArchivo } from "../../api/GestionArchivos/taerArchivos"
-import { eliminarArchivo } from "../../api/detalleCategoria/eliminarArchivo"
+import { crearCategoria } from "@/api/CategoriaProducto"
+import { actulizarCategoria } from "@/api/CategoriaProducto"
+import { SubirArchivos } from "@/api/ArchivoMultimedia"
+import { TraerArchivos } from "@/api/ArchivoMultimedia"
+import { EliminarArchivo } from "@/api/ArchivoMultimedia"
 import {
   AlertDialog,
   AlertDialogContent,
@@ -79,7 +78,7 @@ export function CategoriasForm({ categoria = emptyCategoria }: { categoria?: Cat
           if (true) {
             setTimeout(() => {
               setalertaExioto(false);
-            router.push("/dashboard/detalleCategoria");
+              router.push("/dashboard/detalleCategoria");
             }, 4000);
           }
         } else {
@@ -101,7 +100,7 @@ export function CategoriasForm({ categoria = emptyCategoria }: { categoria?: Cat
           if (true) {
             setTimeout(() => {
               setalertaExioto(false);
-            router.push("/dashboard/detalleCategoria");
+              router.push("/dashboard/detalleCategoria");
             }, 4000);
           }
         } else {
@@ -121,9 +120,9 @@ export function CategoriasForm({ categoria = emptyCategoria }: { categoria?: Cat
       if (!isNueva && archivo) {
         const entidad = "CategoriaProducto";
         try {
-          const respuesta = await traerArchivo(entidad, idCategoria);
+          const respuesta = await TraerArchivos(entidad, idCategoria);
           if (Array.isArray(respuesta) && respuesta.length > 0 && respuesta[0].id) {
-            await eliminarArchivo(respuesta[0].id);
+            await EliminarArchivo(respuesta[0].id);
           }
         } catch (error) {
           console.error("Error al eliminar archivo:", error);
@@ -133,34 +132,39 @@ export function CategoriasForm({ categoria = emptyCategoria }: { categoria?: Cat
       // Subir imagen nueva
       if (archivo) {
         const entidad = "CategoriaProducto";
-        const formDataArchivo = new FormData();
-        formDataArchivo.append("archivos", archivo);
-        await subirArchivo(entidad, idCategoria, formDataArchivo);
+        await SubirArchivos([archivo], entidad, idCategoria);
       }
 
     } catch (error) {
       console.error(error);
       setalertaMal(true);
-          if (true) {
-            setTimeout(() => {
-              setalertaMal(false);
-            }, 4000);
-          }
+      if (true) {
+        setTimeout(() => {
+          setalertaMal(false);
+        }, 4000);
+      }
     } finally {
       setIsSubmitting(false);
     }
 
   };
   useEffect(() => {
+    setFormData(categoria)
+  }, [categoria])
+
+  useEffect(() => {
     async function cargarImagen() {
       if (!categoria.idCategoria) return
-      const entidad ="CategoriaProducto";
-      const data = await traerimagen(entidad,categoria.idCategoria)
+      const entidad = "CategoriaProducto";
+      const data = await TraerArchivos(entidad, categoria.idCategoria)
 
-      if (Array.isArray(data) && data.length > 0 && data[0].ruta) {
+      if (Array.isArray(data) && data.length > 0 && typeof data[0].ruta === "string") {
         const rutaNormalizada = data[0].ruta.replace(/\\/g, "/")
         const urlCompleta = `http://localhost:8080/${rutaNormalizada}`
         setVistaPrevia(urlCompleta)
+      } else {
+        // Imagen por defecto si no hay archivos
+        setVistaPrevia("/images/ImagenProductoPorDefecto.jpg")
       }
     }
 

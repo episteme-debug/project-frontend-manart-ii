@@ -241,9 +241,18 @@ export default function DetalleProductoCliente({ producto, posts }: DetalleProdu
                                     </div>
                                     Descripción detallada
                                 </h2>
-                                <p className="text-gray-600 leading-relaxed text-lg">
-                                    {producto.descripcionDetalladaProducto}
-                                </p>
+                                {producto.descripcionDetalladaProducto ? (
+                                    <p className="text-gray-600 leading-relaxed text-lg">
+                                        {producto.descripcionDetalladaProducto}
+                                    </p>
+                                ) : (
+                                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-2xl border border-amber-200">
+                                        <p className="text-gray-600 text-lg text-center">
+                                            <Info className="w-6 h-6 inline-block mr-2 text-amber-600" />
+                                            Este producto aún no tiene una descripción detallada.
+                                        </p>
+                                    </div>
+                                )}
                             </div>
 
                             <div className="space-y-6">

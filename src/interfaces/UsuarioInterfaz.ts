@@ -10,6 +10,17 @@ export interface UsuarioRespuesta {
     telefonoUsuario: string,
     estadoUsuario: boolean,
     rolUsuario: string,
+    numeroDocumentoUsuario: string,
     listaProductos: ProductoRespuesta[],
     listaArchivos: ArchivoMultimediaRespuesta[]
+}
+
+export interface UsuarioActualizacion {
+    alias: string,
+    nombreUsuario: string,
+    apellidoUsuario: string,
+    emailUsuario: string,
+    telefonoUsuario: string,
+    estadoUsuario: boolean,
+    numeroDocumentoUsuario: string
 }
