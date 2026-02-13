@@ -1,5 +1,5 @@
 # project-frontend-manart-ii
-Proyecto frontend correspondiente a ManArt artesanías de Colombia.
+Proyecto Frontend correspondiente a ManArt Artesanías de Colombia.
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
